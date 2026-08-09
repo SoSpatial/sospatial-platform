@@ -59,6 +59,10 @@ screenshots/
 playwright-report/
 test-results/
 
+# OG 폰트 원본 (1.1MB). 커밋하는 것은 5KB 서브셋뿐이고,
+# 원본은 scripts/subset-og-font.mjs 가 없으면 자동으로 내려받는다
+assets/Pretendard-Bold.woff
+
 # ── 커밋에 반드시 포함되어야 하는 것 (기록용, 무시하지 말 것) ──
 # design_handoff_sospatial/   원본 디자인 핸드오프
 # reference/                  검증 기준 PNG 15장
