@@ -40,7 +40,12 @@ export function ProgressSteps({
   textPillDisplay?: 'flex' | 'block'
 }) {
   return (
-    <div className="mb-7 flex items-center gap-2">
+    /*
+      반응형(원본에 없음): 375px 에서는 pill 3개 + 커넥터 2개가 335px 에 들어가지 않아
+      pill 안 텍스트가 2줄로 접힌다. sm 미만에서 커넥터를 숨기고 줄바꿈을 허용해
+      pill 이 한 줄씩 유지되게 한다. sm 이상은 원본 그대로 한 줄 배치다.
+    */
+    <div className="mb-7 flex flex-wrap items-center gap-2">
       {STEPS.map((label, i) => {
         const done = i < activeIndex
         const active = i === activeIndex
@@ -48,7 +53,7 @@ export function ProgressSteps({
         const asFlex = done || textPillDisplay === 'flex'
         return (
           <div key={label} className="contents">
-            {i > 0 && <div className="h-px w-8 bg-line-15" />}
+            {i > 0 && <div className="hidden h-px w-8 bg-line-15 sm:block" />}
             <div
               className={cn(
                 'rounded-pill px-3 py-1',

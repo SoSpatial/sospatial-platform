@@ -116,7 +116,12 @@ export function RadioGroup({
   onChange: (v: string) => void
 }) {
   return (
-    <div className="flex gap-3">
+    /*
+      원본은 flex-wrap 이 없다(:1388). 데스크톱에서는 항상 한 줄이라 차이가 없지만,
+      375px 에서는 이 행의 min-content 가 286px 로 카드 콘텐츠 폭(269px)을 넘긴다.
+      좁은 화면에서만 줄바꿈되도록 flex-wrap 을 추가했다 (반응형 신규 판단).
+    */
+    <div className="flex flex-wrap gap-3">
       {options.map((o) => (
         <label key={o} className="flex cursor-pointer items-center gap-1.75">
           <input

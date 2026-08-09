@@ -43,7 +43,10 @@ import {
  *   추가요청 margin-bottom 24
  *   제출   flex gap 12 — accent 버튼 padding 12px 28px + 12.5px ink-30 안내
  *
- * 반응형은 7번 작업에서 처리한다. 지금은 데스크톱 고정.
+ * 반응형(원본에 없음)
+ *   xl 미만  1fr 280px → 1열, 가이드 sticky 해제 후 폼 아래로
+ *   sm 미만  1행 3열 → 1열, 2행 2열 → 1열
+ *   라디오 행은 flex-wrap 으로 줄바꿈 허용 (min-content 286px 가 375px 카드를 넘김)
  */
 const GUIDE_ITEMS: GuideItem[] = [
   {
@@ -97,7 +100,7 @@ export function SourceForm() {
           <BackLink href="/request" label="Request" />
           <ProgressSteps activeColor="blue" />
 
-          <div className="grid grid-cols-[1fr_var(--container-sidebar)] items-start gap-6">
+          <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[1fr_var(--container-sidebar)]">
             <Card radius="card" className="p-8">
               <form onSubmit={handleSubmit}>
                 <div className="mb-6 flex items-center gap-3">
@@ -114,7 +117,7 @@ export function SourceForm() {
                   </div>
                 </div>
 
-                <div className="mb-4 grid grid-cols-3 gap-4">
+                <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <FormField label="Dataset (URL 또는 출처)">
                     <TextInput
                       value={dataset}
@@ -151,7 +154,7 @@ export function SourceForm() {
                   </FormField>
                 </div>
 
-                <div className="mb-4 grid grid-cols-2 gap-4">
+                <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FormField label="기준 연도 변경 범위">
                     <div className="flex items-center gap-2">
                       <SelectInput
@@ -196,7 +199,7 @@ export function SourceForm() {
                   />
                 </FormField>
 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   {/* 원본 제출 버튼은 padding 12px 28px 로 md(24px)보다 넓다 (:1414) */}
                   <Button type="submit" variant="accent" size="md" className="px-7">
                     Request Dataset →

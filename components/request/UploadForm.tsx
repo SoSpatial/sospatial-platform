@@ -78,7 +78,7 @@ export function UploadForm() {
           <BackLink href="/request" label="Request" />
           <ProgressSteps activeColor="emerald" textPillDisplay="block" />
 
-          <div className="grid grid-cols-[1fr_var(--container-sidebar)] items-start gap-6">
+          <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[1fr_var(--container-sidebar)]">
             <Card radius="card" className="p-8">
               <form onSubmit={handleSubmit}>
                 <div className="mb-6 flex items-center gap-3">
@@ -141,7 +141,7 @@ export function UploadForm() {
                   )}
                 </FormField>
 
-                <div className="mb-4 grid grid-cols-2 gap-4">
+                <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FormField label="변환할 공간 단위">
                     <SelectInput
                       options={SPATIAL_UNITS_UPLOAD}
@@ -169,7 +169,7 @@ export function UploadForm() {
                   </FormField>
                 </div>
 
-                <div className="mt-6 flex items-center gap-3">
+                <div className="mt-6 flex flex-wrap items-center gap-3">
                   {/* 원본 :1555 — padding 12px 28px 이라 md(24px) + px-7 로 조합 */}
                   <Button type="submit" variant="emerald" size="md" className="px-7">
                     데이터 요청하기 →

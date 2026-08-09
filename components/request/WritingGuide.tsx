@@ -33,7 +33,11 @@ export function WritingGuide({
   titleTracking?: 'tight' | 'none'
 }) {
   return (
-    <Card radius="panel" className="sticky top-20 p-5.5">
+    /*
+      반응형(원본에 없음): xl 미만에서는 폼 그리드가 1열로 떨어지므로
+      sticky 를 해제해 폼 아래에 정적으로 놓는다. xl 이상은 원본대로 sticky top 80px.
+    */
+    <Card radius="panel" className="p-5.5 xl:sticky xl:top-20">
       <h3
         className={cn(
           'mb-4 text-14 font-bold text-ink',
