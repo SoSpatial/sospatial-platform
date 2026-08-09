@@ -1,0 +1,65 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# next.js
+.next/
+out/
+build/
+next-env.d.ts
+
+# production
+dist/
+
+# testing
+coverage/
+
+# env
+.env
+.env.*
+!.env.example
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# misc
+.DS_Store
+*.pem
+Thumbs.db
+
+# typescript / lint caches
+*.tsbuildinfo
+.eslintcache
+
+# vercel
+.vercel
+
+# editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# claude code 로컬 설정 (개인 환경별)
+.claude/settings.local.json
+
+# 스캐폴딩 임시 디렉터리
+scaffold-tmp/
+
+# 검증용 임시 스크린샷 (reference/ 는 커밋 대상이므로 제외하지 않는다)
+screenshots/
+playwright-report/
+test-results/
+
+# ── 커밋에 반드시 포함되어야 하는 것 (기록용, 무시하지 말 것) ──
+# design_handoff_sospatial/   원본 디자인 핸드오프
+# reference/                  검증 기준 PNG 15장
+# CLAUDE.md                   작업 기준 문서

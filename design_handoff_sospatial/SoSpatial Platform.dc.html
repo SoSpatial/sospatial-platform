@@ -1,0 +1,2426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #fff; font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    button, input, select { font-family: inherit; }
+    a { text-decoration: none; color: inherit; }
+    @keyframes pageEnter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</helmet>
+
+<div style="min-height:100vh; background:#fff;">
+
+  <!-- ====== NAV ====== -->
+  <nav style="position:sticky;top:0;z-index:100;background:rgba(24,24,24,1);backdrop-filter:blur(16px);border-bottom:none;">
+    <div style="max-width:1100px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;gap:0;">
+
+      <div style="display:flex;align-items:center;gap:9px;cursor:pointer;margin-right:52px;flex-shrink:0;" onClick="{{ navHome }}">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="0"    y="0"    width="8.5" height="8.5" rx="2"   fill="#C4A882"/>
+          <rect x="11.5" y="0"    width="8.5" height="8.5" rx="2"   fill="#C4A882" opacity="0.35"/>
+          <rect x="0"    y="11.5" width="8.5" height="8.5" rx="2"   fill="#C4A882" opacity="0.35"/>
+          <rect x="11.5" y="11.5" width="8.5" height="8.5" rx="2"   fill="#C4A882"/>
+        </svg>
+        <span style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-0.4px;">SoSpatial</span>
+      </div>
+
+      <div style="display:flex;align-items:stretch;height:100%;flex:1;">
+        <div style="display:flex;align-items:center;padding:0 18px;cursor:pointer;" onClick="{{ navData }}" style-hover="color:#fff;">
+          <span style="font-size:14px;color:rgba(255,255,255,0.55);font-weight:400;letter-spacing:-0.1px;">데이터</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 18px;cursor:pointer;" onClick="{{ navApi }}" style-hover="color:#fff;">
+          <span style="font-size:14px;color:rgba(255,255,255,0.55);font-weight:400;letter-spacing:-0.1px;">API</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 18px;cursor:pointer;" onClick="{{ navMaps }}" style-hover="color:#fff;">
+          <span style="font-size:14px;color:rgba(255,255,255,0.55);font-weight:400;letter-spacing:-0.1px;">지도·시각화</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 18px;cursor:pointer;" onClick="{{ navRequest }}" style-hover="color:#fff;">
+          <span style="font-size:14px;color:rgba(255,255,255,0.55);font-weight:400;letter-spacing:-0.1px;">의뢰하기</span>
+        </div>
+
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onClick="{{ navProjects }}" title="내 프로젝트" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:transparent;cursor:pointer;" style-hover="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.22);">
+          <svg width="16" height="16" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+        </button>
+        <button style="padding:8px 20px;border:1px solid rgba(255,255,255,0.18);border-radius:8px;background:transparent;font-size:13.5px;font-weight:500;cursor:pointer;color:rgba(255,255,255,0.7);" style-hover="background:rgba(255,255,255,0.06);">로그인</button>
+        <button style="padding:8px 20px;border:none;border-radius:8px;background:#fff;color:#111;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="background:#E8E8E8;">회원가입</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ====== HOME ====== -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div style="animation:pageEnter 0.35s ease;">
+
+      <!-- Hero -->
+      <section style="padding:100px 32px 84px;text-align:center;background:#181818;">
+        <div style="max-width:680px;margin:0 auto;">
+          <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border:1px solid rgba(255,255,255,0.1);border-radius:99px;background:rgba(255,255,255,0.05);margin-bottom:32px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#C4A882;"></div>
+            <span style="font-size:12.5px;color:rgba(255,255,255,0.5);font-weight:500;letter-spacing:0.2px;">AI-Ready 공간 데이터 플랫폼</span>
+          </div>
+
+          <h1 style="font-size:52px;font-weight:900;line-height:1.18;letter-spacing:-2.5px;margin:0 0 22px;color:#FFFFFF;">
+            흩어진 공간 데이터를<br>
+            <span style="color:#C4A882;">바로 쓸 수 있게.</span>
+          </h1>
+
+          <p style="font-size:16.5px;color:rgba(255,255,255,0.42);line-height:1.8;margin:0 0 40px;font-weight:400;">
+            데이터를 찾고, AI로 분석하고, 전문가와 함께 활용하세요.<br>
+            공간 인사이트의 <strong style="color:rgba(255,255,255,0.72);font-weight:600;">처음부터 끝까지</strong> 한 곳에서.
+          </p>
+
+          <div style="display:flex;justify-content:center;gap:10px;margin-bottom:56px;">
+            <button style="padding:14px 28px;background:#fff;color:#111;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:-0.2px;" onClick="{{ navData }}" style-hover="background:#E8E8E8;">데이터 둘러보기</button>
+            <button style="padding:14px 28px;background:transparent;color:rgba(255,255,255,0.7);border:1.5px solid rgba(255,255,255,0.18);border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;" onClick="{{ navMaps }}" style-hover="background:rgba(255,255,255,0.05);">AI에게 물어보기</button>
+          </div>
+
+          <div style="display:flex;justify-content:center;align-items:center;gap:0;">
+            <div style="padding:0 28px;text-align:center;">
+              <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;">1,240+</div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.3);margin-top:3px;">데이터셋</div>
+            </div>
+            <div style="width:1px;height:28px;background:rgba(255,255,255,0.1);"></div>
+            <div style="padding:0 28px;text-align:center;">
+              <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;">48종</div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.3);margin-top:3px;">데이터 소스</div>
+            </div>
+            <div style="width:1px;height:28px;background:rgba(255,255,255,0.1);"></div>
+            <div style="padding:0 28px;text-align:center;">
+              <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;">98%</div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,0.3);margin-top:3px;">재의뢰율</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature Cards -->
+      <section style="padding:80px 32px 100px;background:#222222;">
+        <div style="max-width:1100px;margin:0 auto;">
+
+          <div style="text-align:center;margin-bottom:48px;">
+            <p style="font-size:11px;font-weight:700;letter-spacing:3px;color:#C4A882;text-transform:uppercase;margin:0 0 12px;">CORE FEATURES</p>
+            <h2 style="font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.8px;margin:0;">필요한 곳에서 바로 시작하세요</h2>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+
+            <!-- Card 1 -->
+            <div style="border-radius:20px;overflow:hidden;display:flex;flex-direction:column;background:#181818;border:1px solid rgba(255,255,255,0.07);">
+              <div style="padding:28px 28px 0;flex-shrink:0;">
+                <div style="background:#242424;border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.06);">
+                  <div style="display:flex;gap:6px;margin-bottom:10px;">
+                    <div style="flex:1;padding:8px 10px;border:1px solid rgba(255,255,255,0.08);border-radius:6px;font-size:10.5px;color:rgba(255,255,255,0.25);">주제 *</div>
+                    <div style="flex:1;padding:8px 10px;border:1px solid rgba(255,255,255,0.08);border-radius:6px;font-size:10.5px;color:rgba(255,255,255,0.25);">단위 *</div>
+                    <div style="flex:1;padding:8px 10px;border:1px solid rgba(255,255,255,0.08);border-radius:6px;font-size:10.5px;color:rgba(255,255,255,0.25);">지역 *</div>
+                  </div>
+                  <div style="padding:9px 11px;background:rgba(196,168,130,0.12);border:1.5px solid rgba(196,168,130,0.28);border-radius:7px;font-size:10.5px;color:#C4A882;margin-bottom:6px;font-weight:600;">격자 250m · 서울특별시 · 2024</div>
+                  <div style="height:26px;background:rgba(255,255,255,0.05);border-radius:6px;margin-bottom:5px;"></div>
+                  <div style="height:20px;background:rgba(255,255,255,0.05);border-radius:6px;width:65%;"></div>
+                </div>
+              </div>
+              <div style="padding:24px 28px 28px;flex:1;display:flex;flex-direction:column;">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-0.3px;">바로 쓰는 데이터</h3>
+                <p style="font-size:13.5px;color:rgba(255,255,255,0.45);line-height:1.7;margin:0 0 18px;flex:1;">표준화된 공간 데이터를 검색·미리보기 후 원하는 포맷으로 내려받습니다.</p>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;">
+                  <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12px;color:rgba(255,255,255,0.55);">데이터 다운로드</span>
+                  <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12px;color:rgba(255,255,255,0.55);">API 연동</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:16px;">
+                  <div style="display:flex;align-items:center;gap:4px;color:#C4A882;font-size:14px;font-weight:600;cursor:pointer;" onClick="{{ navData }}">
+                    <span>데이터 둘러보기</span>
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div style="width:1px;height:14px;background:rgba(255,255,255,0.1);"></div>
+                  <div style="display:flex;align-items:center;gap:4px;color:#C4A882;font-size:14px;font-weight:600;cursor:pointer;" onClick="{{ navApi }}">
+                    <span>API 연동</span>
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div style="border-radius:20px;overflow:hidden;display:flex;flex-direction:column;background:#181818;border:1px solid rgba(255,255,255,0.07);">
+              <div style="height:185px;position:relative;overflow:hidden;flex-shrink:0;">
+                <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:22px 22px;"></div>
+                <div style="position:absolute;top:10%;left:15%;width:130px;height:110px;background:radial-gradient(ellipse,rgba(52,211,153,0.55) 0%,transparent 70%);filter:blur(22px);"></div>
+                <div style="position:absolute;top:40%;left:44%;width:100px;height:90px;background:radial-gradient(ellipse,rgba(250,204,21,0.45) 0%,transparent 70%);filter:blur(16px);"></div>
+                <div style="position:absolute;top:5%;left:58%;width:90px;height:80px;background:radial-gradient(ellipse,rgba(96,165,250,0.5) 0%,transparent 70%);filter:blur(16px);"></div>
+                <div style="position:absolute;top:55%;left:6%;width:70px;height:65px;background:radial-gradient(ellipse,rgba(251,146,60,0.4) 0%,transparent 70%);filter:blur(12px);"></div>
+                <div style="position:absolute;bottom:36px;right:16px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);padding:7px 12px;border-radius:10px 10px 2px 10px;font-size:11px;max-width:170px;line-height:1.5;font-weight:500;">출산율이 가장 낮은 지역은?</div>
+                <div style="position:absolute;bottom:8px;left:16px;background:rgba(0,0,0,0.35);color:rgba(255,255,255,0.65);padding:7px 12px;border-radius:10px 10px 10px 2px;font-size:11px;max-width:200px;line-height:1.5;">경북·서울 순으로 낮게 나타납니다</div>
+              </div>
+              <div style="padding:24px 28px 28px;flex:1;display:flex;flex-direction:column;">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-0.3px;">분석·시각화</h3>
+                <p style="font-size:13.5px;color:rgba(255,255,255,0.45);line-height:1.7;margin:0 0 18px;flex:1;">지도 위에서 데이터를 시각화하고, 대화형 AI로 공간 패턴을 분석합니다.</p>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;">
+                  <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12px;color:rgba(255,255,255,0.55);">지도 분석</span>
+                  <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12px;color:rgba(255,255,255,0.55);">시각화</span>
+                  <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12px;color:rgba(255,255,255,0.55);">AI 상담</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;color:#C4A882;font-size:14px;font-weight:600;cursor:pointer;" onClick="{{ navMaps }}">
+                  <span>분석 시작하기</span>
+                  <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div style="border-radius:20px;overflow:hidden;display:flex;flex-direction:column;background:#181818;border:1px solid rgba(255,255,255,0.07);">
+              <div style="padding:28px 28px 0;flex-shrink:0;position:relative;height:185px;">
+                <div style="width:60%;background:#242424;border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.06);">
+                  <div style="height:6px;background:#C4A882;border-radius:3px;margin-bottom:8px;width:50%;"></div>
+                  <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:5px;width:82%;"></div>
+                  <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:5px;width:70%;"></div>
+                  <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:12px;width:60%;"></div>
+                  <div style="display:flex;align-items:flex-end;gap:5px;height:40px;">
+                    <div style="width:13px;background:#C4A882;height:90%;border-radius:2px 2px 0 0;"></div>
+                    <div style="width:13px;background:#6B8FFF;height:58%;border-radius:2px 2px 0 0;"></div>
+                    <div style="width:13px;background:#34D399;height:72%;border-radius:2px 2px 0 0;"></div>
+                    <div style="width:13px;background:#C4A882;height:42%;border-radius:2px 2px 0 0;"></div>
+                    <div style="width:13px;background:#6B8FFF;height:68%;border-radius:2px 2px 0 0;"></div>
+                  </div>
+                </div>
+                <div style="position:absolute;bottom:32px;right:16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:7px 11px;border-radius:10px 10px 2px 10px;font-size:10.5px;max-width:130px;line-height:1.5;">우리 지역도 가능한가요?</div>
+                <div style="position:absolute;bottom:6px;right:16px;background:#C4A882;color:#1A1A1A;padding:7px 11px;border-radius:10px 10px 2px 10px;font-size:10.5px;max-width:140px;line-height:1.5;font-weight:600;">전문가가 함께 설계해 드려요</div>
+              </div>
+              <div style="padding:24px 28px 28px;flex:1;display:flex;flex-direction:column;">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-0.3px;">인사이트·컨설팅</h3>
+                <p style="font-size:13.5px;color:rgba(255,255,255,0.45);line-height:1.7;margin:0 0 18px;flex:1;">실제 분석 사례를 보고, 우리 지역·업종에 맞는 데이터 컨설팅을 의뢰합니다.</p>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;">
+                  <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12px;color:rgba(255,255,255,0.55);">컨설팅 사례</span>
+                  <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12px;color:rgba(255,255,255,0.55);">맞춤 의뢰</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;color:#C4A882;font-size:14px;font-weight:600;cursor:pointer;" onClick="{{ navRequest }}">
+                  <span>사례·컨설팅 보기</span>
+                  <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </sc-if>
+
+  <!-- ====== DATA PAGE ====== -->
+  <sc-if value="{{ isData }}">
+    <div style="animation:pageEnter 0.35s ease;background:#181818;min-height:calc(100vh - 64px);">
+
+    <!-- ── DATA SELECT VIEW ── -->
+    <sc-if value="{{ dataIsSelect }}">
+      <div style="padding:28px 32px 80px;">
+        <div style="max-width:1200px;margin:0 auto;">
+
+          <!-- Back + title -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;cursor:pointer;" onClick="{{ goDataLanding }}" style-hover="opacity:0.7;">
+            <svg width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:13px;color:rgba(255,255,255,0.45);">데이터</span>
+          </div>
+          <h1 style="font-size:22px;font-weight:700;color:#fff;margin:0 0 4px;letter-spacing:-0.4px;">데이터 선택</h1>
+          <sc-if value="{{ viewingProjectName }}">
+            <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;background:rgba(196,168,130,0.1);border:1px solid rgba(196,168,130,0.2);border-radius:8px;margin-bottom:12px;">
+              <svg width="12" height="12" fill="none" stroke="#C4A882" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+              <span style="font-size:12.5px;color:#C4A882;font-weight:600;">{{ viewingProjectName }}</span>
+            </div>
+          </sc-if>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.4);margin:0 0 28px;">분석에 필요한 데이터를 선택하고 프로젝트로 저장해 보세요.</p>
+
+          <!-- filter grid -->
+          <div style="display:grid;grid-template-columns:{{ filterGridCols }};gap:0;background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;margin-bottom:24px;">
+
+            <!-- Col 1: 주제 -->
+            <div style="border-right:1px solid rgba(255,255,255,0.07);">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:7px;">
+                <svg width="13" height="13" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.55);">주제 선택</span>
+              </div>
+              <div ref="{{ topicListRef }}" style="max-height:220px;overflow-y:auto;overscroll-behavior:contain;">
+                <sc-for list="{{ topicItems }}" as="item" hint-placeholder-count="9">
+                  <div style="{{ item.style }}" onClick="{{ item.onClick }}">{{ item.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- Col 2: 세부 주제 -->
+            <div style="border-right:1px solid rgba(255,255,255,0.07);">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:7px;">
+                <svg width="13" height="13" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.55);">세부 주제 선택</span>
+              </div>
+              <div style="max-height:220px;overflow-y:auto;overscroll-behavior:contain;">
+                <sc-for list="{{ subTopicItems }}" as="item" hint-placeholder-count="5">
+                  <div style="{{ item.style }}" onClick="{{ item.onClick }}">{{ item.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- Col 3: 단위 -->
+            <div style="border-right:1px solid rgba(255,255,255,0.07);">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:7px;">
+                <svg width="13" height="13" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.55);">단위 선택</span>
+                <span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,0.25);">단일 선택</span>
+              </div>
+              <div style="max-height:220px;overflow-y:auto;overscroll-behavior:contain;">
+                <sc-for list="{{ unitItems }}" as="item" hint-placeholder-count="7">
+                  <div style="{{ item.style }}" onClick="{{ item.onClick }}">{{ item.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- Col 4: 지역 -->
+            <div style="border-right:1px solid rgba(255,255,255,0.07);">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:7px;">
+                <svg width="13" height="13" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.55);">지역 선택</span>
+              </div>
+              <div style="max-height:220px;overflow-y:auto;overscroll-behavior:contain;">
+                <sc-for list="{{ regionItems }}" as="item" hint-placeholder-count="7">
+                  <div style="{{ item.style }}" onClick="{{ item.onClick }}">{{ item.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- Col 5: 세부 지역 (conditional) -->
+            <sc-if value="{{ hasSubRegion }}">
+              <div style="border-right:1px solid rgba(255,255,255,0.07);">
+                <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:7px;">
+                  <svg width="13" height="13" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.55);">세부 지역 선택</span>
+                </div>
+                <div style="max-height:220px;overflow-y:auto;overscroll-behavior:contain;">
+                  <sc-for list="{{ subRegionGroups }}" as="group" hint-placeholder-count="1">
+                    <div style="padding:6px 16px 2px;font-size:10.5px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:0.5px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.04);">{{ group.region }}</div>
+                    <sc-for list="{{ group.items }}" as="item" hint-placeholder-count="5">
+                      <div style="{{ item.style }}" onClick="{{ item.onClick }}">{{ item.label }}</div>
+                    </sc-for>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Col 6: 년도 -->
+            <div>
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:7px;">
+                <svg width="13" height="13" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.55);">년도 선택</span>
+              </div>
+              <div style="max-height:220px;overflow-y:auto;overscroll-behavior:contain;">
+                <sc-for list="{{ yearItems }}" as="item" hint-placeholder-count="7">
+                  <div style="{{ item.style }}" onClick="{{ item.onClick }}">{{ item.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Variable selection table -->
+          <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;margin-bottom:20px;">
+            <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;">
+              <h3 style="font-size:14.5px;font-weight:600;color:#fff;margin:0;">필요한 데이터를 선택하세요</h3>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <sc-if value="{{ hasChecked }}">
+                  <span style="font-size:12px;color:rgba(255,255,255,0.35);">{{ checkedCount }}개 선택</span>
+                </sc-if>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                  <button onClick="{{ openSaveModal }}" style="padding:6px 14px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.12);border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="background:rgba(255,255,255,0.11);">프로젝트에 저장</button>
+                  <sc-if value="{{ saveWarnMsg }}">
+                    <span style="font-size:11.5px;color:#E07070;font-weight:500;">⚠ {{ saveWarnMsg }}</span>
+                  </sc-if>
+                </div>
+                <button onClick="{{ downloadCheckedVars }}" style="padding:6px 14px;background:#C4A882;color:#1A1A1A;border:none;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;" style-hover="background:#B09470;">다운로드</button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:44px 1fr 1fr auto;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <span></span>
+              <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px;">변수</span>
+              <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px;">설명</span>
+              <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.5px;">액션</span>
+            </div>
+            <sc-for list="{{ variableRows }}" as="row" hint-placeholder-count="4">
+              <div style="display:grid;grid-template-columns:44px 1fr 1fr auto;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;">
+                <input type="checkbox" checked="{{ row.checked }}" onChange="{{ row.onCheck }}" style="accent-color:#C4A882;width:14px;height:14px;cursor:pointer;" />
+                <span style="font-size:13px;color:#fff;">{{ row.name }}</span>
+                <span style="font-size:12px;color:rgba(255,255,255,0.38);line-height:1.5;">{{ row.desc }}</span>
+                <button style="padding:5px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:11.5px;color:rgba(255,255,255,0.55);cursor:pointer;white-space:nowrap;" style-hover="background:rgba(255,255,255,0.09);">미리보기</button>
+              </div>
+            </sc-for>
+          </div>
+
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ── DATA LANDING VIEW ── -->
+    <sc-if value="{{ dataIsLanding }}" hint-placeholder-val="{{ true }}">
+
+      <!-- Hero Search -->
+      <section style="padding:72px 32px 60px;text-align:center;background:#181818;">
+        <div style="max-width:660px;margin:0 auto;">
+          <h1 style="font-size:36px;font-weight:800;color:#fff;letter-spacing:-1.2px;margin:0 0 10px;">어떤 데이터가 필요하세요?</h1>
+          <p style="font-size:15px;color:rgba(255,255,255,0.4);margin:0 0 28px;">1,240개 표준 공간 데이터셋을 검색하거나, 주제별로 둘러보세요.</p>
+          <div style="display:flex;gap:0;background:#242424;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:18px;">
+            <div style="display:flex;align-items:center;padding:0 16px;flex-shrink:0;">
+              <svg width="17" height="17" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+            </div>
+            <input placeholder="예: 유동인구, 사업체, 미세먼지, 버스 정류장..." style="flex:1;border:none;background:transparent;font-size:14.5px;color:#fff;outline:none;padding:16px 0;" />
+            <button style="padding:12px 24px;background:#C4A882;color:#1A1A1A;border:none;font-size:14px;font-weight:700;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="" style-hover="background:#B09470;">검색</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:12.5px;color:rgba(255,255,255,0.3);">인기 검색</span>
+            <span style="padding:4px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12.5px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);" onClick="{{ goDataSelect }}" data-topic="인구·사회">생활인구</span>
+            <span style="padding:4px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12.5px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);" onClick="{{ goDataSelect }}" data-topic="경제·산업">상권</span>
+            <span style="padding:4px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12.5px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);" onClick="{{ goDataSelect }}" data-topic="인구·사회">고령인구</span>
+            <span style="padding:4px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12.5px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);" onClick="{{ goDataSelect }}" data-topic="환경·기후">대기질</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Category Browse -->
+      <section style="padding:52px 32px;background:#222222;">
+        <div style="max-width:1100px;margin:0 auto;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+            <h2 style="font-size:19px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.4px;">주제별 둘러보기</h2>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+
+            <!-- 전체 카드 (full-width) -->
+            <div style="grid-column:1/-1;background:linear-gradient(135deg,rgba(196,168,130,0.1) 0%,rgba(196,168,130,0.04) 100%);border:1px solid rgba(196,168,130,0.2);border-radius:14px;padding:20px 24px;cursor:pointer;display:flex;align-items:center;gap:20px;" onClick="{{ goDataSelect }}" data-topic="전체" style-hover="border-color:rgba(196,168,130,0.4);">
+              <div style="width:42px;height:42px;background:rgba(196,168,130,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="20" height="20" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;">전체 데이터셋</div>
+                <div style="font-size:12.5px;color:rgba(255,255,255,0.4);">모든 주제의 1,240개 데이터셋을 한번에 둘러보세요</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;color:#C4A882;font-size:13.5px;font-weight:600;flex-shrink:0;">
+                <span>전체 보기</span>
+                <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="인구·사회" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">인구·사회</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">214개 데이터셋</div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="교통·이동" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">교통·이동</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">186개 데이터셋</div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="경제·산업" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">경제·산업</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">158개 데이터셋</div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="건강·복지" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">건강·복지</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">97개 데이터셋</div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="안전·재난" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">안전·재난</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">73개 데이터셋</div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="환경·기후" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">환경·기후</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">64개 데이터셋</div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="국토·도시" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="11" rx="1"/><path d="M8 21V10M16 21V10M3 15h18M7 3h10l3 7H4L7 3z"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">국토·도시</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">142개 데이터셋</div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goDataSelect }}" data-topic="기타·융합" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;">
+              <div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </div>
+              <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">기타·융합</div>
+              <div style="font-size:11.5px;color:rgba(255,255,255,0.3);">106개 데이터셋</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Popular + API -->
+      <section style="padding:52px 32px 80px;background:#181818;">
+        <div style="max-width:1100px;margin:0 auto;">
+          <div style="display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;">
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+                <h2 style="font-size:19px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.4px;">지금 인기 있는 데이터</h2>
+                <span style="font-size:13.5px;color:#C4A882;cursor:pointer;font-weight:500;" onClick="{{ togglePopular }}">{{ popularLabel }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;">
+                <div style="display:flex;align-items:center;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                  <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">1</span>
+                  <div style="flex:1;">
+                    <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">생활 이동인구 (OD)</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.35);">교통·이동 · 격자 250m · 전국</div>
+                  </div>
+                  <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                </div>
+                <div style="display:flex;align-items:center;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                  <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">2</span>
+                  <div style="flex:1;">
+                    <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">사업체 분포 (업종별)</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.35);">경제·산업 · 격자 100m · 전국</div>
+                  </div>
+                  <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                </div>
+                <div style="display:flex;align-items:center;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                  <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">3</span>
+                  <div style="flex:1;">
+                    <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">미세먼지 농도 (시간별)</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.35);">환경·기후 · 격자 1km · 전국</div>
+                  </div>
+                  <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;margin-left:auto;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                </div>
+                <div style="display:flex;align-items:center;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                  <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">4</span>
+                  <div style="flex:1;">
+                    <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">고령인구 비율</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.35);">인구·사회 · 행정동 · 전국</div>
+                  </div>
+                  <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;margin-left:auto;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                </div>
+                <sc-if value="{{ showAllPopular }}">
+                  <div style="display:flex;align-items:center;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                    <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">5</span>
+                    <div style="flex:1;">
+                      <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">토지이용 현황</div>
+                      <div style="font-size:12px;color:rgba(255,255,255,0.35);">국토·도시 · 집계구 · 전국</div>
+                    </div>
+                    <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                  </div>
+                  <div style="display:flex;align-items:center;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                    <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">6</span>
+                    <div style="flex:1;">
+                      <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">지하철역 이용객 (시간별)</div>
+                      <div style="font-size:12px;color:rgba(255,255,255,0.35);">교통·이동 · 시군구 · 전국</div>
+                    </div>
+                    <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                  </div>
+                  <div style="display:flex;align-items:center;padding:15px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                    <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">7</span>
+                    <div style="flex:1;">
+                      <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">범죄 발생 건수</div>
+                      <div style="font-size:12px;color:rgba(255,255,255,0.35);">안전·복지 · 행정동 · 전국</div>
+                    </div>
+                    <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                  </div>
+                  <div style="display:flex;align-items:center;padding:15px 0;cursor:pointer;" style-hover="padding-left:8px;transition:padding 0.15s;">
+                    <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.18);width:32px;flex-shrink:0;">8</span>
+                    <div style="flex:1;">
+                      <div style="font-size:14.5px;font-weight:600;color:#fff;margin-bottom:3px;">공시지가</div>
+                      <div style="font-size:12px;color:rgba(255,255,255,0.35);">경제·산업 · 시군구 · 전국</div>
+                    </div>
+                    <button style="padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">받기</button>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </sc-if>
+
+    </div>
+  </sc-if>
+
+  <!-- ====== API PAGE ====== -->
+  <sc-if value="{{ isApi }}">
+    <div style="animation:pageEnter 0.35s ease;background:#181818;min-height:calc(100vh - 64px);">
+
+      <!-- Hero -->
+      <section style="padding:72px 32px 60px;background:#181818;">
+        <div style="max-width:1100px;margin:0 auto;">
+          <div style="display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:center;">
+            <div>
+              <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(107,143,255,0.1);border:1px solid rgba(107,143,255,0.18);border-radius:6px;margin-bottom:20px;">
+                <svg width="11" height="11" fill="none" stroke="#8BA8D4" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <span style="font-size:11px;font-weight:600;color:#8BA8D4;">개발자용</span>
+              </div>
+              <h1 style="font-size:44px;font-weight:800;line-height:1.15;letter-spacing:-1.5px;margin:0 0 16px;color:#fff;">Spatial APIs for<br><span style="color:#C4A882;">AI &amp; Analytics</span></h1>
+              <p style="font-size:15.5px;color:rgba(255,255,255,0.45);line-height:1.75;margin:0 0 32px;">표준화된 공간 데이터를 API로 제공하여<br>연구, 분석, 제품 개발을 더 빠르고 쉽게.</p>
+              <div style="display:flex;gap:12px;">
+                <button style="padding:12px 24px;background:#C4A882;color:#1A1A1A;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;" style-hover="background:#B09470;">API 키 발급</button>
+                <button style="padding:12px 24px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.12);border-radius:9px;font-size:14px;font-weight:500;cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">문서 보기</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature highlights -->
+      <section style="padding:40px 32px;background:#222222;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div style="max-width:1100px;margin:0 auto;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+              <div style="width:36px;height:36px;background:rgba(196,168,130,0.1);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:4px;">표준화된 공간 단위</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.38);line-height:1.55;">행정구역, 격자(100m~1km) 등 표준 단위로 제공</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+              <div style="width:36px;height:36px;background:rgba(196,168,130,0.1);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:4px;">공간 쿼리 지원</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.38);line-height:1.55;">반경, 영역, 비교, 교차 등 다양한 공간 분석 지원</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+              <div style="width:36px;height:36px;background:rgba(196,168,130,0.1);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:4px;">AI-Ready 데이터</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.38);line-height:1.55;">바로 분석과 모델링에 활용 가능한 정제된 구조로 제공</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+              <div style="width:36px;height:36px;background:rgba(196,168,130,0.1);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:4px;">시계열 제공</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.38);line-height:1.55;">연도/분기/월/일 단위로 시간에 따른 변화 분석 가능</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- API Grid -->
+      <section style="padding:56px 32px 80px;background:#181818;">
+        <div style="max-width:1100px;margin:0 auto;">
+          <h2 style="font-size:19px;font-weight:700;color:#fff;margin:0 0 24px;letter-spacing:-0.4px;">전체 API</h2>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Population API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/population</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">인구, 세대, 연령구조, 외국인 등 인구통계 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">인구</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">세대</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">연령구조</span>
+              </div>
+            </div>
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Business API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/business</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">사업체 수, 업종, 개폐업, 공실률 등 사업체 관련 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">사업체수</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">업종</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">개폐업</span>
+              </div>
+            </div>
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Health API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/health</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">건강지표, 질병발생, 취약성 지수, 환경노출 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">건강지표</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">환경</span>
+              </div>
+            </div>
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Mobility API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/mobility</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">이동량, 대중교통, 접근성, 통행패턴 등 이동 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">대중교통</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">이동량</span>
+              </div>
+            </div>
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="11" rx="1"/><path d="M7 3h10l3 7H4L7 3z"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Housing API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/housing</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">주택 유형, 노후도, 공시가격, 거래 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">주택</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">부동산</span>
+              </div>
+            </div>
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Environment API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/environment</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">대기질, 기온, 강수, 소음 등 환경 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">대기질</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">기후</span>
+              </div>
+            </div>
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Education API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/education</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">학교 위치, 학생수, 학원 분포, 교육 접근성 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">학교</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">학원</span>
+              </div>
+            </div>
+
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" style-hover="border-color:rgba(196,168,130,0.3);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:32px;height:32px;background:rgba(196,168,130,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:#fff;">Economy API</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.3);">/api/economy</div>
+                </div>
+              </div>
+              <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin:0 0 12px;">매출, 소비, 카드 이용, 경제활동 관련 데이터를 제공합니다.</p>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">매출</span>
+                <span style="padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.4);">소비</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </sc-if>
+
+  <!-- ====== PROJECTS PAGE ====== -->
+  <sc-if value="{{ isProjects }}">
+    <div style="animation:pageEnter 0.35s ease;min-height:calc(100vh - 64px);background:#181818;padding:48px 32px 80px;">
+      <div style="max-width:1100px;margin:0 auto;">
+
+        <!-- Header -->
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;">
+          <div>
+            <h1 onClick="{{ closeProjectDetail }}" style="font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.8px;margin:0 0 6px;cursor:pointer;" style-hover="opacity:0.8;">My Projects</h1>
+            <p style="font-size:13.5px;color:rgba(255,255,255,0.4);margin:0;">저장한 프로젝트를 관리하고 필요한 분석을 이어가세요.</p>
+          </div>
+          <sc-if value="{{ isNotViewingProject }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px;">
+              <button onClick="{{ deleteSelected }}" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                선택 삭제
+              </button>
+              <button onClick="{{ downloadSelected }}" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                선택 다운로드
+              </button>
+              <button onClick="{{ moveUp }}" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                위로 이동
+              </button>
+              <button onClick="{{ moveDown }}" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+                아래로 이동
+              </button>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- Project Detail View -->
+        <sc-if value="{{ isViewingProject }}">
+          <div style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;cursor:pointer;" onClick="{{ closeProjectDetail }}" style-hover="opacity:0.7;">
+              <svg width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="font-size:13px;color:rgba(255,255,255,0.45);">내 프로젝트</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+              <div>
+                <h2 style="font-size:20px;font-weight:700;color:#fff;margin:0 0 4px;letter-spacing:-0.4px;">{{ viewingProject.name }}</h2>
+                <span style="font-size:12.5px;color:rgba(255,255,255,0.35);">저장일 {{ viewingProject.date }} · {{ viewingProject.sharing }}</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button onClick="{{ downloadProjectView }}" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:13px;color:rgba(255,255,255,0.6);cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  다운로드
+                </button>
+                <button onClick="{{ deleteProjectView }}" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.18);border-radius:8px;font-size:13px;color:rgba(255,120,120,0.8);cursor:pointer;" style-hover="background:rgba(255,80,80,0.15);">
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                  프로젝트 삭제
+                </button>
+              </div>
+            </div>
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;">
+              <div style="display:grid;grid-template-columns:1fr 2fr 0.8fr 0.8fr 0.8fr 0.8fr;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.08);background:#2A2A2A;">
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.4);">데이터명</span>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.4);">설명</span>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.4);">단위</span>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.4);">지역</span>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.4);">세부지역</span>
+                <span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.4);">년도</span>
+              </div>
+              <sc-for list="{{ projectDetailVars }}" as="v" hint-placeholder-count="3">
+                <div style="display:grid;grid-template-columns:1fr 2fr 0.8fr 0.8fr 0.8fr 0.8fr;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;">
+                  <span style="font-size:13.5px;font-weight:600;color:#fff;">{{ v.name }}</span>
+                  <span style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5;">{{ v.desc }}</span>
+                  <span style="font-size:12.5px;color:rgba(255,255,255,0.55);">{{ v.unit }}</span>
+                  <span style="font-size:12.5px;color:rgba(255,255,255,0.55);">{{ v.region }}</span>
+                  <span style="font-size:12.5px;color:rgba(255,255,255,0.55);">{{ v.subRegion }}</span>
+                  <span style="font-size:12.5px;color:rgba(255,255,255,0.55);">{{ v.year }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- Table -->
+        <sc-if value="{{ isNotViewingProject }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;">
+
+          <!-- Table header -->
+          <div style="display:grid;grid-template-columns:52px 72px 1fr 60px 130px 120px 90px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,0.08);background:#2A2A2A;">
+            <div style="display:flex;align-items:center;">
+              <input type="checkbox" checked="{{ allProjectsChecked }}" onChange="{{ toggleAllProjects }}" style="accent-color:#C4A882;width:15px;height:15px;cursor:pointer;" />
+            </div>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);">No.</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);">프로젝트 이름</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);text-align:center;">중요</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);">저장 날짜 ↓</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);text-align:center;">공유하기</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);text-align:center;">공유여부</span>
+          </div>
+
+          <sc-for list="{{ projectRows }}" as="row" hint-placeholder-count="4">
+            <div onClick="{{ row.onClick }}" style="display:grid;grid-template-columns:52px 72px 1fr 60px 130px 120px 90px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;cursor:pointer;" style-hover="background:rgba(255,255,255,0.03);">
+              <div onClick="{{ row.onCheck }}" style="display:flex;align-items:center;">
+                <input type="checkbox" checked="{{ row.checked }}" style="accent-color:#C4A882;width:15px;height:15px;cursor:pointer;pointer-events:none;" />
+              </div>
+              <span style="font-size:13px;color:rgba(255,255,255,0.35);">{{ row.num }}</span>
+              <span style="font-size:14px;color:#fff;font-weight:500;">{{ row.name }}</span>
+              <div onClick="{{ row.onStarClick }}" style="display:flex;justify-content:center;cursor:pointer;">
+                <svg width="16" height="16" fill="{{ row.starFill }}" stroke="{{ row.starStroke }}" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span style="font-size:13px;color:rgba(255,255,255,0.45);">{{ row.date }}</span>
+              <div style="display:flex;justify-content:center;">
+                <button onClick="{{ row.onShareClick }}" style="padding:5px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:11.5px;color:rgba(255,255,255,0.55);cursor:pointer;white-space:nowrap;" style-hover="background:rgba(255,255,255,0.1);">공유하기</button>
+              </div>
+              <div style="display:flex;justify-content:center;pointer-events:none;">
+                <span style="{{ row.shareStyle }}">{{ row.sharing }}</span>
+              </div>
+            </div>
+          </sc-for>
+
+        </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Share Modal -->
+  <sc-if value="{{ showShareModal }}">
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:flex;align-items:center;justify-content:center;" onClick="{{ closeShareModal }}">
+      <div style="background:#242424;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px;width:420px;" onClick="{{ stopProp }}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:32px;height:32px;background:rgba(196,168,130,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <span style="font-size:15px;font-weight:700;color:#fff;">공유할 사람의 이메일을 입력하세요.</span>
+        </div>
+        <sc-if value="{{ hasExistingShared }}">
+          <div style="margin-bottom:16px;">
+            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:0.06em;text-transform:uppercase;">현재 공유된 사람</span>
+            <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;">
+              <sc-for list="{{ existingSharedWith }}" as="sw" hint-placeholder-count="0">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#1A1A1A;border:1px solid rgba(255,255,255,0.08);border-radius:8px;">
+                  <span style="font-size:13px;color:rgba(255,255,255,0.75);">{{ sw.email }}</span>
+                  <button onClick="{{ sw.revoke }}" style="padding:3px 10px;background:rgba(220,70,70,0.1);border:1px solid rgba(220,70,70,0.2);border-radius:6px;font-size:11.5px;font-weight:600;color:rgba(220,100,100,0.85);cursor:pointer;" style-hover="background:rgba(220,70,70,0.22);">공유 취소</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,0.07);margin-bottom:14px;"></div>
+          <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:10px;">새로 추가</span>
+        </sc-if>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input type="email" value="{{ shareEmail }}" onChange="{{ onShareEmailChange }}" placeholder="example@email.com" style="flex:1;padding:11px 14px;background:#1A1A1A;border:1px solid rgba(255,255,255,0.12);border-radius:9px;font-size:14px;color:#fff;outline:none;" />
+          <button onClick="{{ addShareEmail }}" style="padding:11px 16px;background:rgba(196,168,130,0.15);border:1px solid rgba(196,168,130,0.3);border-radius:9px;font-size:13px;font-weight:600;color:#C4A882;cursor:pointer;white-space:nowrap;" style-hover="background:rgba(196,168,130,0.25);">추가</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px;margin-bottom:16px;">
+          <sc-for list="{{ shareEmails }}" as="em" hint-placeholder-count="0">
+            <div style="display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(196,168,130,0.1);border:1px solid rgba(196,168,130,0.2);border-radius:6px;">
+              <span style="font-size:12.5px;color:#C4A882;">{{ em.email }}</span>
+              <span onClick="{{ em.remove }}" style="font-size:14px;color:rgba(196,168,130,0.6);cursor:pointer;line-height:1;" style-hover="color:#C4A882;">×</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button onClick="{{ closeShareModal }}" style="padding:9px 20px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:13.5px;color:rgba(255,255,255,0.7);cursor:pointer;" style-hover="background:rgba(255,255,255,0.11);">취소</button>
+          <button onClick="{{ confirmShare }}" style="padding:9px 20px;background:#C4A882;border:none;border-radius:8px;font-size:13.5px;font-weight:700;color:#1A1A1A;cursor:pointer;" style-hover="background:#B09470;">공유하기</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Toast -->
+  <sc-if value="{{ showToast }}">
+    <div style="position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#2A2A2A;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 24px;display:flex;align-items:center;gap:10px;z-index:3000;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+      <div style="width:8px;height:8px;border-radius:50%;background:#5CC974;flex-shrink:0;"></div>
+      <span style="font-size:14px;color:#fff;font-weight:500;">{{ toastMsg }}</span>
+    </div>
+  </sc-if>
+
+  <!-- Save Project Modal -->
+  <sc-if value="{{ showSaveModal }}">
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:flex;align-items:center;justify-content:center;" onClick="{{ closeSaveModal }}">
+      <div style="background:#242424;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px;width:420px;" onClick="{{ stopProp }}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:32px;height:32px;background:rgba(196,168,130,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="15" height="15" fill="none" stroke="#C4A882" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h3.5l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+          </div>
+          <span style="font-size:15px;font-weight:700;color:#fff;">프로젝트에 저장</span>
+        </div>
+        <!-- 탭 -->
+        <div style="display:flex;gap:0;background:#1A1A1A;border-radius:8px;padding:3px;margin-bottom:16px;">
+          <button onClick="{{ setSaveModeNew }}" style="{{ tabNewStyle }}">새 프로젝트</button>
+          <button onClick="{{ setSaveModeExisting }}" style="{{ tabExistStyle }}">기존 프로젝트에 추가</button>
+        </div>
+        <sc-if value="{{ saveIsNew }}">
+          <input type="text" value="{{ saveProjectName }}" onChange="{{ onSaveNameChange }}" placeholder="프로젝트 이름 입력" style="width:100%;box-sizing:border-box;padding:11px 14px;background:#1A1A1A;border:1px solid rgba(255,255,255,0.12);border-radius:9px;font-size:14px;color:#fff;outline:none;margin-bottom:20px;" />
+        </sc-if>
+        <sc-if value="{{ saveIsExisting }}">
+          <select value="{{ saveTargetId }}" onChange="{{ onSaveTargetChange }}" style="width:100%;box-sizing:border-box;padding:11px 14px;background:#1A1A1A;border:1px solid rgba(255,255,255,0.12);border-radius:9px;font-size:14px;color:#fff;outline:none;margin-bottom:20px;">
+            <option value="">프로젝트 선택</option>
+            <sc-for list="{{ existingProjects }}" as="ep" hint-placeholder-count="2">
+              <option value="{{ ep.id }}">{{ ep.name }}</option>
+            </sc-for>
+          </select>
+        </sc-if>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button onClick="{{ closeSaveModal }}" style="padding:9px 20px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:13.5px;color:rgba(255,255,255,0.7);cursor:pointer;" style-hover="background:rgba(255,255,255,0.11);">취소</button>
+          <button onClick="{{ confirmSaveProject }}" style="padding:9px 20px;background:#C4A882;border:none;border-radius:8px;font-size:13.5px;font-weight:700;color:#1A1A1A;cursor:pointer;" style-hover="background:#B09470;">저장</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ====== MAPS PAGE ====== -->
+  <sc-if value="{{ isMaps }}">
+    <div style="animation:pageEnter 0.35s ease;height:calc(100vh - 64px);display:flex;overflow:hidden;background:#181818;">
+
+      <!-- Left: AI Chat -->
+      <div style="width:420px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.07);">
+
+        <!-- AI Header -->
+        <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;background:rgba(196,168,130,0.12);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><rect x="1" y="1" width="7.5" height="7.5" rx="1.5" fill="#C4A882"/><rect x="11.5" y="1" width="7.5" height="7.5" rx="1.5" fill="#C4A882" opacity="0.4"/><rect x="1" y="11.5" width="7.5" height="7.5" rx="1.5" fill="#C4A882" opacity="0.4"/><rect x="11.5" y="11.5" width="7.5" height="7.5" rx="1.5" fill="#C4A882"/></svg>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:600;color:#fff;">SoSpatial AI</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.35);">공간 데이터 기반 분석</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="width:7px;height:7px;border-radius:50%;background:#34D399;"></div>
+            <span style="font-size:11.5px;color:rgba(255,255,255,0.4);">온라인</span>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;">
+
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="width:26px;height:26px;background:rgba(196,168,130,0.1);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="11" height="11" viewBox="0 0 20 20" fill="none"><rect x="1" y="1" width="7.5" height="7.5" rx="1.5" fill="#C4A882"/><rect x="11.5" y="1" width="7.5" height="7.5" rx="1.5" fill="#C4A882" opacity="0.4"/><rect x="1" y="11.5" width="7.5" height="7.5" rx="1.5" fill="#C4A882" opacity="0.4"/><rect x="11.5" y="11.5" width="7.5" height="7.5" rx="1.5" fill="#C4A882"/></svg>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:12px;border-top-left-radius:2px;padding:12px 14px;max-width:310px;">
+              <p style="font-size:13px;color:rgba(255,255,255,0.8);margin:0;line-height:1.7;">안녕하세요! 저는 SoSpatial 공간분석 AI입니다.<br><br>궁금한 걸 <strong style="color:#C4A882;">평소 말로</strong> 물어보시면, 알맞은 데이터를 골라 지도와 근거로 답해드릴게요.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;">
+            <div style="background:#2B52D0;border-radius:12px;border-bottom-right-radius:2px;padding:12px 14px;max-width:280px;">
+              <p style="font-size:13px;color:#fff;margin:0;line-height:1.65;">서울에서 유동인구가 많고 미세먼지가 낮은 지역은 어디야?</p>
+              <p style="font-size:10.5px;color:rgba(255,255,255,0.4);margin:5px 0 0;text-align:right;">오후 2:14</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:flex-start;">
+            <div style="width:26px;height:26px;background:rgba(196,168,130,0.1);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="11" height="11" viewBox="0 0 20 20" fill="none"><rect x="1" y="1" width="7.5" height="7.5" rx="1.5" fill="#C4A882"/><rect x="11.5" y="1" width="7.5" height="7.5" rx="1.5" fill="#C4A882" opacity="0.4"/><rect x="1" y="11.5" width="7.5" height="7.5" rx="1.5" fill="#C4A882" opacity="0.4"/><rect x="11.5" y="11.5" width="7.5" height="7.5" rx="1.5" fill="#C4A882"/></svg>
+            </div>
+            <div style="max-width:330px;display:flex;flex-direction:column;gap:8px;">
+              <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:12px;border-top-left-radius:2px;padding:12px 14px;">
+                <p style="font-size:13px;color:rgba(255,255,255,0.8);margin:0 0 12px;line-height:1.65;"><strong style="color:#C4A882;">생활이동인구</strong>와 <strong style="color:#C4A882;">미세먼지 농도</strong>를 결합해 분석했어요. 지도에 복합 지수를 표시했습니다.</p>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.18);border-radius:8px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="width:18px;height:18px;background:#34D399;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#0A0A0A;flex-shrink:0;">1</span>
+                      <span style="font-size:12.5px;font-weight:600;color:#fff;">마포구 홍대 일대</span>
+                    </div>
+                    <span style="font-size:12px;font-weight:700;color:#34D399;">94점</span>
+                  </div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="width:18px;height:18px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:#fff;flex-shrink:0;">2</span>
+                      <span style="font-size:12.5px;color:rgba(255,255,255,0.7);">성동구 성수 일대</span>
+                    </div>
+                    <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);">87점</span>
+                  </div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="width:18px;height:18px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:#fff;flex-shrink:0;">3</span>
+                      <span style="font-size:12.5px;color:rgba(255,255,255,0.7);">강남구 역삼 일대</span>
+                    </div>
+                    <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);">81점</span>
+                  </div>
+                </div>
+              </div>
+              <button style="padding:9px 14px;background:rgba(196,168,130,0.1);border:1px solid rgba(196,168,130,0.18);border-radius:8px;font-size:12.5px;font-weight:600;color:#C4A882;cursor:pointer;text-align:left;" style-hover="background:rgba(196,168,130,0.16);">이 분석을 보고서로 받기 →</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Suggested + Input -->
+        <div style="padding:12px 20px 16px;border-top:1px solid rgba(255,255,255,0.06);flex-shrink:0;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+            <span style="padding:5px 11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:99px;font-size:11.5px;color:rgba(255,255,255,0.5);cursor:pointer;white-space:nowrap;" style-hover="background:rgba(255,255,255,0.09);">강남구 더 자세히</span>
+            <span style="padding:5px 11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:99px;font-size:11.5px;color:rgba(255,255,255,0.5);cursor:pointer;white-space:nowrap;" style-hover="background:rgba(255,255,255,0.09);">시간대별 비교</span>
+            <span style="padding:5px 11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:99px;font-size:11.5px;color:rgba(255,255,255,0.5);cursor:pointer;white-space:nowrap;" style-hover="background:rgba(255,255,255,0.09);">대중교통 포함</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:9px 12px;" style-hover="border-color:rgba(196,168,130,0.25);">
+            <input placeholder="예: 어린이 통학이 위험한 곳은 어디인가요?" style="flex:1;border:none;background:transparent;font-size:13px;color:rgba(255,255,255,0.75);outline:none;" />
+            <button style="width:30px;height:30px;background:#C4A882;border:none;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" style-hover="background:#B09470;">
+              <svg width="12" height="12" fill="none" stroke="#1A1A1A" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <p style="font-size:10.5px;color:rgba(255,255,255,0.2);margin:7px 0 0;text-align:center;">분석은 공개 공간데이터를 기반으로 하며, 예산 신청 근거 자료로 활용할 수 있습니다.</p>
+        </div>
+      </div>
+
+      <!-- Right: Map -->
+      <div style="flex:1;position:relative;background:#162231;overflow:hidden;">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:32px 32px;"></div>
+
+        <!-- Search bar -->
+        <div style="position:absolute;top:16px;left:16px;right:72px;z-index:10;">
+          <div style="background:rgba(255,255,255,0.92);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:8px;">
+            <svg width="14" height="14" fill="none" stroke="#888" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+            <span style="font-size:13px;color:#555;">지역 검색 · 서울특별시</span>
+          </div>
+        </div>
+
+        <!-- Heatmap -->
+        <div style="position:absolute;top:28%;left:28%;width:200px;height:180px;background:radial-gradient(ellipse,rgba(52,211,153,0.7) 0%,transparent 70%);filter:blur(30px);"></div>
+        <div style="position:absolute;top:22%;left:52%;width:160px;height:140px;background:radial-gradient(ellipse,rgba(52,211,153,0.5) 0%,transparent 70%);filter:blur(25px);"></div>
+        <div style="position:absolute;top:48%;left:48%;width:140px;height:120px;background:radial-gradient(ellipse,rgba(250,204,21,0.4) 0%,transparent 70%);filter:blur(22px);"></div>
+        <div style="position:absolute;top:38%;left:20%;width:110px;height:100px;background:radial-gradient(ellipse,rgba(251,146,60,0.35) 0%,transparent 70%);filter:blur(18px);"></div>
+        <div style="position:absolute;top:58%;left:55%;width:100px;height:90px;background:radial-gradient(ellipse,rgba(239,68,68,0.38) 0%,transparent 70%);filter:blur(16px);"></div>
+
+        <!-- Location markers -->
+        <div style="position:absolute;top:30%;left:30%;display:flex;flex-direction:column;align-items:center;gap:3px;">
+          <div style="width:22px;height:22px;background:#34D399;border-radius:50%;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+            <span style="font-size:9px;font-weight:800;color:#0A0A0A;">1</span>
+          </div>
+          <span style="font-size:10px;color:#fff;font-weight:600;background:rgba(0,0,0,0.55);padding:2px 6px;border-radius:4px;white-space:nowrap;">홍대</span>
+        </div>
+        <div style="position:absolute;top:24%;left:54%;display:flex;flex-direction:column;align-items:center;gap:3px;">
+          <div style="width:20px;height:20px;background:#8BA8D4;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+            <span style="font-size:9px;font-weight:800;color:#fff;">2</span>
+          </div>
+          <span style="font-size:10px;color:#fff;font-weight:600;background:rgba(0,0,0,0.55);padding:2px 6px;border-radius:4px;white-space:nowrap;">성수</span>
+        </div>
+        <div style="position:absolute;top:50%;left:50%;display:flex;flex-direction:column;align-items:center;gap:3px;">
+          <div style="width:18px;height:18px;background:#8BA8D4;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+            <span style="font-size:9px;font-weight:800;color:#fff;">3</span>
+          </div>
+          <span style="font-size:10px;color:#fff;font-weight:600;background:rgba(0,0,0,0.55);padding:2px 6px;border-radius:4px;white-space:nowrap;">역삼</span>
+        </div>
+
+        <!-- Legend -->
+        <div style="position:absolute;bottom:48px;left:16px;background:rgba(18,28,38,0.92);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 14px;backdrop-filter:blur(8px);">
+          <p style="font-size:10.5px;font-weight:600;color:rgba(255,255,255,0.55);margin:0 0 7px;">유동인구 × 미세먼지 적합도</p>
+          <div style="height:7px;width:100px;border-radius:4px;background:linear-gradient(to right,#EF4444,#FBBF24,#34D399);margin-bottom:4px;"></div>
+          <div style="display:flex;justify-content:space-between;width:100px;">
+            <span style="font-size:9.5px;color:rgba(255,255,255,0.35);">낮음</span>
+            <span style="font-size:9.5px;color:rgba(255,255,255,0.35);">높음</span>
+          </div>
+        </div>
+
+        <!-- Zoom -->
+        <div style="position:absolute;top:60px;right:16px;border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.3);">
+          <button style="display:block;width:32px;height:32px;background:rgba(255,255,255,0.9);border:none;cursor:pointer;font-size:18px;color:#333;" style-hover="background:#fff;">+</button>
+          <button style="display:block;width:32px;height:32px;background:rgba(255,255,255,0.9);border:none;border-top:1px solid rgba(0,0,0,0.08);cursor:pointer;font-size:18px;color:#333;" style-hover="background:#fff;">−</button>
+        </div>
+
+        <!-- Bottom label -->
+        <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08);border-radius:99px;padding:5px 14px;">
+          <p style="font-size:11px;color:rgba(255,255,255,0.4);margin:0;">서울 · 250m 격자 · 표시 3곳</p>
+        </div>
+      </div>
+
+    </div>
+  </sc-if>
+
+  <!-- ====== REQUEST PAGE ====== -->
+  <sc-if value="{{ isRequest }}">
+    <div style="animation:pageEnter 0.35s ease;background:#181818;min-height:calc(100vh - 64px);">
+
+      <!-- ── LANDING ── -->
+      <sc-if value="{{ reqIsLanding }}" hint-placeholder-val="{{ true }}">
+        <section style="padding:72px 32px 56px;text-align:center;">
+          <div style="max-width:680px;margin:0 auto;">
+            <div style="display:inline-flex;padding:4px 12px;background:rgba(196,168,130,0.1);border:1px solid rgba(196,168,130,0.18);border-radius:6px;margin-bottom:18px;">
+              <span style="font-size:11.5px;font-weight:600;color:#C4A882;">Custom Data Request</span>
+            </div>
+            <h1 style="font-size:38px;font-weight:800;color:#fff;margin:0 0 14px;letter-spacing:-1.2px;line-height:1.2;">어떤 방식으로 데이터를<br><span style="color:#C4A882;">요청하시겠어요?</span></h1>
+            <p style="font-size:15px;color:rgba(255,255,255,0.4);line-height:1.75;margin:0;">여러 방법으로 맞춤형 데이터를 요청하실 수 있습니다. 최적의 데이터를 제공하기 위해 전문 팀이 함께합니다.</p>
+          </div>
+        </section>
+
+        <section style="padding:0 32px 64px;">
+          <div style="max-width:1100px;margin:0 auto;">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:28px;cursor:pointer;display:flex;flex-direction:column;" onClick="{{ goReqSource }}" style-hover="border-color:rgba(196,168,130,0.3);box-shadow:0 8px 28px rgba(0,0,0,0.35);">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                  <div style="width:36px;height:36px;background:#2B52D0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:14px;font-weight:800;color:#fff;">1</span></div>
+                  <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.2px;">데이터 소스를 알고 있어요</h3>
+                </div>
+                <p style="font-size:13px;color:rgba(255,255,255,0.42);line-height:1.65;margin:0 0 16px;flex:1;">원하는 데이터 사이트나 출처를 알고 있으면 수집·정제·공간 정합을 함께 합니다.</p>
+                <div style="padding:9px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:7px;font-size:11.5px;color:rgba(255,255,255,0.22);margin-bottom:14px;">예) data.go.kr, KOSIS, census.gov 등</div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px;">
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">data.go.kr</span>
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">KOSIS</span>
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">OpenStreetMap</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;color:#C4A882;font-size:13.5px;font-weight:600;">
+                  <span>이 방법으로 요청하기</span>
+                  <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:28px;cursor:pointer;display:flex;flex-direction:column;" onClick="{{ goReqUpload }}" style-hover="border-color:rgba(196,168,130,0.3);box-shadow:0 8px 28px rgba(0,0,0,0.35);">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                  <div style="width:36px;height:36px;background:#059669;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:14px;font-weight:800;color:#fff;">2</span></div>
+                  <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.2px;">데이터를 가지고 있어요</h3>
+                </div>
+                <p style="font-size:13px;color:rgba(255,255,255,0.42);line-height:1.65;margin:0 0 16px;flex:1;">보유 중인 데이터를 업로드하면 공간 단위 정합 및 분석 가능한 형태로 가공합니다.</p>
+                <div style="padding:16px;background:rgba(255,255,255,0.03);border:1.5px dashed rgba(255,255,255,0.1);border-radius:9px;text-align:center;margin-bottom:14px;">
+                  <p style="font-size:12px;color:rgba(255,255,255,0.32);margin:0;">파일을 드래그하거나 클릭하여 업로드하세요</p>
+                  <p style="font-size:11px;color:rgba(255,255,255,0.2);margin:4px 0 0;">CSV, Excel, Shapefile, GeoJSON 지원</p>
+                </div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px;">
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">공간 정합</span>
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">포맷 변환</span>
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">API 연동</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;color:#C4A882;font-size:13.5px;font-weight:600;">
+                  <span>이 방법으로 요청하기</span>
+                  <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:28px;cursor:pointer;display:flex;flex-direction:column;" onClick="{{ goReqDescribe }}" style-hover="border-color:rgba(196,168,130,0.3);box-shadow:0 8px 28px rgba(0,0,0,0.35);">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                  <div style="width:36px;height:36px;background:#7C3AED;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:14px;font-weight:800;color:#fff;">3</span></div>
+                  <h3 style="font-size:15.5px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.2px;">어떤 데이터가 필요한지만 설명할게요</h3>
+                </div>
+                <p style="font-size:13px;color:rgba(255,255,255,0.42);line-height:1.65;margin:0 0 16px;flex:1;">필요한 분석이나 연구 목적을 설명하시면 적합한 데이터와 공간 단위를 전문가가 제안합니다.</p>
+                <div style="padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:9px;margin-bottom:14px;">
+                  <p style="font-size:11.5px;color:rgba(255,255,255,0.28);line-height:1.6;margin:0;">예: 서울시 상권 변화와 유동인구의 관계를 분석하고 싶어요.<br>예: 미세먼지 높은 지역의 건강 영향 데이터가 필요해요.</p>
+                </div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px;">
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">자유 형식</span>
+                  <span style="padding:3px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:4px;font-size:10.5px;color:rgba(255,255,255,0.38);">전문가 매칭</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;color:#C4A882;font-size:13.5px;font-weight:600;">
+                  <span>이 방법으로 요청하기</span>
+                  <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section style="padding:0 32px 72px;background:#222222;margin:0;">
+          <div style="max-width:1100px;margin:0 auto;padding-top:48px;">
+            <h2 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 28px;letter-spacing:-0.3px;">요청 후 진행 절차</h2>
+            <div style="display:flex;align-items:flex-start;gap:0;">
+              <div style="flex:1;text-align:center;">
+                <div style="width:38px;height:38px;background:#C4A882;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                  <span style="font-size:13px;font-weight:800;color:#1A1A1A;">1</span>
+                </div>
+                <div style="font-size:11px;color:#C4A882;font-weight:600;margin-bottom:4px;letter-spacing:0.5px;">STEP 1</div>
+                <div style="font-size:13px;font-weight:600;color:#fff;">요청 접수</div>
+                <div style="font-size:11.5px;color:rgba(255,255,255,0.3);margin-top:3px;line-height:1.5;">요청서 제출 확인</div>
+              </div>
+              <div style="flex:0 0 32px;display:flex;align-items:center;justify-content:center;padding-top:10px;"><div style="width:32px;height:1px;background:rgba(255,255,255,0.1);"></div></div>
+              <div style="flex:1;text-align:center;">
+                <div style="width:38px;height:38px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                  <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.45);">2</span>
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:600;margin-bottom:4px;letter-spacing:0.5px;">STEP 2</div>
+                <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.65);">검토 및 상담</div>
+                <div style="font-size:11.5px;color:rgba(255,255,255,0.28);margin-top:3px;line-height:1.5;">담당자 검토 후<br>일정 안내</div>
+              </div>
+              <div style="flex:0 0 32px;display:flex;align-items:center;justify-content:center;padding-top:10px;"><div style="width:32px;height:1px;background:rgba(255,255,255,0.1);"></div></div>
+              <div style="flex:1;text-align:center;">
+                <div style="width:38px;height:38px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                  <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.45);">3</span>
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:600;margin-bottom:4px;letter-spacing:0.5px;">STEP 3</div>
+                <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.65);">데이터 준비</div>
+                <div style="font-size:11.5px;color:rgba(255,255,255,0.28);margin-top:3px;line-height:1.5;">맞춤 데이터<br>수집·가공</div>
+              </div>
+              <div style="flex:0 0 32px;display:flex;align-items:center;justify-content:center;padding-top:10px;"><div style="width:32px;height:1px;background:rgba(255,255,255,0.1);"></div></div>
+              <div style="flex:1;text-align:center;">
+                <div style="width:38px;height:38px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                  <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.45);">4</span>
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:600;margin-bottom:4px;letter-spacing:0.5px;">STEP 4</div>
+                <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.65);">결과 제공</div>
+                <div style="font-size:11.5px;color:rgba(255,255,255,0.28);margin-top:3px;line-height:1.5;">데이터 전달<br>사후 지원</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </sc-if>
+
+      <!-- ── FORM 1: SOURCE ── -->
+      <sc-if value="{{ reqIsSource }}">
+        <div style="padding:32px 32px 72px;">
+          <div style="max-width:1100px;margin:0 auto;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;cursor:pointer;" onClick="{{ goReqLanding }}" style-hover="opacity:0.7;">
+              <svg width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="font-size:13px;color:rgba(255,255,255,0.45);">Request</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
+              <div style="display:flex;align-items:center;gap:6px;padding:4px 12px;background:#C4A882;border-radius:99px;">
+                <svg width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                <span style="font-size:11.5px;font-weight:700;color:#1A1A1A;">요청 방식 선택</span>
+              </div>
+              <div style="width:32px;height:1px;background:rgba(255,255,255,0.15);"></div>
+              <div style="display:flex;align-items:center;gap:6px;padding:4px 12px;background:#2B52D0;border-radius:99px;">
+                <span style="font-size:11.5px;font-weight:700;color:#fff;">요청 정보 입력</span>
+              </div>
+              <div style="width:32px;height:1px;background:rgba(255,255,255,0.15);"></div>
+              <div style="display:flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(255,255,255,0.06);border-radius:99px;">
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.35);">검토 및 제출</span>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;">
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:32px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+                  <div style="width:36px;height:36px;background:#2B52D0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:14px;font-weight:800;color:#fff;">1</span></div>
+                  <div>
+                    <h2 style="font-size:20px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.4px;">데이터 소스를 알고 있어요</h2>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.4);margin:3px 0 0;">원하는 데이터의 출처/웹사이트 URL 또는 출처를 알려주시면,<br>수집·정제·공간 정합을 함께 합니다.</p>
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;">
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">Dataset (URL 또는 출처)</label>
+                    <input placeholder="예) data.go.kr, KOSIS, census.gov 등" style="width:100%;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:13px;outline:none;" />
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">Region (지역)</label>
+                    <select onChange="{{ onRegion1Change }}" style="width:100%;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;">
+                      <option>전국</option>
+                      <option>서울특별시</option>
+                      <option>경기도</option>
+                      <option>인천광역시</option>
+                      <option>부산광역시</option>
+                      <option>대구광역시</option>
+                      <option>광주광역시</option>
+                      <option>대전광역시</option>
+                      <option>울산광역시</option>
+                      <option>세종특별자치시</option>
+                      <option>강원특별자치도</option>
+                      <option>충청북도</option>
+                      <option>충청남도</option>
+                      <option>전북특별자치도</option>
+                      <option>전라남도</option>
+                      <option>경상북도</option>
+                      <option>경상남도</option>
+                      <option>제주특별자치도</option>
+                    </select>
+                    <sc-if value="{{ showSubRegion1 }}">
+                      <select style="width:100%;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;margin-top:8px;">
+                        <sc-for list="{{ subRegionOptions1 }}" as="opt" hint-placeholder-count="5">
+                          <option>{{ opt }}</option>
+                        </sc-for>
+                      </select>
+                    </sc-if>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">변환할 공간 단위</label>
+                    <select style="width:100%;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;">
+                      <option>100m Grid</option>
+                      <option>250m Grid</option>
+                      <option>500m Grid</option>
+                      <option>1km Grid</option>
+                      <option>집계구</option>
+                      <option>행정동</option>
+                      <option>시군구</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">기준 연도 변경 범위</label>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <select style="flex:1;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;"><option>2015</option><option>2016</option><option>2017</option><option>2018</option><option>2019</option><option>2020</option></select>
+                      <span style="color:rgba(255,255,255,0.3);font-size:13px;flex-shrink:0;">→</span>
+                      <select style="flex:1;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;"><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option></select>
+                    </div>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">변환 요청 변수</label>
+                    <div style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;">
+                      <sc-for list="{{ varInputs1 }}" as="i" hint-placeholder-count="2">
+                        <div style="display:flex;gap:6px;align-items:center;">
+                          <input placeholder="예: population, elderly_65+..." style="flex:1;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:13px;outline:none;" />
+                          <div onClick="{{ removeVar1 }}" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.3);font-size:16px;flex-shrink:0;" style-hover="color:rgba(255,255,255,0.6);">×</div>
+                        </div>
+                      </sc-for>
+                      <button onClick="{{ addVar1 }}" style="padding:8px;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.12);border-radius:8px;color:rgba(255,255,255,0.4);font-size:12.5px;cursor:pointer;text-align:left;" style-hover="background:rgba(255,255,255,0.07);">+ 변수 추가</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                  <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;">Output Format (출력 형식)</label>
+                  <div style="display:flex;gap:12px;">
+                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+                      <input type="radio" name="format" checked style="accent-color:#C4A882;" />
+                      <span style="font-size:13px;color:rgba(255,255,255,0.7);">CSV</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+                      <input type="radio" name="format" style="accent-color:#C4A882;" />
+                      <span style="font-size:13px;color:rgba(255,255,255,0.7);">GeoJSON</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+                      <input type="radio" name="format" style="accent-color:#C4A882;" />
+                      <span style="font-size:13px;color:rgba(255,255,255,0.7);">API (JSON)</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+                      <input type="radio" name="format" style="accent-color:#C4A882;" />
+                      <span style="font-size:13px;color:rgba(255,255,255,0.7);">Parquet</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                  <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">Additional Requirements (추가 요청 사항)</label>
+                  <textarea placeholder="분야 목적, 활용 계획, 추가 요청 사항을 입력하세요." style="width:100%;padding:12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;resize:vertical;min-height:80px;line-height:1.6;"></textarea>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <button style="padding:12px 28px;background:#C4A882;color:#1A1A1A;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;" style-hover="background:#B09470;">
+                    Request Dataset →
+                  </button>
+                  <span style="font-size:12.5px;color:rgba(255,255,255,0.3);">평균 2~3 영업일 내로 연락드립니다.</span>
+                </div>
+              </div>
+
+              <!-- Writing Guide -->
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:22px;position:sticky;top:80px;">
+                <h3 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 16px;letter-spacing:-0.2px;">작성 가이드</h3>
+                <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:18px;">
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">Dataset</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">데이터 형식, 변수, 기간, 연도 목록을 구체적으로 입력하세요.</div></div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">Region</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">분석이 필요한 지역 범위를 선택하세요.</div></div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">Spatial Unit</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">분석에 사용할 공간 단위를 선택하세요.</div></div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">Time Range</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">데이터가 필요한 기간 범위를 선택하세요.</div></div>
+                  </div>
+                </div>
+                <div style="background:rgba(196,168,130,0.08);border:1px solid rgba(196,168,130,0.15);border-radius:9px;padding:14px;">
+                  <div style="font-size:12.5px;font-weight:600;color:#C4A882;margin-bottom:6px;">잘 모르겠어도 괜찮아요</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin-bottom:8px;">잘 모르겠으면 그냥 말씀해 주세요. 전문가가 도와드립니다.</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#C4A882;font-size:12.5px;font-weight:600;cursor:pointer;">
+                    <span>무료 상담 신청</span>
+                    <svg width="11" height="11" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ── FORM 2: UPLOAD ── -->
+      <sc-if value="{{ reqIsUpload }}">
+        <div style="padding:32px 32px 72px;">
+          <div style="max-width:1100px;margin:0 auto;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;cursor:pointer;" onClick="{{ goReqLanding }}" style-hover="opacity:0.7;">
+              <svg width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="font-size:13px;color:rgba(255,255,255,0.45);">Request</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
+              <div style="display:flex;align-items:center;gap:6px;padding:4px 12px;background:#C4A882;border-radius:99px;">
+                <svg width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                <span style="font-size:11.5px;font-weight:700;color:#1A1A1A;">요청 방식 선택</span>
+              </div>
+              <div style="width:32px;height:1px;background:rgba(255,255,255,0.15);"></div>
+              <div style="padding:4px 12px;background:#059669;border-radius:99px;">
+                <span style="font-size:11.5px;font-weight:700;color:#fff;">요청 정보 입력</span>
+              </div>
+              <div style="width:32px;height:1px;background:rgba(255,255,255,0.15);"></div>
+              <div style="padding:4px 12px;background:rgba(255,255,255,0.06);border-radius:99px;">
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.35);">검토 및 제출</span>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;">
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:32px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+                  <div style="width:36px;height:36px;background:#059669;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:14px;font-weight:800;color:#fff;">2</span></div>
+                  <div>
+                    <h2 style="font-size:20px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.4px;">데이터를 가지고 있어요</h2>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.4);margin:3px 0 0;">보유 중인 데이터를 업로드하거나 공간 단위 정합 및 분석 가능한 형태로 가공합니다.</p>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                  <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;">Dataset (파일로 전달)</label>
+                  <div style="padding:32px;background:rgba(255,255,255,0.03);border:2px dashed rgba(255,255,255,0.12);border-radius:10px;text-align:center;">
+                    <svg width="28" height="28" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 10px;display:block;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.4);margin:0 0 4px;">파일을 드래그하거나 클릭하여 업로드하세요</p>
+                    <p style="font-size:11.5px;color:rgba(255,255,255,0.22);margin:0 0 14px;">CSV, Excel, Shapefile, GeoJSON, XML, ZIP 지원</p>
+                    <div style="display:inline-flex;align-items:center;gap:12px;padding:8px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;">
+                      <div style="text-align:center;">
+                        <span style="font-size:11px;color:rgba(255,255,255,0.3);display:block;">비회원</span>
+                        <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);">100 MB</span>
+                      </div>
+                      <div style="width:1px;height:28px;background:rgba(255,255,255,0.1);"></div>
+                      <div style="text-align:center;">
+                        <span style="font-size:11px;color:#C4A882;display:block;">로그인 회원</span>
+                        <span style="font-size:13px;font-weight:600;color:#C4A882;">500 MB</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                  <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;">또는 서비스 연동</label>
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <select onChange="{{ onServiceChange }}" style="flex:1;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;cursor:pointer;">
+                      <option value="">서비스 선택...</option>
+                      <option>Google Drive</option>
+                      <option>Dropbox</option>
+                      <option>OneDrive</option>
+                      <option>AWS S3</option>
+                      <option>API 연동</option>
+                      <option>Database</option>
+                    </select>
+                    <button onClick="{{ openPicker }}" style="padding:10px 18px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;" style-hover="background:rgba(255,255,255,0.12);">연결하기</button>
+                  </div>
+                  <sc-if value="{{ hasPicked }}">
+                    <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:8px;margin-top:8px;">
+                      <svg width="14" height="14" fill="none" stroke="#34D399" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span style="font-size:12.5px;color:#34D399;font-weight:500;">{{ pickedFile }}</span>
+                    </div>
+                  </sc-if>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">변환할 공간 단위</label>
+                    <select style="width:100%;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;">
+                      <option>100m Grid</option>
+                      <option>500m Grid</option>
+                      <option>1km Grid</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;">기준 연도 변경 범위</label>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <select style="flex:1;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;">
+                        <option>2015</option><option>2016</option><option>2017</option><option>2018</option><option>2019</option><option>2020</option>
+                      </select>
+                      <span style="color:rgba(255,255,255,0.3);font-size:13px;flex-shrink:0;">→</span>
+                      <select style="flex:1;padding:10px 12px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.7);font-size:13px;outline:none;">
+                        <option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:12px;margin-top:24px;">
+                  <button style="padding:12px 28px;background:#059669;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;" style-hover="background:#047857;">데이터 요청하기 →</button>
+                  <span style="font-size:12.5px;color:rgba(255,255,255,0.3);">평균 2~3 영업일 내로 연락드립니다.</span>
+                </div>
+              </div>
+
+              <!-- Writing Guide (same) -->
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:22px;position:sticky;top:80px;">
+                <h3 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 16px;">작성 가이드</h3>
+                <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:18px;">
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">Dataset</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">파일 형식과 포함된 변수 정보를 알려주세요.</div></div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">Region</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">데이터가 커버하는 지역 범위를 선택하세요.</div></div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">Spatial Unit</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">원하는 공간 단위로 변환해 드립니다.</div></div>
+                  </div>
+                </div>
+                <div style="background:rgba(196,168,130,0.08);border:1px solid rgba(196,168,130,0.15);border-radius:9px;padding:14px;">
+                  <div style="font-size:12.5px;font-weight:600;color:#C4A882;margin-bottom:6px;">잘 모르겠어도 괜찮아요</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin-bottom:8px;">잘 모르겠으면 그냥 말씀해 주세요. 전문가가 도와드립니다.</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#C4A882;font-size:12.5px;font-weight:600;cursor:pointer;"><span>무료 상담 신청</span><svg width="11" height="11" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ── FORM 3: DESCRIBE ── -->
+      <sc-if value="{{ reqIsDescribe }}">
+        <div style="padding:32px 32px 72px;">
+          <div style="max-width:1100px;margin:0 auto;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;cursor:pointer;" onClick="{{ goReqLanding }}" style-hover="opacity:0.7;">
+              <svg width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="font-size:13px;color:rgba(255,255,255,0.45);">Request</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;">
+              <div style="display:flex;align-items:center;gap:6px;padding:4px 12px;background:#C4A882;border-radius:99px;">
+                <svg width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                <span style="font-size:11.5px;font-weight:700;color:#1A1A1A;">요청 방식 선택</span>
+              </div>
+              <div style="width:32px;height:1px;background:rgba(255,255,255,0.15);"></div>
+              <div style="padding:4px 12px;background:#7C3AED;border-radius:99px;">
+                <span style="font-size:11.5px;font-weight:700;color:#fff;">요청 정보 입력</span>
+              </div>
+              <div style="width:32px;height:1px;background:rgba(255,255,255,0.15);"></div>
+              <div style="padding:4px 12px;background:rgba(255,255,255,0.06);border-radius:99px;">
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.35);">검토 및 제출</span>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;">
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:32px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+                  <div style="width:36px;height:36px;background:#7C3AED;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:14px;font-weight:800;color:#fff;">3</span></div>
+                  <div>
+                    <h2 style="font-size:20px;font-weight:700;color:#fff;margin:0;letter-spacing:-0.4px;">어떤 데이터가 필요한지만 설명할게요</h2>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.4);margin:3px 0 0;">필요한 분석이나 연구 목적을 설명하시면 적합한 데이터와 공간 단위를 제안합니다.</p>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                  <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;">요청 내용을 자유롭게 작성해주세요</label>
+                  <textarea placeholder="예: 서울시 상권 변화와 유동인구의 관계를 분석하고 싶어요.&#10;예: 미세먼지가 높은 지역의 건강 영향 데이터가 필요해요.&#10;예: 기후변화가 농업 생산성에 미치는 영향을 분석하고 싶어요." style="width:100%;padding:16px;background:#2A2A2A;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.75);font-size:13.5px;outline:none;resize:vertical;min-height:200px;line-height:1.75;"></textarea>
+                  <div style="text-align:right;font-size:11.5px;color:rgba(255,255,255,0.25);margin-top:5px;">0 / 1000</div>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+                  <button style="padding:12px 28px;background:#7C3AED;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;" style-hover="background:#6D28D9;">이 방법으로 요청하기 →</button>
+                  <span style="font-size:12.5px;color:rgba(255,255,255,0.3);">평균 2~3 영업일 내로 연락드립니다.</span>
+                </div>
+              </div>
+
+              <!-- Writing Guide -->
+              <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:22px;position:sticky;top:80px;">
+                <h3 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 16px;">작성 가이드</h3>
+                <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:18px;">
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">구체적으로 작성할수록 좋아요</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">분석 목적, 지역, 기간, 변수 등을 포함하면 더 정확한 제안이 가능합니다.</div></div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">분석 목적을 알려주세요</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">어떤 연구나 프로젝트를 수행하려는지 설명해주세요.</div></div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;gap:9px;">
+                    <svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <div><div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:2px;">시간 범위를 포함해주세요</div><div style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.5;">연도, 기간, 최신성이 중요한지 알려주세요.</div></div>
+                  </div>
+                </div>
+                <div style="background:rgba(196,168,130,0.08);border:1px solid rgba(196,168,130,0.15);border-radius:9px;padding:14px;">
+                  <div style="font-size:12.5px;font-weight:600;color:#C4A882;margin-bottom:6px;">잘 모르겠어도 괜찮아요</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;margin-bottom:8px;">잘 모르겠으면 그냥 말씀해 주세요. 전문가가 도와드립니다.</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#C4A882;font-size:12.5px;font-weight:600;cursor:pointer;"><span>무료 상담 신청</span><svg width="11" height="11" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- File Picker Modal -->
+      <sc-if value="{{ showFilePicker }}">
+        <div style="position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;display:flex;align-items:center;justify-content:center;">
+          <div style="background:#242424;border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:520px;max-height:560px;display:flex;flex-direction:column;overflow:hidden;">
+            <div style="padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <h3 style="font-size:16px;font-weight:700;color:#fff;margin:0 0 3px;">{{ pickerService }}에서 파일 선택</h3>
+                <p style="font-size:12px;color:rgba(255,255,255,0.35);margin:0;">가져올 파일을 선택하세요</p>
+              </div>
+              <div style="width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;" onClick="{{ closePicker }}" style-hover="background:rgba(255,255,255,0.1);">
+                <svg width="12" height="12" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+            </div>
+            <div style="padding:10px 24px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:6px;">
+              <span style="font-size:12px;color:rgba(255,255,255,0.4);">내 드라이브</span>
+              <svg width="10" height="10" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+              <span style="font-size:12px;color:#C4A882;font-weight:500;">SoSpatial 프로젝트</span>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:8px 16px;">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;" style-hover="background:rgba(255,255,255,0.05);">
+                <input type="checkbox" style="accent-color:#C4A882;width:14px;height:14px;cursor:pointer;" />
+                <svg width="16" height="16" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <span style="flex:1;font-size:13.5px;color:rgba(255,255,255,0.75);">SoSpatial 프로젝트</span>
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.25);">폴더</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;background:rgba(196,168,130,0.06);border:1px solid rgba(196,168,130,0.15);">
+                <input type="checkbox" checked style="accent-color:#C4A882;width:14px;height:14px;cursor:pointer;" />
+                <svg width="16" height="16" fill="none" stroke="#34D399" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span style="flex:1;font-size:13.5px;color:#fff;font-weight:500;">유동인구_서울_2024.csv</span>
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.3);">234 MB</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;" style-hover="background:rgba(255,255,255,0.05);">
+                <input type="checkbox" style="accent-color:#C4A882;width:14px;height:14px;cursor:pointer;" />
+                <svg width="16" height="16" fill="none" stroke="#6B8FFF" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span style="flex:1;font-size:13.5px;color:rgba(255,255,255,0.65);">상권분석_강남구.xlsx</span>
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.3);">12 MB</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;" style-hover="background:rgba(255,255,255,0.05);">
+                <input type="checkbox" style="accent-color:#C4A882;width:14px;height:14px;cursor:pointer;" />
+                <svg width="16" height="16" fill="none" stroke="#FB923C" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span style="flex:1;font-size:13.5px;color:rgba(255,255,255,0.65);">건물정보_전국.geojson</span>
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.3);">456 MB</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:8px;cursor:pointer;" style-hover="background:rgba(255,255,255,0.05);">
+                <input type="checkbox" style="accent-color:#C4A882;width:14px;height:14px;cursor:pointer;" />
+                <svg width="16" height="16" fill="none" stroke="#34D399" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span style="flex:1;font-size:13.5px;color:rgba(255,255,255,0.65);">인구통계_2023.csv</span>
+                <span style="font-size:11.5px;color:rgba(255,255,255,0.3);">89 MB</span>
+              </div>
+            </div>
+            <div style="padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12.5px;color:rgba(255,255,255,0.35);">1개 선택됨</span>
+              <div style="display:flex;gap:8px;">
+                <button onClick="{{ closePicker }}" style="padding:9px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:rgba(255,255,255,0.6);font-size:13px;cursor:pointer;" style-hover="background:rgba(255,255,255,0.1);">취소</button>
+                <button onClick="{{ confirmPick }}" style="padding:9px 20px;background:#C4A882;border:none;border-radius:8px;color:#1A1A1A;font-size:13px;font-weight:700;cursor:pointer;" style-hover="background:#B09470;">선택하기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </sc-if>
+
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { currentPage: 'home', dataView: 'landing', requestView: 'landing', showFilePicker: false, pickerService: '', pickedFile: '', selectedRegion1: '', varCount1: 2, dataTopic: '', dataChecked: [], filterTopic: [], filterSubTopic: [], filterUnit: [], filterRegion: [], filterSubRegion: [], filterYear: [], showAllPopular: false,
+    showSaveModal: false, saveProjectName: '', viewingProjectName: '', projectChecked: [], viewingProject: null, showShareModal: false, shareProjectId: null, shareEmail: '', shareEmails: [], showToast: false, toastMsg: '', showEditModal: false, editChecked: [],
+    projects: (() => { try { const s = localStorage.getItem('sospatial_projects'); return s ? JSON.parse(s) : null; } catch { return null; } })() || [] };
+
+  topicListRef = React.createRef();
+
+  showToastMsg(msg) {
+    this.setState({ showToast: true, toastMsg: msg });
+    setTimeout(() => this.setState({ showToast: false }), 2500);
+  }
+
+  loadProjects() {
+    try { return JSON.parse(localStorage.getItem('sospatial_projects')) || null; } catch { return null; }
+  }
+
+  componentDidMount() {
+    if (!localStorage.getItem('sospatial_reset_v1')) {
+      localStorage.removeItem('sospatial_projects');
+      localStorage.setItem('sospatial_reset_v1', '1');
+      this.setState({ projects: [] });
+    }
+  }
+
+  REGION_DATA = {
+    '서울특별시': ['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+    '부산광역시': ['강서구','금정구','기장군','남구','동구','동래구','부산진구','북구','사상구','사하구','서구','수영구','연제구','영도구','중구','해운대구'],
+    '대구광역시': ['군위군','남구','달서구','달성군','동구','북구','서구','수성구','중구'],
+    '인천광역시': ['강화군','계양구','남동구','동구','미추홀구','부평구','서구','연수구','옹진군','중구'],
+    '광주광역시': ['광산구','남구','동구','북구','서구'],
+    '대전광역시': ['대덕구','동구','서구','유성구','중구'],
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.projects !== this.state.projects) {
+      localStorage.setItem('sospatial_projects', JSON.stringify(this.state.projects));
+    }
+    if (prevState.filterTopic !== this.state.filterTopic) {
+      setTimeout(() => {
+        const container = this.topicListRef.current;
+        const target = this.state.filterTopic[0];
+        if (!container || !target) return;
+        const item = Array.from(container.querySelectorAll('div')).find(d => d.textContent.trim() === target);
+        if (item) { const rel = item.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop; container.scrollTop = rel - container.clientHeight / 2 + item.clientHeight / 2; }
+      }, 80);
+    }
+  }
+
+  TOPIC_DATA = {
+    '전체': {
+      subTopics: ['전체'],
+      variables: {
+        '전체': [
+          { name: '총 인구 수', desc: '행정구역·격자 단위의 총 상주 인구' },
+          { name: '생활인구 (시간별)', desc: '시간대별 체류 생활인구 분포' },
+          { name: '지하철역 이용객 (요일·시간)', desc: '시간대별 승하차 이용객 수' },
+          { name: '사업체 수 (업종별)', desc: '업종별 사업체 분포 및 밀도' },
+          { name: '미세먼지 농도 (시간별)', desc: 'PM2.5·PM10 농도 시계열 데이터' },
+          { name: '토지이용 현황', desc: '지목별·용도별 토지이용 현황' },
+          { name: '범죄 발생 건수', desc: '5대 범죄 유형별 발생 건수' },
+          { name: '의료 기관 위치', desc: '병원·의원·약국 등 의료기관 위치' },
+        ],
+      },
+    },
+    '인구·사회': {
+      subTopics: ['전체', '인구 구조', '이동인구', '출생·사망', '가구', '외국인'],
+      variables: {
+        '전체': [
+          { name: '총 인구 수', desc: '행정구역·격자 단위의 총 상주 인구' },
+          { name: '생활인구 (시간별)', desc: '시간대별 체류 생활인구 분포' },
+          { name: '고령인구 비율', desc: '65세 이상 고령인구 비율 및 분포' },
+          { name: '연령별 인구', desc: '5세 단위 연령별 인구 구성 데이터' },
+          { name: '유동인구 (OD)', desc: '출발지–목적지 간 이동 인구 매트릭스' },
+        ],
+        '인구 구조': [
+          { name: '총 인구 수', desc: '행정구역·격자 단위의 총 상주 인구' },
+          { name: '연령별 인구', desc: '5세 단위 연령별 인구 구성 데이터' },
+          { name: '고령인구 비율', desc: '65세 이상 고령인구 비율 및 분포' },
+          { name: '성별 인구', desc: '남녀 성별 인구 구성 비율' },
+        ],
+        '이동인구': [
+          { name: '생활인구 (시간별)', desc: '시간대별 체류 생활인구 분포' },
+          { name: '유동인구 (OD)', desc: '출발지–목적지 간 이동 인구 매트릭스' },
+          { name: '야간인구', desc: '야간 거주 추정 인구' },
+        ],
+        '출생·사망': [
+          { name: '출생률', desc: '지역별 조출생률 및 합계출산율' },
+          { name: '사망률', desc: '지역별 조사망률 및 연령표준화 사망률' },
+        ],
+        '가구': [
+          { name: '가구 수', desc: '지역별 총 가구 수' },
+          { name: '1인 가구 비율', desc: '1인 가구 비율 및 분포' },
+          { name: '평균 가구원 수', desc: '지역별 평균 가구원 수' },
+        ],
+        '외국인': [
+          { name: '외국인 인구', desc: '국적별 외국인 인구 분포' },
+          { name: '외국인 비율', desc: '총 인구 대비 외국인 비율' },
+        ],
+      },
+    },
+    '교통·이동': {
+      subTopics: ['전체', '대중교통', '교통 인프라', '이동·교통', '실시간 교통'],
+      variables: {
+        '전체': [
+          { name: '지하철역 위치', desc: '역 위치·노선·구별 정보 포함 지리공간 데이터' },
+          { name: '버스 정류장 위치', desc: '정류장 위치·노선 목록 포함' },
+          { name: '지하철역 이용객 (요일·시간)', desc: '시간대별 승하차 이용객 수' },
+          { name: '버스 정류장 이용객 (요일·시간)', desc: '요일별 승차 인원' },
+        ],
+        '대중교통': [
+          { name: '지하철역 위치', desc: '역 위치·노선·구별 정보 포함 지리공간 데이터' },
+          { name: '버스 정류장 위치', desc: '정류장 위치·노선 목록 포함' },
+          { name: '지하철역 이용객 (요일·시간)', desc: '시간대별 승하차 이용객 수' },
+          { name: '버스 정류장 이용객 (요일·시간)', desc: '요일별 승차 인원' },
+        ],
+        '교통 인프라': [
+          { name: '도로 네트워크', desc: '도로 등급·폭원·연장 포함 네트워크 데이터' },
+          { name: '교차로 위치', desc: '교차로 위치 및 유형 정보' },
+          { name: '주차장 위치', desc: '공영·민영 주차장 위치 및 면수' },
+        ],
+        '이동·교통': [
+          { name: '교통량 (시간별)', desc: '도로별 시간대별 교통량' },
+          { name: '평균 통행 속도', desc: '구간별 평균 주행 속도' },
+        ],
+        '실시간 교통': [
+          { name: '실시간 교통 속도', desc: '5분 단위 구간별 실시간 속도' },
+          { name: '혼잡도', desc: '실시간 도로 혼잡도 지수' },
+        ],
+      },
+    },
+    '경제·산업': {
+      subTopics: ['전체', '사업체', '상권', '고용·임금', '금융'],
+      variables: {
+        '전체': [
+          { name: '사업체 수 (업종별)', desc: '업종별 사업체 분포 및 밀도' },
+          { name: '상권 지수', desc: '상권 활성화 지수 및 변화 추이' },
+          { name: '고용자 수', desc: '사업체별 고용자 수 분포' },
+          { name: '매출액 지수', desc: '업종별 추정 매출 지수' },
+        ],
+        '사업체': [
+          { name: '사업체 수 (업종별)', desc: '업종별 사업체 분포 및 밀도' },
+          { name: '사업체 개폐업', desc: '사업체 신규 개업·폐업 데이터' },
+          { name: '사업체 규모', desc: '종사자 규모별 사업체 분류' },
+        ],
+        '상권': [
+          { name: '상권 지수', desc: '상권 활성화 지수 및 변화 추이' },
+          { name: '매출액 지수', desc: '업종별 추정 매출 지수' },
+          { name: '카드 소비 데이터', desc: '업종별 카드 소비 패턴' },
+        ],
+        '고용·임금': [
+          { name: '고용자 수', desc: '사업체별 고용자 수 분포' },
+          { name: '임금 수준', desc: '지역별 평균 임금 분포' },
+        ],
+        '금융': [
+          { name: '금융기관 위치', desc: '은행·보험·증권사 지점 위치' },
+          { name: '소득 지수', desc: '지역별 소득 수준 추정 지수' },
+        ],
+      },
+    },
+    '건강·복지': {
+      subTopics: ['전체', '의료 시설', '복지 시설', '건강 지표'],
+      variables: {
+        '전체': [
+          { name: '의료 기관 위치', desc: '병원·의원·약국 등 의료기관 위치' },
+          { name: '복지 시설 위치', desc: '노인·장애인·아동 복지시설 위치' },
+          { name: '기대수명', desc: '시군구별 기대수명' },
+        ],
+        '의료 시설': [
+          { name: '의료 기관 위치', desc: '병원·의원·약국 등 의료기관 위치' },
+          { name: '응급실 위치', desc: '응급실 보유 의료기관 위치 및 운영 현황' },
+          { name: '의사 수', desc: '지역별 인구 대비 의사 수' },
+        ],
+        '복지 시설': [
+          { name: '복지 시설 위치', desc: '노인·장애인·아동 복지시설 위치' },
+          { name: '어린이집·유치원', desc: '보육 시설 위치 및 정원' },
+          { name: '요양 시설', desc: '노인 요양 시설 위치 및 규모' },
+        ],
+        '건강 지표': [
+          { name: '기대수명', desc: '시군구별 기대수명' },
+          { name: '만성질환 유병률', desc: '지역별 고혈압·당뇨 유병률' },
+        ],
+      },
+    },
+    '안전·재난': {
+      subTopics: ['전체', '범죄', '화재·재난', '교통사고'],
+      variables: {
+        '전체': [
+          { name: '범죄 발생 건수', desc: '5대 범죄 유형별 발생 건수' },
+          { name: '화재 발생 건수', desc: '원인별·유형별 화재 발생 현황' },
+          { name: '교통사고 건수', desc: '사고 위치·유형·사상자 수 포함' },
+        ],
+        '범죄': [
+          { name: '범죄 발생 건수', desc: '5대 범죄 유형별 발생 건수' },
+          { name: '범죄 위험 지수', desc: '지역별 범죄 위험도 지수' },
+          { name: 'CCTV 설치 현황', desc: 'CCTV 위치 및 수량' },
+        ],
+        '화재·재난': [
+          { name: '화재 발생 건수', desc: '원인별·유형별 화재 발생 현황' },
+          { name: '소방서 위치', desc: '소방서·119 안전센터 위치' },
+          { name: '재난 취약 지역', desc: '침수·산사태 등 재난 위험 지역' },
+        ],
+        '교통사고': [
+          { name: '교통사고 건수', desc: '사고 위치·유형·사상자 수 포함' },
+          { name: '사고 다발 구간', desc: '교통사고 다발 구간 및 위험도' },
+        ],
+      },
+    },
+    '환경·기후': {
+      subTopics: ['전체', '대기질', '기후', '녹지·수질'],
+      variables: {
+        '전체': [
+          { name: '미세먼지 농도 (시간별)', desc: 'PM2.5·PM10 농도 시계열 데이터' },
+          { name: '기온 (일별)', desc: '기상관측소 기반 일별 기온 데이터' },
+          { name: '녹지 면적', desc: '공원·녹지 면적 및 분포' },
+        ],
+        '대기질': [
+          { name: '미세먼지 농도 (시간별)', desc: 'PM2.5·PM10 농도 시계열 데이터' },
+          { name: '초미세먼지 (PM2.5)', desc: 'PM2.5 농도 격자 분포' },
+          { name: '대기오염 지수', desc: '통합대기환경지수(CAI)' },
+        ],
+        '기후': [
+          { name: '기온 (일별)', desc: '기상관측소 기반 일별 기온 데이터' },
+          { name: '강수량', desc: '시간·일별 강수량 데이터' },
+          { name: '도시 열섬 지수', desc: '지역별 도시 열섬 강도' },
+        ],
+        '녹지·수질': [
+          { name: '녹지 면적', desc: '공원·녹지 면적 및 분포' },
+          { name: '하천·호수 위치', desc: '수계 위치 및 면적 데이터' },
+          { name: '수질 지표', desc: '하천별 수질 측정 데이터' },
+        ],
+      },
+    },
+    '국토·도시': {
+      subTopics: ['전체', '토지이용', '건물', '도시계획'],
+      variables: {
+        '전체': [
+          { name: '토지이용 현황', desc: '지목별·용도별 토지이용 현황' },
+          { name: '건물 정보', desc: '건물 위치·용도·연면적·층수 포함' },
+          { name: '용도지역·지구', desc: '도시계획법상 용도지역·지구 경계' },
+        ],
+        '토지이용': [
+          { name: '토지이용 현황', desc: '지목별·용도별 토지이용 현황' },
+          { name: '지가 (공시지가)', desc: '필지별 공시지가' },
+          { name: '임야·농지 분포', desc: '임야·농지·초지 분포 데이터' },
+        ],
+        '건물': [
+          { name: '건물 정보', desc: '건물 위치·용도·연면적·층수 포함' },
+          { name: '건물 노후도', desc: '준공연도별 건물 노후화 현황' },
+          { name: '공동주택 정보', desc: '아파트·연립·다세대 위치 및 세대수' },
+        ],
+        '도시계획': [
+          { name: '용도지역·지구', desc: '도시계획법상 용도지역·지구 경계' },
+          { name: '개발제한구역', desc: '그린벨트 경계 데이터' },
+          { name: '도시재생 구역', desc: '도시재생 활성화 지역 경계' },
+        ],
+      },
+    },
+    '기타·융합': {
+      subTopics: ['전체', '융합데이터', '행정 경계'],
+      variables: {
+        '전체': [
+          { name: '생활권역 분류', desc: '생활인구·상권·교통 기반 생활권 구분' },
+          { name: '취약지역 지수', desc: '다중 지표 기반 취약지역 지수' },
+          { name: '행정구역 경계', desc: '시도·시군구·읍면동 행정경계 데이터' },
+        ],
+        '융합데이터': [
+          { name: '생활권역 분류', desc: '생활인구·상권·교통 기반 생활권 구분' },
+          { name: '취약지역 지수', desc: '다중 지표 기반 취약지역 지수' },
+          { name: 'AI 학습용 패키지', desc: '분석 목적별 다변량 패키지 데이터' },
+        ],
+        '행정 경계': [
+          { name: '행정구역 경계', desc: '시도·시군구·읍면동 행정경계 데이터' },
+          { name: '격자 기준 데이터', desc: '100m·250m·500m·1km 격자 기준 파일' },
+        ],
+      },
+    },
+  };
+
+  getSubRegions(region) {
+    const map = {
+      '서울특별시': ['전체','강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+      '경기도': ['전체','수원시','성남시','고양시','용인시','부천시','안산시','안양시','남양주시','화성시','평택시','의정부시','시흥시','파주시','광명시','하남시','구리시','군포시','오산시','이천시','양주시','김포시','광주시'],
+      '부산광역시': ['전체','중구','서구','동구','영도구','부산진구','동래구','남구','북구','해운대구','사하구','금정구','강서구','연제구','수영구','사상구','기장군'],
+      '인천광역시': ['전체','중구','동구','미추홀구','연수구','남동구','부평구','계양구','서구','강화군','옹진군'],
+      '대구광역시': ['전체','중구','동구','서구','남구','북구','수성구','달서구','달성군'],
+      '광주광역시': ['전체','동구','서구','남구','북구','광산구'],
+      '대전광역시': ['전체','동구','중구','서구','유성구','대덕구'],
+      '울산광역시': ['전체','중구','남구','동구','북구','울주군'],
+    };
+    return map[region] || [];
+  }
+
+  navigate(page) {
+    const extra = page === 'data' ? { viewingProjectName: '', dataView: 'landing' } : page === 'projects' ? { viewingProject: null, projectChecked: [] } : {};
+    this.setState({ currentPage: page, requestView: 'landing', ...extra });
+    window.scrollTo({ top: 0 });
+  }
+
+  renderVals() {
+    const p = this.state.currentPage;
+    const rv = this.state.requestView;
+    const go = (page) => () => this.navigate(page);
+    const goReq = (view) => () => { this.setState({ requestView: view }); window.scrollTo({ top: 0 }); };
+
+    const { filterTopic, filterSubTopic, filterUnit, filterRegion, filterYear } = this.state;
+    const topicKeys = Object.keys(this.TOPIC_DATA);
+    const toggle = (arr, val) => arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val];
+
+    // Aggregate subtopics from selected topics
+    const subTopicSet = [];
+    if (filterTopic.length > 0) {
+      subTopicSet.push('전체');
+      filterTopic.forEach(t => {
+        (this.TOPIC_DATA[t]?.subTopics || []).forEach(s => { if (s !== '전체' && !subTopicSet.includes(s)) subTopicSet.push(s); });
+      });
+    }
+
+    // Aggregate variables from selected topics × selected subtopics
+    const topicsActive = filterTopic.length > 0 ? filterTopic : ['전체'];
+    const seen = new Set();
+    const varList = [];
+    if (filterTopic.length > 0 && filterSubTopic.length > 0) {
+      topicsActive.forEach(t => {
+        const entry = this.TOPIC_DATA[t];
+        if (!entry) return;
+        const useAll = filterSubTopic.includes('전체');
+        const subsToUse = useAll ? entry.subTopics.filter(s => s !== '전체') : filterSubTopic.filter(s => entry.subTopics.includes(s));
+        if (useAll) {
+          Object.values(entry.variables).forEach(vars => {
+            (vars || []).forEach(v => { if (!seen.has(v.name)) { seen.add(v.name); varList.push(v); } });
+          });
+        } else {
+          subsToUse.forEach(s => {
+            (entry.variables[s] || entry.variables['전체'] || []).forEach(v => {
+              if (!seen.has(v.name)) { seen.add(v.name); varList.push(v); }
+            });
+          });
+        }
+      });
+    }
+
+    const aStyle = { padding: '9px 16px', fontSize: '13px', color: '#C4A882', fontWeight: '600', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'rgba(196,168,130,0.08)', borderLeft: '2px solid #C4A882' };
+    const iStyle = { padding: '9px 16px', fontSize: '13px', color: 'rgba(255,255,255,0.55)', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' };
+    const mk = (arr, vals, setter) => arr.map(x => ({ label: x, style: vals.includes(x) ? aStyle : iStyle, onClick: () => setter(x) }));
+
+    this._varList = varList;
+
+    return {
+      isHome:    p === 'home',
+      isData:    p === 'data',
+      isApi:     p === 'api',
+      isMaps:    p === 'maps',
+      isRequest:  p === 'request',
+      isProjects: p === 'projects',
+      showSaveModal: this.state.showSaveModal,
+      saveProjectName: this.state.saveProjectName,
+      saveIsNew: (this.state.saveMode || 'new') === 'new',
+      saveIsExisting: (this.state.saveMode || 'new') === 'existing',
+      tabNewStyle: { flex: 1, padding: '7px', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', background: (this.state.saveMode || 'new') === 'new' ? '#333' : 'transparent', color: (this.state.saveMode || 'new') === 'new' ? '#fff' : 'rgba(255,255,255,0.45)' },
+      tabExistStyle: { flex: 1, padding: '7px', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', background: (this.state.saveMode || 'new') === 'existing' ? '#333' : 'transparent', color: (this.state.saveMode || 'new') === 'existing' ? '#fff' : 'rgba(255,255,255,0.45)' },
+      saveMode: this.state.saveMode || 'new',
+      saveTargetId: this.state.saveTargetId || '',
+      existingProjects: this.state.projects.map(p => ({ id: String(p.id), name: p.name })),
+      setSaveModeNew: () => this.setState({ saveMode: 'new' }),
+      setSaveModeExisting: () => this.setState({ saveMode: 'existing' }),
+      onSaveNameChange: (e) => this.setState({ saveProjectName: e.target.value }),
+      onSaveTargetChange: (e) => this.setState({ saveTargetId: e.target.value }),
+      saveWarnMsg: this.state.saveWarnMsg || '',
+      openSaveModal: () => {
+        const s = this.state;
+        let warn = '';
+        if (!s.filterTopic.length) warn = '주제를 선택해 주세요.';
+        else if (!s.filterSubTopic.length) warn = '세부 주제를 선택해 주세요.';
+        else if (!s.filterUnit.length) warn = '단위를 선택해 주세요.';
+        else if (!s.filterRegion.length) warn = '지역을 선택해 주세요.';
+        else if (!s.filterYear.length) warn = '년도를 선택해 주세요.';
+        else if (!s.dataChecked.length) warn = '저장할 데이터를 1개 이상 선택해 주세요.';
+        if (warn) {
+          this.setState({ saveWarnMsg: warn });
+          setTimeout(() => this.setState({ saveWarnMsg: '' }), 3000);
+          return;
+        }
+        this.setState({ showSaveModal: true, saveProjectName: '', saveMode: 'new', saveTargetId: '', saveWarnMsg: '' });
+      },
+      showToast: this.state.showToast,
+      toastMsg: this.state.toastMsg,
+      stopProp: (e) => e.stopPropagation(),
+      showShareModal: this.state.showShareModal,
+      shareEmail: this.state.shareEmail,
+      existingSharedWith: (() => {
+        const proj = this.state.projects.find(p => p.id === this.state.shareProjectId);
+        return (proj?.sharedWith || []).map(email => ({
+          email,
+          revoke: () => this.setState(s => ({
+            projects: s.projects.map(p => {
+              if (p.id !== s.shareProjectId) return p;
+              const next = (p.sharedWith || []).filter(e => e !== email);
+              return { ...p, sharedWith: next, sharing: next.length ? '내가 공유' : '공유 안함' };
+            })
+          }))
+        }));
+      })(),
+      hasExistingShared: (() => {
+        const proj = this.state.projects.find(p => p.id === this.state.shareProjectId);
+        return (proj?.sharedWith || []).length > 0;
+      })(),
+      shareEmails: this.state.shareEmails.map(email => ({
+        email,
+        remove: () => this.setState(s => ({ shareEmails: s.shareEmails.filter(e => e !== email) }))
+      })),
+      onShareEmailChange: (e) => this.setState({ shareEmail: e.target.value }),
+      addShareEmail: () => {
+        const email = this.state.shareEmail.trim();
+        if (!email || this.state.shareEmails.includes(email)) return;
+        this.setState(s => ({ shareEmails: [...s.shareEmails, email], shareEmail: '' }));
+      },
+      removeShareEmail: (email) => () => this.setState(s => ({ shareEmails: s.shareEmails.filter(e => e !== email) })),
+      closeShareModal: () => this.setState({ showShareModal: false, shareEmail: '', shareEmails: [] }),
+      confirmShare: () => {
+        const all = [...this.state.shareEmails, ...(this.state.shareEmail.trim() ? [this.state.shareEmail.trim()] : [])];
+        if (!all.length) return;
+        this.setState(s => ({
+          projects: s.projects.map(p => p.id === s.shareProjectId ? { ...p, sharing: '내가 공유', sharedWith: all } : p),
+          showShareModal: false, shareEmail: '', shareEmails: [],
+        }));
+      },
+      closeSaveModal: () => this.setState({ showSaveModal: false }),
+      confirmSaveProject: () => {
+        const d = new Date();
+        const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+        if (this.state.saveMode === 'existing') {
+          if (!this.state.saveTargetId) return;
+          const targetId = Number(this.state.saveTargetId);
+          const checkedNames2 = this.state.dataChecked;
+          const vList2 = this._varList || [];
+          const newVars = vList2.filter(v => checkedNames2.includes(v.name)).map(v => ({
+            name: v.name, desc: v.desc,
+            unit: this.state.filterUnit.join(', ') || '전체',
+            region: this.state.filterRegion.join(', ') || '전국',
+            subRegion: this.state.filterSubRegion.join(', ') || '전체',
+            year: this.state.filterYear.join(', ') || '전체',
+          }));
+          this.setState(s => ({
+            projects: s.projects.map(p => p.id === targetId ? { ...p, variables: [...(p.variables || []), ...newVars.filter(nv => !(p.variables||[]).some(ev => ev.name === nv.name))] } : p),
+            showSaveModal: false, saveProjectName: '',
+          }));
+          this.showToastMsg('기존 프로젝트에 저장됐습니다.');
+          return;
+        }
+        const name = this.state.saveProjectName.trim();
+        if (!name) return;
+        const checkedNames = this.state.dataChecked;
+        const vList = this._varList || [];
+        const savedVars = vList.filter(v => checkedNames.includes(v.name)).map(v => ({
+          name: v.name,
+          desc: v.desc,
+          unit: this.state.filterUnit.join(', ') || '전체',
+          region: this.state.filterRegion.join(', ') || '전국',
+          subRegion: this.state.filterSubRegion.join(', ') || '전체',
+          year: this.state.filterYear.join(', ') || '전체',
+        }));
+        this.setState(s => ({ projects: [...s.projects, { id: Date.now(), name, starred: false, date: dateStr, sharing: '공유 안함', variables: savedVars }], showSaveModal: false, saveProjectName: '' }));
+        this.showToastMsg('프로젝트가 저장됐습니다.');
+      },
+      viewingProjectName: this.state.viewingProjectName || '',
+      viewingProject: this.state.viewingProject,
+      isViewingProject: !!this.state.viewingProject,
+      isNotViewingProject: !this.state.viewingProject,
+      closeProjectDetail: () => this.setState({ viewingProject: null }),
+      deleteProjectView: () => {
+        const proj = this.state.viewingProject;
+        if (!proj) return;
+        this.setState(s => ({ projects: s.projects.filter(p => p.id !== proj.id), viewingProject: null }));
+        this.showToastMsg('프로젝트가 삭제됐습니다.');
+      },
+      downloadProjectView: () => {
+        const proj = this.state.viewingProject;
+        if (!proj) return;
+        const json = JSON.stringify(proj, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `${proj.name}.json`; a.click();
+        URL.revokeObjectURL(url);
+      },
+      openInDataView: () => {
+        const proj = this.state.viewingProject;
+        if (!proj) return;
+        this.setState({ currentPage: 'data', dataView: 'select', dataChecked: (proj.variables||[]).map(v=>v.name||v), viewingProjectName: proj.name, viewingProject: null, filterTopic: [], filterSubTopic: [], filterUnit: [], filterRegion: [], filterSubRegion: [], filterYear: [] }, () => window.scrollTo({ top: 0 }));
+      },
+      showEditModal: this.state.showEditModal,
+      editChecked: this.state.editChecked,
+      openEditModal: () => this.setState({ showEditModal: true, editChecked: [] }),
+      closeEditModal: () => this.setState({ showEditModal: false, editChecked: [] }),
+      editVarRows: (this.state.viewingProject?.variables || []).map(v => ({
+        name: v.name || v,
+        checked: this.state.editChecked.includes(v.name || v),
+        onCheck: () => {
+          const n = v.name || v;
+          this.setState(s => ({ editChecked: s.editChecked.includes(n) ? s.editChecked.filter(x => x !== n) : [...s.editChecked, n] }));
+        }
+      })),
+      deleteEditSelected: () => {
+        const toDelete = this.state.editChecked;
+        if (!toDelete.length) return;
+        const proj = this.state.viewingProject;
+        const updatedVars = (proj.variables || []).filter(v => !toDelete.includes(v.name || v));
+        const updatedProj = { ...proj, variables: updatedVars };
+        this.setState(s => ({
+          projects: s.projects.map(p => p.id === proj.id ? updatedProj : p),
+          viewingProject: updatedProj,
+          showEditModal: false, editChecked: [],
+        }));
+        this.showToastMsg('선택한 데이터가 삭제됐습니다.');
+      },
+      projectDetailVars: (this.state.viewingProject?.variables || []),
+      allProjectsChecked: this.state.projects.length > 0 && this.state.projectChecked.length === this.state.projects.length,
+      toggleAllProjects: () => {
+        const allIds = this.state.projects.map(p => p.id);
+        this.setState(s => ({ projectChecked: s.projectChecked.length === allIds.length ? [] : allIds }));
+      },
+      deleteSelected: () => {
+        this.setState(s => ({ projects: s.projects.filter(p => !s.projectChecked.includes(p.id)), projectChecked: [] }));
+      },
+      downloadSelected: () => {
+        const selected = this.state.projects.filter(p => this.state.projectChecked.includes(p.id));
+        const json = JSON.stringify(selected, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'sospatial_projects.json'; a.click();
+        URL.revokeObjectURL(url);
+      },
+      moveUp: () => {
+        this.setState(s => {
+          const arr = [...s.projects];
+          const ids = s.projectChecked;
+          for (let i = 1; i < arr.length; i++) {
+            if (ids.includes(arr[i].id) && !ids.includes(arr[i-1].id)) {
+              [arr[i-1], arr[i]] = [arr[i], arr[i-1]];
+            }
+          }
+          return { projects: arr };
+        });
+      },
+      moveDown: () => {
+        this.setState(s => {
+          const arr = [...s.projects];
+          const ids = s.projectChecked;
+          for (let i = arr.length - 2; i >= 0; i--) {
+            if (ids.includes(arr[i].id) && !ids.includes(arr[i+1].id)) {
+              [arr[i], arr[i+1]] = [arr[i+1], arr[i]];
+            }
+          }
+          return { projects: arr };
+        });
+      },
+      projectRows: this.state.projects.map((proj, i) => {
+        const shareColors = { '공유 안함': 'rgba(255,255,255,0.35)', '내가 공유': '#5CC974', '나에게 공유': '#C4A882' };
+        return {
+          ...proj, num: i + 1,
+          shareStyle: { fontSize: '12.5px', color: shareColors[proj.sharing] || 'rgba(255,255,255,0.35)' },
+          onClick: () => this.setState({ viewingProject: proj }),
+          checked: this.state.projectChecked.includes(proj.id),
+          onCheck: (e) => { e.stopPropagation(); this.setState(s => ({ projectChecked: s.projectChecked.includes(proj.id) ? s.projectChecked.filter(x => x !== proj.id) : [...s.projectChecked, proj.id] })); },
+          onShareClick: (e) => { e.stopPropagation(); this.setState({ showShareModal: true, shareProjectId: proj.id, shareEmail: '' }); },
+          onStarClick: (e) => { e.stopPropagation(); this.setState(s => ({ projects: s.projects.map(p => p.id === proj.id ? { ...p, starred: !p.starred } : p) })); },
+          starStroke: proj.starred ? '#C4A882' : 'rgba(255,255,255,0.25)',
+          starFill: proj.starred ? '#C4A882' : 'none'
+        };
+      }),
+      navHome:    go('home'),
+      navData:    go('data'),
+      navApi:     go('api'),
+      navMaps:    go('maps'),
+      navRequest: go('request'),
+      navProjects: go('projects'),
+      reqIsLanding:  rv === 'landing',
+      reqIsSource:   rv === 'source',
+      reqIsUpload:   rv === 'upload',
+      reqIsDescribe: rv === 'describe',
+      goReqLanding:  goReq('landing'),
+      goReqSource:   goReq('source'),
+      goReqUpload:   goReq('upload'),
+      goReqDescribe: goReq('describe'),
+      showFilePicker: this.state.showFilePicker,
+      pickerService: this.state.pickerService || 'Google Drive',
+      pickedFile: this.state.pickedFile,
+      hasPicked: !!this.state.pickedFile,
+      dataIsLanding: this.state.dataView === 'landing',
+      dataIsSelect: this.state.dataView === 'select',
+      goDataSelect: (e) => {
+        const topic = (e.currentTarget || e.target).dataset.topic || '전체';
+        const ft = this.TOPIC_DATA[topic] ? [topic] : [];
+        this.setState({ dataView: 'select', dataTopic: topic, filterTopic: ft, filterSubTopic: [] }, () => {
+          setTimeout(() => {
+            const container = this.topicListRef.current;
+            if (!container || !ft.length) return;
+            const item = Array.from(container.querySelectorAll('div')).find(d => d.textContent.trim() === ft[0]);
+            if (item) { const rel = item.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop; container.scrollTop = rel - container.clientHeight / 2 + item.clientHeight / 2; }
+          }, 150);
+        });
+      },
+      goDataLanding: () => this.setState({ dataView: 'landing', filterTopic: [], filterSubTopic: [], filterUnit: [], filterRegion: [], filterYear: [], dataChecked: [] }),
+      showAllPopular: this.state.showAllPopular,
+      popularLabel: this.state.showAllPopular ? '접기 ↑' : '전체 →',
+      togglePopular: () => this.setState(s => ({ showAllPopular: !s.showAllPopular })),
+      dataTopic: this.state.dataTopic,
+      topicListRef: this.topicListRef,
+      topicItems: mk(topicKeys, filterTopic, (t) => {
+        if (t === '전체') {
+          this.setState({ filterTopic: filterTopic.includes('전체') ? [] : ['전체'], filterSubTopic: [] });
+        } else {
+          this.setState({ filterTopic: toggle(filterTopic.filter(x => x !== '전체'), t), filterSubTopic: [] });
+        }
+      }),
+      subTopicItems: mk(subTopicSet, filterSubTopic, (s) => {
+        if (s === '전체') {
+          this.setState({ filterSubTopic: filterSubTopic.includes('전체') ? [] : ['전체'] });
+        } else {
+          this.setState({ filterSubTopic: toggle(filterSubTopic.filter(x => x !== '전체'), s) });
+        }
+      }),
+      unitItems: mk(['격자 100m','격자 250m','격자 500m','격자 1,000m','집계구','행정동','시군구'], filterUnit, (u) => this.setState({ filterUnit: filterUnit[0] === u ? [] : [u] })),
+      regionItems: mk(['전국','서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시'], filterRegion, (r) => {
+        if (r === '전국') {
+          this.setState({ filterRegion: filterRegion.includes('전국') ? [] : ['전국'], filterSubRegion: [] });
+        } else {
+          const next = toggle(filterRegion.filter(x => x !== '전국'), r);
+          this.setState({ filterRegion: next, filterSubRegion: [] });
+        }
+      }),
+      hasSubRegion: filterRegion.length > 0 && filterRegion.some(r => this.REGION_DATA[r]),
+      filterGridCols: (filterRegion.length > 0 && filterRegion.some(r => this.REGION_DATA[r])) ? 'repeat(6,1fr)' : 'repeat(5,1fr)',
+      subRegionGroups: (() => {
+        const fsr = this.state.filterSubRegion;
+        const aStyle = { padding: '9px 16px', fontSize: '13px', color: '#C4A882', fontWeight: '600', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'rgba(196,168,130,0.08)', borderLeft: '2px solid #C4A882' };
+        const iStyle = { padding: '9px 16px', fontSize: '13px', color: 'rgba(255,255,255,0.55)', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' };
+        return filterRegion.filter(r => this.REGION_DATA[r]).map(r => ({
+          region: r,
+          items: ['전체', ...(this.REGION_DATA[r] || [])].map(s => ({
+            label: s,
+            style: fsr.includes(s) ? aStyle : iStyle,
+            onClick: () => this.setState(st => ({ filterSubRegion: toggle(st.filterSubRegion, s) }))
+          }))
+        }));
+      })(),
+      yearItems: mk(['전체','2025','2024','2023','2022','2021','2020'], filterYear, (y) => {
+        if (y === '전체') {
+          this.setState({ filterYear: filterYear.includes('전체') ? [] : ['전체'] });
+        } else {
+          this.setState({ filterYear: toggle(filterYear.filter(x => x !== '전체'), y) });
+        }
+      }),
+      variableRows: varList.map(v => ({
+        ...v,
+        checked: this.state.dataChecked.includes(v.name),
+        onCheck: () => this.setState(s => ({ dataChecked: s.dataChecked.includes(v.name) ? s.dataChecked.filter(x => x !== v.name) : [...s.dataChecked, v.name] }))
+      })),
+      toggleCheck: (v) => () => this.setState(s => ({
+        dataChecked: s.dataChecked.includes(v) ? s.dataChecked.filter(x => x !== v) : [...s.dataChecked, v]
+      })),
+      isChecked: (v) => this.state.dataChecked.includes(v),
+      checkedCount: this.state.dataChecked.length,
+      hasChecked: this.state.dataChecked.length > 0,
+      downloadCheckedVars: () => {
+        const selected = (this._varList || []).filter(v => this.state.dataChecked.includes(v.name));
+        if (!selected.length) return;
+        const header = '데이터명,설명,단위,지역,세부지역,년도';
+        const rows = selected.map(v => [
+          v.name, v.desc,
+          this.state.filterUnit.join('/') || '전체',
+          this.state.filterRegion.join('/') || '전국',
+          this.state.filterSubRegion.join('/') || '전체',
+          this.state.filterYear.join('/') || '전체',
+        ].map(s => `"${s}"`).join(','));
+        const csv = [header, ...rows].join('\n');
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'sospatial_data.csv'; a.click();
+        URL.revokeObjectURL(url);
+      },
+      onRegion1Change: (e) => this.setState({ selectedRegion1: e.target.value }),
+      showSubRegion1: this.getSubRegions(this.state.selectedRegion1).length > 0,
+      subRegionOptions1: this.getSubRegions(this.state.selectedRegion1),
+      varInputs1: Array.from({ length: this.state.varCount1 }, (_, i) => i),
+      addVar1: () => this.setState(s => ({ varCount1: s.varCount1 + 1 })),
+      removeVar1: () => this.setState(s => ({ varCount1: Math.max(1, s.varCount1 - 1) })),
+      onServiceChange: (e) => this.setState({ pickerService: e.target.value }),
+      openPicker: () => { if (this.state.pickerService) this.setState({ showFilePicker: true }); },
+      closePicker: () => this.setState({ showFilePicker: false }),
+      confirmPick: () => this.setState({ showFilePicker: false, pickedFile: '유동인구_서울_2024.csv' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

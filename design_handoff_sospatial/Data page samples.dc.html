@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #181818; font-family: 'Pretendard', sans-serif; color: #fff; }
+    @keyframes pageEnter { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    input::placeholder { color: rgba(255,255,255,0.25); }
+    input:focus { outline: none; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+  </style>
+</helmet>
+
+<div style="min-height:100vh;background:#181818;">
+
+  <!-- ── LANDING VIEW ── -->
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+    <div style="animation:pageEnter 0.3s ease;">
+      <section style="padding:72px 32px 60px;text-align:center;background:#181818;">
+        <div style="max-width:660px;margin:0 auto;">
+          <h1 style="font-size:36px;font-weight:800;color:#fff;letter-spacing:-1.2px;margin:0 0 10px;">어떤 데이터가 필요하세요?</h1>
+          <p style="font-size:15px;color:rgba(255,255,255,0.4);margin:0 0 28px;">1,240개 표준 공간 데이터셋을 검색하거나, 주제별로 둘러보세요.</p>
+          <div style="display:flex;gap:0;background:#242424;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:18px;">
+            <div style="display:flex;align-items:center;padding:0 16px;flex-shrink:0;">
+              <svg width="17" height="17" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+            </div>
+            <input placeholder="예: 유동인구, 사업체, 미세먼지, 버스 정류장..." style="flex:1;border:none;background:transparent;font-size:14.5px;color:#fff;padding:16px 0;" />
+            <button style="padding:12px 24px;background:#C4A882;color:#1A1A1A;border:none;font-size:14px;font-weight:700;cursor:pointer;" onClick="{{ goSelect }}" style-hover="background:#B09470;">검색</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:12.5px;color:rgba(255,255,255,0.3);">인기 검색</span>
+            <span style="padding:4px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12.5px;color:rgba(255,255,255,0.6);cursor:pointer;" onClick="{{ goSelect }}" style-hover="background:rgba(255,255,255,0.1);">생활인구</span>
+            <span style="padding:4px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12.5px;color:rgba(255,255,255,0.6);cursor:pointer;" onClick="{{ goSelect }}" style-hover="background:rgba(255,255,255,0.1);">상권</span>
+            <span style="padding:4px 13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;font-size:12.5px;color:rgba(255,255,255,0.6);cursor:pointer;" onClick="{{ goSelect }}" style-hover="background:rgba(255,255,255,0.1);">대기질</span>
+          </div>
+        </div>
+      </section>
+      <section style="padding:52px 32px 80px;background:#222222;">
+        <div style="max-width:1100px;margin:0 auto;">
+          <h2 style="font-size:19px;font-weight:700;color:#fff;margin:0 0 24px;letter-spacing:-0.4px;">주제별 둘러보기</h2>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+            <div style="grid-column:1/-1;background:linear-gradient(135deg,rgba(196,168,130,0.1),rgba(196,168,130,0.04));border:1px solid rgba(196,168,130,0.2);border-radius:14px;padding:20px 24px;cursor:pointer;display:flex;align-items:center;gap:20px;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.4);">
+              <div style="width:42px;height:42px;background:rgba(196,168,130,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+              <div style="flex:1;"><div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;">전체 데이터셋</div><div style="font-size:12.5px;color:rgba(255,255,255,0.4);">모든 주제의 1,240개 데이터셋을 한번에 둘러보세요</div></div>
+              <div style="display:flex;align-items:center;gap:6px;color:#C4A882;font-size:13.5px;font-weight:600;flex-shrink:0;"><span>전체 보기</span><svg width="14" height="14" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">인구·사회</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">214개 데이터셋</div></div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">교통·이동</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">186개 데이터셋</div></div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">경제·산업</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">158개 데이터셋</div></div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">건강·복지</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">97개 데이터셋</div></div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">안전·재난</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">73개 데이터셋</div></div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">환경·기후</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">64개 데이터셋</div></div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="11" rx="1"/><path d="M8 21V10M16 21V10M3 15h18M7 3h10l3 7H4L7 3z"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">국토·도시</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">142개 데이터셋</div></div>
+            <div style="background:#2A2A2A;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;cursor:pointer;" onClick="{{ goSelect }}" style-hover="border-color:rgba(196,168,130,0.3);background:#2E2E2E;"><div style="width:38px;height:38px;background:rgba(196,168,130,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg width="18" height="18" fill="none" stroke="#C4A882" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;">기타·융합</div><div style="font-size:11.5px;color:rgba(255,255,255,0.3);">106개 데이터셋</div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </sc-if>
+
+  <!-- ── SELECT VIEW ── -->
+  <sc-if value="{{ isSelect }}">
+    <div style="animation:pageEnter 0.3s ease;display:flex;min-height:100vh;">
+
+      <!-- Sidebar -->
+      <div style="width:220px;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:24px 0;">
+        <!-- Back -->
+        <div style="padding:0 16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:7px;cursor:pointer;color:rgba(255,255,255,0.35);" onClick="{{ goLanding }}" style-hover="color:rgba(255,255,255,0.6);">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:12.5px;">데이터</span>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <sc-for list="{{ sidebarSteps }}" as="step" hint-placeholder-count="4">
+          <div style="{{ step.style }}" onClick="{{ step.click }}">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:20px;height:20px;border-radius:50%;background:{{ step.dotBg }};border:{{ step.dotBorder }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <sc-if value="{{ step.done }}">
+                  <svg width="10" height="10" fill="none" stroke="#111" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </sc-if>
+                <sc-if value="{{ step.notDone }}">
+                  <span style="font-size:9.5px;font-weight:700;color:{{ step.numColor }};">{{ step.num }}</span>
+                </sc-if>
+              </div>
+              <span style="font-size:13px;font-weight:{{ step.labelWeight }};color:{{ step.labelColor }};">{{ step.label }}</span>
+            </div>
+            <sc-if value="{{ step.hasSummary }}">
+              <span style="font-size:11px;color:#C4A882;font-weight:600;margin-top:4px;display:block;padding-left:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ step.summary }}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+
+        <!-- Basket summary at bottom -->
+        <sc-if value="{{ hasBasket }}">
+          <div style="margin-top:auto;padding:14px 16px;border-top:1px solid rgba(255,255,255,0.06);">
+            <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">담은 변수</div>
+            <sc-for list="{{ basketPreview }}" as="b" hint-placeholder-count="0">
+              <div style="font-size:12px;color:rgba(255,255,255,0.55);padding:3px 0;display:flex;align-items:center;gap:6px;">
+                <div style="width:4px;height:4px;border-radius:50%;background:#C4A882;flex-shrink:0;"></div>
+                <span>{{ b.name }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ basketOverflow }}">
+              <span style="font-size:11px;color:rgba(255,255,255,0.3);">외 {{ basketOverflowCount }}개</span>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- Main content area -->
+      <div style="flex:1;padding:32px 36px;overflow-y:auto;">
+
+        <!-- STEP 1: 단위 -->
+        <sc-if value="{{ isStepUnit }}">
+          <div style="animation:fadeUp 0.25s ease;">
+            <h2 style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.6px;margin-bottom:6px;">공간 단위를 선택하세요</h2>
+            <p style="font-size:13.5px;color:rgba(255,255,255,0.35);margin-bottom:28px;">선택한 단위로 모든 변수가 통일됩니다.</p>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:560px;">
+              <sc-for list="{{ unitOptions }}" as="opt" hint-placeholder-count="6">
+                <div onClick="{{ opt.select }}" style="padding:16px 20px;background:{{ opt.bg }};border:{{ opt.border }};border-radius:12px;cursor:pointer;transition:all 0.15s;" style-hover="border-color:rgba(196,168,130,0.5);">
+                  <div style="font-size:15px;font-weight:700;color:{{ opt.color }};margin-bottom:3px;">{{ opt.name }}</div>
+                  <div style="font-size:11.5px;color:rgba(255,255,255,0.25);">{{ opt.desc }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- STEP 2: 지역 -->
+        <sc-if value="{{ isStepRegion }}">
+          <div style="animation:fadeUp 0.25s ease;">
+            <h2 style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.6px;margin-bottom:6px;">지역을 선택하세요</h2>
+            <p style="font-size:13.5px;color:rgba(255,255,255,0.35);margin-bottom:28px;">복수 선택 가능합니다.</p>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:620px;margin-bottom:24px;">
+              <sc-for list="{{ regionOptions }}" as="opt" hint-placeholder-count="9">
+                <div onClick="{{ opt.select }}" style="padding:12px 16px;background:{{ opt.bg }};border:{{ opt.border }};border-radius:10px;cursor:pointer;font-size:14px;font-weight:{{ opt.weight }};color:{{ opt.color }};transition:all 0.15s;" style-hover="border-color:rgba(196,168,130,0.4);">{{ opt.name }}</div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ hasSubRegion }}">
+              <div style="margin-bottom:24px;">
+                <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em;">세부 지역</div>
+                <sc-for list="{{ subregionGroups }}" as="grp" hint-placeholder-count="1">
+                  <div style="margin-bottom:16px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                      <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);">{{ grp.region }}</span>
+                      <div style="flex:1;height:1px;background:rgba(255,255,255,0.06);"></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:620px;">
+                      <sc-for list="{{ grp.items }}" as="opt" hint-placeholder-count="5">
+                        <div onClick="{{ opt.select }}" style="padding:9px 12px;background:{{ opt.bg }};border:{{ opt.border }};border-radius:8px;cursor:pointer;font-size:13px;font-weight:{{ opt.weight }};color:{{ opt.color }};transition:all 0.15s;" style-hover="border-color:rgba(196,168,130,0.4);">{{ opt.name }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <button onClick="{{ nextFromRegion }}" style="padding:10px 24px;background:#C4A882;color:#111;border:none;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;opacity:{{ regionNextOpacity }};" style-hover="background:#B09470;">다음 →</button>
+          </div>
+        </sc-if>
+
+        <!-- STEP 3: 년도 -->
+        <sc-if value="{{ isStepYear }}">
+          <div style="animation:fadeUp 0.25s ease;">
+            <h2 style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.6px;margin-bottom:6px;">년도를 선택하세요</h2>
+            <p style="font-size:13.5px;color:rgba(255,255,255,0.35);margin-bottom:28px;">복수 선택 가능합니다.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;">
+              <sc-for list="{{ yearOptions }}" as="opt" hint-placeholder-count="6">
+                <div onClick="{{ opt.select }}" style="padding:12px 24px;background:{{ opt.bg }};border:{{ opt.border }};border-radius:10px;cursor:pointer;font-size:16px;font-weight:{{ opt.weight }};color:{{ opt.color }};transition:all 0.15s;" style-hover="border-color:rgba(196,168,130,0.4);">{{ opt.name }}</div>
+              </sc-for>
+            </div>
+            <button onClick="{{ nextFromYear }}" style="padding:10px 24px;background:#C4A882;color:#111;border:none;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;opacity:{{ yearNextOpacity }};" style-hover="background:#B09470;">변수 담으러 가기 →</button>
+          </div>
+        </sc-if>
+
+        <!-- STEP 4: 변수 담기 -->
+        <sc-if value="{{ isStepVars }}">
+          <div style="animation:fadeUp 0.25s ease;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:24px;">
+              <div>
+                <h2 style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.6px;margin-bottom:4px;">변수를 담으세요</h2>
+                <p style="font-size:13px;color:rgba(255,255,255,0.35);">주제를 탭해서 변수를 찾고 담기를 눌러주세요. 여러 주제에서 자유롭게 담을 수 있어요.</p>
+              </div>
+              <sc-if value="{{ hasBasket }}">
+                <div style="flex-shrink:0;padding:10px 18px;background:rgba(196,168,130,0.1);border:1px solid rgba(196,168,130,0.25);border-radius:10px;text-align:right;">
+                  <div style="font-size:11px;color:rgba(196,168,130,0.6);margin-bottom:2px;">담은 변수</div>
+                  <div style="font-size:18px;font-weight:800;color:#C4A882;">{{ basketCount }}개</div>
+                </div>
+              </sc-if>
+            </div>
+
+            <!-- Topic tabs -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;">
+              <sc-for list="{{ topicTabs }}" as="tab" hint-placeholder-count="7">
+                <div onClick="{{ tab.select }}" style="padding:7px 14px;background:{{ tab.bg }};border:{{ tab.border }};border-radius:99px;cursor:pointer;font-size:13px;font-weight:{{ tab.weight }};color:{{ tab.color }};transition:all 0.15s;" style-hover="border-color:rgba(196,168,130,0.4);">{{ tab.name }}</div>
+              </sc-for>
+            </div>
+
+            <!-- Variable list -->
+            <div style="background:#242424;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;margin-bottom:24px;">
+              <sc-for list="{{ varList }}" as="v" hint-placeholder-count="5">
+                <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.05);opacity:{{ v.rowOpacity }};">
+                  <div style="display:flex;align-items:flex-start;gap:16px;">
+                    <div style="flex:1;">
+                      <div style="font-size:13.5px;font-weight:600;color:#fff;margin-bottom:3px;">{{ v.name }}</div>
+                      <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:10px;">{{ v.desc }}</div>
+                      <!-- Coverage dot grid -->
+                      <sc-if value="{{ v.hasRegionCoverage }}">
+                        <div style="display:inline-block;">
+                          <!-- Year header row -->
+                          <div style="display:flex;margin-bottom:4px;padding-left:52px;gap:2px;">
+                            <sc-for list="{{ v.yearHeaders }}" as="yh" hint-placeholder-count="0">
+                              <span style="width:28px;text-align:center;font-size:9.5px;color:rgba(255,255,255,0.25);font-weight:600;">{{ yh.year }}</span>
+                            </sc-for>
+                          </div>
+                          <!-- Region rows -->
+                          <sc-for list="{{ v.regionCoverage }}" as="rc" hint-placeholder-count="0">
+                            <div style="display:flex;align-items:center;gap:2px;margin-bottom:3px;">
+                              <span style="font-size:11px;color:{{ rc.has ? 'rgba(255,255,255,0.45)' : 'rgba(255,100,100,0.4)' }};width:50px;flex-shrink:0;text-align:right;padding-right:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rc.name }}</span>
+                              <sc-if value="{{ rc.has }}">
+                                <sc-for list="{{ rc.yearCells }}" as="yc" hint-placeholder-count="0">
+                                  <div style="width:28px;height:14px;border-radius:3px;background:{{ yc.has ? 'rgba(100,200,130,0.25)' : 'rgba(255,255,255,0.05)' }};border:1px solid {{ yc.has ? 'rgba(100,200,130,0.35)' : 'rgba(255,255,255,0.08)' }};"></div>
+                                </sc-for>
+                              </sc-if>
+                              <sc-if value="{{ rc.notHas }}">
+                                <span style="font-size:10px;color:rgba(255,100,100,0.4);padding-left:4px;">데이터 없음</span>
+                              </sc-if>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                    </div>
+                    <button onClick="{{ v.toggle }}" style="padding:6px 14px;background:{{ v.btnBg }};border:{{ v.btnBorder }};border-radius:7px;font-size:12px;font-weight:600;color:{{ v.btnColor }};cursor:pointer;flex-shrink:0;transition:all 0.15s;margin-top:2px;" style-hover="opacity:0.8;">{{ v.btnLabel }}</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <!-- Basket chips -->
+            <sc-if value="{{ hasBasket }}">
+              <div style="margin-bottom:16px;">
+                <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em;">담은 변수</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <sc-for list="{{ basketChips }}" as="chip" hint-placeholder-count="0">
+                    <div style="display:flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;background:rgba(196,168,130,0.1);border:1px solid rgba(196,168,130,0.2);border-radius:99px;">
+                      <span style="font-size:12.5px;color:#C4A882;font-weight:500;">{{ chip.name }}</span>
+                      <div onClick="{{ chip.remove }}" style="width:16px;height:16px;border-radius:50%;background:rgba(196,168,130,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-hover="background:rgba(196,168,130,0.3);">
+                        <svg width="8" height="8" fill="none" stroke="#C4A882" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ hasBasket }}">
+              <button style="padding:11px 28px;background:#C4A882;color:#111;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;" style-hover="background:#B09470;">프로젝트에 저장</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  UNITS = [
+    { name: '격자 100m', desc: '초고해상도' },
+    { name: '격자 250m', desc: '고해상도' },
+    { name: '격자 500m', desc: '중해상도' },
+    { name: '격자 1km', desc: '광역 분석' },
+    { name: '읍면동', desc: '행정 경계' },
+    { name: '시군구', desc: '시도 단위' },
+  ];
+  REGIONS = ['전국', '서울', '부산', '인천', '대구', '대전', '광주', '울산', '세종', '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
+  SUBREGIONS = {
+    '서울': ['전체 서울','강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+    '부산': ['전체 부산','강서구','금정구','기장군','남구','동구','동래구','부산진구','북구','사상구','사하구','서구','수영구','연제구','영도구','중구','해운대구'],
+    '인천': ['전체 인천','강화군','계양구','남동구','동구','미추홀구','부평구','서구','연수구','옹진군','중구'],
+    '경기': ['전체 경기','수원시','성남시','고양시','용인시','부천시','안산시','안양시','남양주시','화성시','평택시','의정부시','시흥시','파주시','김포시'],
+    '대구': ['전체 대구','남구','달서구','달성군','동구','북구','서구','수성구','중구'],
+    '대전': ['전체 대전','대덕구','동구','서구','유성구','중구'],
+    '광주': ['전체 광주','광산구','남구','동구','북구','서구'],
+    '울산': ['전체 울산','남구','동구','북구','울주군','중구'],
+    '강원': ['전체 강원','강릉시','고성군','동해시','삼척시','속초시','양구군','양양군','영월군','원주시','인제군','정선군','철원군','춘천시','태백시','평창군','홍천군','화천군','횡성군'],
+    '충북': ['전체 충북','괴산군','단양군','보은군','영동군','옥천군','음성군','제천시','증평군','진천군','청주시','충주시'],
+    '충남': ['전체 충남','계룡시','공주시','금산군','논산시','당진시','보령시','부여군','서산시','서천군','아산시','예산군','천안시','청양군','태안군','홍성군'],
+    '전북': ['전체 전북','고창군','군산시','김제시','남원시','무주군','부안군','순창군','완주군','익산시','임실군','장수군','전주시','정읍시','진안군'],
+    '전남': ['전체 전남','강진군','고흥군','곡성군','광양시','구례군','나주시','담양군','목포시','무안군','보성군','순천시','신안군','여수시','영광군','영암군','완도군','장성군','장흥군','진도군','함평군','해남군','화순군'],
+    '경북': ['전체 경북','경산시','경주시','고령군','구미시','군위군','김천시','문경시','봉화군','상주시','성주군','안동시','영덕군','영양군','영주시','영천시','예천군','울릉군','울진군','의성군','청도군','청송군','칠곡군','포항시'],
+    '경남': ['전체 경남','거제시','거창군','고성군','김해시','남해군','밀양시','사천시','산청군','양산시','의령군','진주시','창녕군','창원시','통영시','하동군','함안군','함양군','합천군'],
+    '제주': ['전체 제주','서귀포시','제주시'],
+  };
+  YEARS = ['2020', '2021', '2022', '2023', '2024', '2025'];
+  TOPICS = ['인구·사회', '교통·이동', '경제·산업', '환경·기후', '안전·재난', '건강·복지', '국토·도시'];
+  // coverage: { 지역: [가용년도] } — '전국' key means all regions
+  VARS = {
+    '인구·사회': [
+      { name: '인구 수', desc: '총인구·성별 인구 수', coverage: { '전국': ['2020','2021','2022','2023','2024'] } },
+      { name: '인구 밀도', desc: '단위 면적당 인구 수', coverage: { '서울': ['2021','2022','2023','2024'], '부산': ['2022','2023','2024'], '인천': ['2022','2023'], '대구': ['2023','2024'], '경기': ['2021','2022','2023','2024'] } },
+      { name: '연령별 인구', desc: '5세 단위 연령 구분', coverage: { '전국': ['2020','2021','2022','2023','2024'] } },
+      { name: '가구 수', desc: '일반·1인 가구 수', coverage: { '서울': ['2020','2021','2022','2023'], '부산': ['2020','2021','2022'], '경기': ['2020','2021','2022','2023'], '인천': ['2021','2022','2023'] } },
+      { name: '유동 인구', desc: '시간대별 유동 인구', coverage: { '서울': ['2022','2023','2024'], '부산': ['2023','2024'], '인천': ['2023','2024'], '대구': ['2023'], '경기': ['2022','2023','2024'] } },
+    ],
+    '교통·이동': [
+      { name: '버스 정류장', desc: '정류장 위치 및 노선 수', coverage: { '전국': ['2020','2021','2022','2023','2024'] } },
+      { name: '지하철 승하차', desc: '역별 시간대별 승하차 인원', coverage: { '서울': ['2021','2022','2023','2024'], '부산': ['2022','2023','2024'], '인천': ['2023','2024'], '대구': ['2023'], '광주': ['2023','2024'] } },
+      { name: '도로 교통량', desc: '도로별 일일 교통량', coverage: { '전국': ['2020','2021','2022','2023'] } },
+    ],
+    '경제·산업': [
+      { name: '사업체 수', desc: '업종별 사업체 수', coverage: { '전국': ['2020','2021','2022','2023'] } },
+      { name: '상권 매출', desc: '업종별 추정 매출액', coverage: { '서울': ['2022','2023','2024'], '부산': ['2022','2023'], '인천': ['2022','2023'], '대구': ['2023'], '대전': ['2023'], '경기': ['2022','2023','2024'] } },
+      { name: '소득 수준', desc: '지역별 평균 소득', coverage: { '서울': ['2021','2022','2023'], '경기': ['2021','2022','2023'], '인천': ['2022','2023'] } },
+    ],
+    '환경·기후': [
+      { name: '미세먼지 (PM2.5)', desc: 'PM2.5 농도 시계열', coverage: { '전국': ['2020','2021','2022','2023','2024'] } },
+      { name: '초미세먼지 (PM10)', desc: 'PM10 농도 시계열', coverage: { '전국': ['2020','2021','2022','2023','2024'] } },
+      { name: '기온', desc: '일별 평균 기온', coverage: { '서울': ['2020','2021','2022','2023','2024','2025'], '부산': ['2020','2021','2022','2023','2024','2025'], '강원': ['2020','2021','2022','2023','2024','2025'], '제주': ['2020','2021','2022','2023','2024','2025'] } },
+      { name: '녹지 면적', desc: '공원·녹지 면적 분포', coverage: { '서울': ['2022','2023'], '부산': ['2023'], '인천': ['2022','2023'], '경기': ['2022','2023'] } },
+    ],
+    '안전·재난': [
+      { name: '범죄 발생 건수', desc: '5대 범죄 유형별', coverage: { '전국': ['2020','2021','2022','2023'] } },
+      { name: 'CCTV 설치 현황', desc: 'CCTV 위치 및 수량', coverage: { '서울': ['2022','2023','2024'], '부산': ['2023','2024'], '인천': ['2023'], '대구': ['2023'], '대전': ['2023'] } },
+    ],
+    '건강·복지': [
+      { name: '의료 시설', desc: '병원·의원·약국 위치', coverage: { '전국': ['2021','2022','2023','2024'] } },
+      { name: '복지 시설', desc: '노인·장애인·아동 복지시설', coverage: { '서울': ['2022','2023'], '부산': ['2022','2023'], '경기': ['2022','2023'] } },
+    ],
+    '국토·도시': [
+      { name: '토지 이용', desc: '용도지역별 면적', coverage: { '전국': ['2020','2021','2022','2023'] } },
+      { name: '건축물 현황', desc: '연면적·용도별 건축물', coverage: { '전국': ['2021','2022','2023','2024'] } },
+    ],
+  };
+
+  state = {
+    view: 'landing',
+    step: 'unit', // unit | region | year | vars
+    unit: '',
+    regions: [],
+    subregions: [],
+    years: [],
+    basket: [], // { name, topic }
+    activeTopic: '인구·사회',
+  };
+
+  renderVals() {
+    const { view, step, unit, regions, subregions, years, basket, activeTopic } = this.state;
+
+    const goLanding = () => this.setState({ view: 'landing', step: 'unit', unit: '', regions: [], subregions: [], years: [], basket: [] });
+    const goSelect = () => this.setState({ view: 'select', step: 'unit' });
+
+    // Sidebar steps
+    const stepDefs = [
+      { key: 'unit', num: '1', label: '공간 단위', summary: unit, hasSummary: !!unit },
+      { key: 'region', num: '2', label: '지역', summary: regions.length === 1 ? regions[0] : regions.length > 1 ? `${regions[0]} 외 ${regions.length - 1}` : '', hasSummary: regions.length > 0 },
+      { key: 'year', num: '3', label: '년도', summary: years.join(', '), hasSummary: years.length > 0 },
+      { key: 'vars', num: '4', label: '변수 담기', summary: basket.length > 0 ? `${basket.length}개 담음` : '', hasSummary: basket.length > 0 },
+    ];
+    const stepOrder = ['unit', 'region', 'year', 'vars'];
+    const currentIdx = stepOrder.indexOf(step);
+
+    const sidebarSteps = stepDefs.map((s, i) => {
+      const isDone = i < currentIdx;
+      const isActive = s.key === step;
+      const isLocked = i > currentIdx;
+      const canClick = i <= currentIdx;
+      return {
+        ...s,
+        done: isDone,
+        notDone: !isDone,
+        dotBg: isDone ? '#C4A882' : isActive ? 'transparent' : 'rgba(255,255,255,0.06)',
+        dotBorder: isActive ? '1.5px solid #C4A882' : 'none',
+        numColor: isActive ? '#C4A882' : 'rgba(255,255,255,0.3)',
+        labelWeight: isActive ? '700' : '500',
+        labelColor: isActive ? '#fff' : isDone ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.25)',
+        style: `padding:12px 16px;border-left:2px solid ${isActive ? '#C4A882' : 'transparent'};background:${isActive ? 'rgba(196,168,130,0.05)' : 'transparent'};cursor:${canClick ? 'pointer' : 'default'};opacity:${isLocked ? '0.4' : '1'};transition:all 0.15s;`,
+        click: canClick ? () => this.setState({ step: s.key }) : () => {},
+      };
+    });
+
+    // Basket
+    const hasBasket = basket.length > 0;
+    const basketCount = `${basket.length}`;
+    const basketPreview = basket.slice(0, 4).map(b => ({ name: b.name }));
+    const basketOverflow = basket.length > 4;
+    const basketOverflowCount = `${basket.length - 4}`;
+    const basketChips = basket.map(b => ({
+      name: b.name,
+      remove: () => this.setState({ basket: basket.filter(x => x.name !== b.name) }),
+    }));
+
+    // Unit options
+    const unitOptions = this.UNITS.map(u => ({
+      name: u.name,
+      desc: u.desc,
+      select: () => this.setState({ unit: u.name, step: 'region' }),
+      bg: unit === u.name ? 'rgba(196,168,130,0.12)' : '#242424',
+      border: unit === u.name ? '1.5px solid rgba(196,168,130,0.5)' : '1px solid rgba(255,255,255,0.07)',
+      color: unit === u.name ? '#C4A882' : 'rgba(255,255,255,0.8)',
+    }));
+
+    // Region options
+    const regionAllSelected = regions.includes('전국');
+    const regionOptions = this.REGIONS.map(r => ({
+      name: r,
+      select: () => {
+        if (r === '전국') { this.setState({ regions: regions.includes('전국') ? [] : ['전국'], subregions: [] }); return; }
+        const next = regions.includes(r) ? regions.filter(x => x !== r) : [...regions.filter(x => x !== '전국'), r];
+        this.setState({ regions: next, subregions: [] });
+      },
+      bg: regions.includes(r) || (regionAllSelected && r !== '전국') ? 'rgba(196,168,130,0.1)' : '#242424',
+      border: regions.includes(r) ? '1.5px solid rgba(196,168,130,0.45)' : '1px solid rgba(255,255,255,0.07)',
+      weight: regions.includes(r) ? '600' : '400',
+      color: regions.includes(r) ? '#C4A882' : regionAllSelected && r !== '전국' ? 'rgba(196,168,130,0.5)' : 'rgba(255,255,255,0.75)',
+    }));
+
+    const subregionableRegions = regions.filter(r => r !== '전국' && this.SUBREGIONS[r]);
+    const hasSubRegion = !regionAllSelected && subregionableRegions.length > 0;
+    const sr = subregions;
+    const makeSubOpt = (r) => (this.SUBREGIONS[r] || []).map(s => ({
+      name: s,
+      select: () => {
+        if (s === '전체 ' + r) { this.setState({ subregions: sr.includes(s) ? sr.filter(x => x !== s) : [...sr.filter(x => !x.startsWith('전체 ' + r)), s] }); return; }
+        this.setState({ subregions: sr.includes(s) ? sr.filter(x => x !== s) : [...sr.filter(x => x !== '전체 ' + r), s] });
+      },
+      bg: sr.includes(s) || (sr.includes('전체 ' + r) && s !== '전체 ' + r) ? 'rgba(196,168,130,0.1)' : '#242424',
+      border: sr.includes(s) ? '1.5px solid rgba(196,168,130,0.45)' : '1px solid rgba(255,255,255,0.07)',
+      weight: sr.includes(s) ? '600' : '400',
+      color: sr.includes(s) ? '#C4A882' : sr.includes('전체 ' + r) && s !== '전체 ' + r ? 'rgba(196,168,130,0.5)' : 'rgba(255,255,255,0.75)',
+    }));
+    const subregionOptions = subregionableRegions.flatMap(r => makeSubOpt(r));
+    const subregionGroups = subregionableRegions.map(r => ({ region: r, items: makeSubOpt(r) }));
+
+    const regionNextOpacity = regions.length > 0 ? '1' : '0.35';
+    const nextFromRegion = () => { if (regions.length > 0) this.setState({ step: 'year' }); };
+
+    // Year options
+    const yearOptions = this.YEARS.map(y => ({
+      name: y,
+      select: () => {
+        const next = years.includes(y) ? years.filter(x => x !== y) : [...years, y];
+        this.setState({ years: next });
+      },
+      bg: years.includes(y) ? 'rgba(196,168,130,0.12)' : '#242424',
+      border: years.includes(y) ? '1.5px solid rgba(196,168,130,0.5)' : '1px solid rgba(255,255,255,0.07)',
+      weight: years.includes(y) ? '700' : '400',
+      color: years.includes(y) ? '#C4A882' : 'rgba(255,255,255,0.75)',
+    }));
+    const yearNextOpacity = years.length > 0 ? '1' : '0.35';
+    const nextFromYear = () => { if (years.length > 0) this.setState({ step: 'vars' }); };
+
+    // Topic tabs + vars
+    const topicTabs = this.TOPICS.map(t => ({
+      name: t,
+      select: () => this.setState({ activeTopic: t }),
+      bg: activeTopic === t ? 'rgba(196,168,130,0.12)' : 'rgba(255,255,255,0.04)',
+      border: activeTopic === t ? '1px solid rgba(196,168,130,0.35)' : '1px solid rgba(255,255,255,0.08)',
+      weight: activeTopic === t ? '600' : '400',
+      color: activeTopic === t ? '#C4A882' : 'rgba(255,255,255,0.6)',
+    }));
+    // Effective region list — if subregions selected, group by parent
+    const parentOfSub = {};
+    subregionableRegions.forEach(r => {
+      (this.SUBREGIONS[r] || []).forEach(s => { parentOfSub[s] = r; });
+    });
+    const hasSubregs = subregions.length > 0;
+    // Build display regions: each entry has a name (for coverage lookup) and a label
+    const effectiveRegionEntries = regions.includes('전국')
+      ? this.REGIONS.filter(r => r !== '전국').map(r => ({ key: r, label: r }))
+      : hasSubregs
+        ? (() => {
+            // group subregions by parent region
+            const grouped = {};
+            subregions.forEach(s => {
+              const parent = parentOfSub[s] || s;
+              if (!grouped[parent]) grouped[parent] = [];
+              if (!s.startsWith('전체')) grouped[parent].push(s);
+            });
+            return regions.map(r => ({
+              key: r,
+              label: grouped[r] && grouped[r].length
+                ? `${r} (${grouped[r].slice(0,2).join(', ')}${grouped[r].length > 2 ? ` 외 ${grouped[r].length-2}` : ''})`
+                : r
+            }));
+          })()
+        : regions.map(r => ({ key: r, label: r }));
+    const effectiveRegions = effectiveRegionEntries.map(e => e.key);
+
+    const varList = (this.VARS[activeTopic] || []).map(v => {
+      const inBasket = basket.some(b => b.name === v.name);
+      const cov = v.coverage || {};
+      const hasAll = !!cov['전국'];
+
+      // Coverage per selected region × year (matrix)
+      const regionCoverage = effectiveRegionEntries.map(e => {
+        const availYears = hasAll ? cov['전국'] : (cov[e.key] || []);
+        const hasRegion = availYears.length > 0;
+        const yearCells = years.map(y => ({ year: y, has: hasRegion && availYears.includes(y) }));
+        return {
+          name: e.label,
+          has: hasRegion,
+          notHas: !hasRegion,
+          yearCells,
+          allYearsOk: hasRegion && yearCells.every(y => y.has),
+          someYearsOk: hasRegion && yearCells.some(y => y.has),
+        };
+      });
+      const missingRegions = regionCoverage.filter(r => !r.has);
+      const yearCoverage = years.map(y => ({ name: y, has: true })); // kept for compat
+
+      const hasWarning = missingRegions.length > 0;
+      const fullyMissing = regionCoverage.length > 0 && regionCoverage.every(r => !r.has);
+      const isFullCoverage = regionCoverage.length > 0 && regionCoverage.every(r => r.allYearsOk);
+      const isPartialCoverage = !isFullCoverage;
+      const yearHeaders = years.map(y => ({ year: `'${y.slice(2)}` }));
+
+      return {
+        name: v.name,
+        desc: v.desc,
+        regionCoverage,
+        yearCoverage,
+        hasRegionCoverage: regionCoverage.length > 0,
+        hasYearCoverage: yearCoverage.length > 0,
+        hasWarning,
+        fullyMissing,
+        toggle: () => {
+          if (inBasket) { this.setState({ basket: basket.filter(b => b.name !== v.name) }); }
+          else { this.setState({ basket: [...basket, { name: v.name, topic: activeTopic }] }); }
+        },
+        btnBg: inBasket ? 'rgba(196,168,130,0.12)' : fullyMissing ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.06)',
+        btnBorder: inBasket ? '1px solid rgba(196,168,130,0.3)' : '1px solid rgba(255,255,255,0.1)',
+        btnColor: inBasket ? '#C4A882' : fullyMissing ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.5)',
+        btnLabel: inBasket ? '✓ 담음' : '+ 담기',
+        rowOpacity: fullyMissing ? '0.45' : '1',
+        isFullCoverage,
+        isPartialCoverage,
+        yearHeaders,
+      };
+    });
+
+    return {
+      isLanding: view === 'landing',
+      isSelect: view === 'select',
+      goLanding, goSelect,
+      sidebarSteps,
+      isStepUnit: step === 'unit',
+      isStepRegion: step === 'region',
+      isStepYear: step === 'year',
+      isStepVars: step === 'vars',
+      unitOptions,
+      regionOptions, hasSubRegion, subregionOptions, subregionGroups, regionNextOpacity, nextFromRegion,
+      yearOptions, yearNextOpacity, nextFromYear,
+      topicTabs, varList,
+      hasBasket, basketCount, basketPreview, basketOverflow, basketOverflowCount, basketChips,
+    };
+  }
+}
+</script>
+</body>
+</html>
