@@ -61,6 +61,13 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
   크기만 props로 받는 단일 컴포넌트로 만든다.
 - pageEnter 애니메이션(0.35s ease, opacity 0→1 + translateY 12px→0)을
   모든 페이지 루트에 유지한다.
+- **브레이크포인트는 반드시 5개 전부 px로 통일한다.**
+  (2026-08-09 추가 — API 페이지 검증에서 발견한 버그 재발 방지)
+  Tailwind 기본값은 rem 인데 일부만 px 로 덮어쓰면 rem/px 를 수치 비교하지 못해
+  미디어쿼리 정렬이 깨진다. 실제로 xl 만 px 로 바꿨더니 출력 순서가
+  xl(1180px) → sm(40rem) → md(48rem) 이 되어, 1440px 에서 sm:grid-cols-2 가
+  xl:grid-cols-4 를 덮어썼다(API 카드가 4열이 아닌 2열로 렌더).
+  `--breakpoint-*: initial` 로 초기화한 뒤 sm/md/lg/xl/2xl 을 전부 px 로 정의한다.
 
 ---
 
@@ -251,6 +258,24 @@ reference와 각각 픽셀 차분한 결과:
 두껍다. 위치·박스 크기는 정확히 일치한다(네비 "회원가입" 알약 실측 좌 232 / 우 1238 /
 상 16 / 하 48 양쪽 동일). 캡처 OS·렌더러 차이로 보이며 CSS로 제거할 수 없다.
 → **글자 안티에일리어싱 굵기 차이는 차이로 보고하지 않는다. 그 외는 전부 검증 대상이다.**
+
+**★ reference PNG 는 하단이 고정 48px 로 잘려 있다 (2026-08-09, API 검증 시점)**
+
+`scripts/bottom-gap.mjs` 로 측정한 결과, 원본 CSS 의 마지막 섹션 `padding-bottom` 이
+페이지마다 다른데도 **모든 reference PNG 의 하단 여백이 정확히 48px** 이다.
+
+| 파일 | 원본 CSS padding-bottom | reference 실측 하단 여백 |
+|---|---|---|
+| 01-home.png | 100px | 49px |
+| 02-data-landing.png | 80px | 48px |
+| 07-api.png | 80px | 48px |
+| 08-request-landing.png | 72px | 48px |
+| 09/10/11-request-*.png | 72px | 48px |
+
+캡처 도구가 하단을 고정 48px 로 정규화(잘라냄)한 것이다.
+→ **마지막 섹션의 하단 패딩은 reference 로 검증할 수 없다. 원본 CSS 를 따른다.**
+→ 전체 페이지 높이가 reference 보다 큰 것은 정상이다. 차이로 보고하지 말 것.
+   (그 위 구간의 높이·위치는 정상적으로 검증 대상이다)
 
 한편 01-home의 "AI-Ready 공간 데이터 플랫폼" 배지, 07-api의 "문서 보기" 버튼,
 08-request-landing의 "Custom Data Request" 배지 등이 reference에서 2줄로 줄바꿈된

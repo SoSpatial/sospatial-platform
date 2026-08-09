@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { LogoMark } from '@/components/icons/LogoMark'
 import { FolderIcon } from '@/components/icons/FolderIcon'
 import { MenuIcon, CloseIcon } from '@/components/icons/MenuIcon'
+import { Button } from '@/components/ui/Button'
 import { NAV_LINKS } from '@/lib/nav'
 
 /**
@@ -73,20 +74,12 @@ export function SiteNav() {
             <FolderIcon size={16} />
           </Link>
 
-          <button
-            type="button"
-            aria-label="로그인"
-            className="hidden rounded-ctrl border border-line-18 px-5 py-2 text-13-5 font-medium text-ink-70 hover:bg-fill-06 md:block"
-          >
+          <Button variant="ghost" size="sm" aria-label="로그인" className="hidden md:block">
             로그인
-          </button>
-          <button
-            type="button"
-            aria-label="회원가입"
-            className="rounded-ctrl bg-inverse px-5 py-2 text-13-5 font-semibold text-inverse-ink hover:bg-inverse-hover"
-          >
+          </Button>
+          <Button variant="white" size="sm" aria-label="회원가입">
             회원가입
-          </button>
+          </Button>
 
           {/* 햄버거 (md 미만) */}
           <button
