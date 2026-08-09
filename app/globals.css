@@ -239,11 +239,15 @@
   --color-revoke-line-20: rgba(220, 70, 70, 0.2);
   --color-revoke-ink: rgba(220, 100, 100, 0.85);
 
-  /* 상태 틴트 */
-  --color-emerald-tint-08: rgba(52, 211, 153, 0.08);
-  --color-emerald-tint-10: rgba(52, 211, 153, 0.1);
-  --color-emerald-line-18: rgba(52, 211, 153, 0.18);
-  --color-emerald-line-20: rgba(52, 211, 153, 0.2);
+  /*
+    상태 틴트 — 기저색은 #34D399(--color-chart-green) 다.
+    ⚠ --color-emerald(#059669) 과는 다른 색이므로 emerald-* 로 부르지 말 것.
+    파일 선택 완료 배지 :1524, AI 응답 1위 카드 :1046
+  */
+  --color-chart-green-tint-08: rgba(52, 211, 153, 0.08);
+  --color-chart-green-tint-10: rgba(52, 211, 153, 0.1);
+  --color-chart-green-line-18: rgba(52, 211, 153, 0.18);
+  --color-chart-green-line-20: rgba(52, 211, 153, 0.2);
 
   /*
     API "개발자용" 배지 (원본 :575) — 배경·보더는 chart-blue(#6B8FFF) 틴트,

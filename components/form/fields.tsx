@@ -47,18 +47,28 @@ export function TextInput({
   return <input className={cn(CONTROL, 'text-ink', className)} {...rest} />
 }
 
+/**
+ * 문자열 배열이면 값=라벨, 객체면 value/label 을 분리한다.
+ * (업로드 폼의 "서비스 선택..." 처럼 value 가 빈 문자열인 옵션이 있다 — 원본 :1513)
+ */
+export type SelectOption = string | { value: string; label: string }
+
 export function SelectInput({
   options,
   className,
   ...rest
-}: { options: readonly string[] } & React.SelectHTMLAttributes<HTMLSelectElement>) {
+}: { options: readonly SelectOption[] } & React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <select className={cn(CONTROL, 'cursor-pointer text-ink-70', className)} {...rest}>
-      {options.map((o) => (
-        <option key={o} value={o}>
-          {o}
-        </option>
-      ))}
+      {options.map((o) => {
+        const value = typeof o === 'string' ? o : o.value
+        const label = typeof o === 'string' ? o : o.label
+        return (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        )
+      })}
     </select>
   )
 }

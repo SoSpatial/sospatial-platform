@@ -24,22 +24,35 @@ const STEPS = ['요청 방식 선택', '요청 정보 입력', '검토 및 제�
 export function ProgressSteps({
   activeColor,
   activeIndex = 1,
+  textPillDisplay = 'flex',
 }: {
   activeColor: keyof typeof ACTIVE_BG
   /** 기본값 1 = "요청 정보 입력" 단계 (폼 3종 공통) */
   activeIndex?: number
+  /**
+   * ★ 원본에서 텍스트만 있는 pill 의 display 가 폼마다 다르다.
+   *   source   :1295 `display:flex;align-items:center;gap:6px` → 라인박스가 11.5px 기준
+   *   upload   :1470 / describe :1602 — display 지정 없음(블록)
+   *     → 부모의 16px strut 이 라인박스를 키워 pill 이 약 6px 높아지고,
+   *       그만큼 아래 폼 카드가 내려간다(원본 실측 191.5 vs 197.5).
+   *   체크 아이콘이 있는 "완료" pill 은 세 폼 모두 flex 다.
+   */
+  textPillDisplay?: 'flex' | 'block'
 }) {
   return (
     <div className="mb-7 flex items-center gap-2">
       {STEPS.map((label, i) => {
         const done = i < activeIndex
         const active = i === activeIndex
+        // 완료 pill 은 아이콘이 있어 항상 flex
+        const asFlex = done || textPillDisplay === 'flex'
         return (
           <div key={label} className="contents">
             {i > 0 && <div className="h-px w-8 bg-line-15" />}
             <div
               className={cn(
-                'flex items-center gap-1.5 rounded-pill px-3 py-1',
+                'rounded-pill px-3 py-1',
+                asFlex && 'flex items-center gap-1.5',
                 done && 'bg-accent',
                 active && ACTIVE_BG[activeColor],
                 !done && !active && 'bg-fill-06'

@@ -1,5 +1,6 @@
 import { AccentLink } from '@/components/ui/AccentLink'
 import { Card } from '@/components/ui/Card'
+import { cn } from '@/lib/cn'
 
 /**
  * 작성 가이드 사이드바 — 원본 :1422-1450 (source) / :1561-1582 (upload) / :1634-1655 (describe)
@@ -20,10 +21,27 @@ import { Card } from '@/components/ui/Card'
  */
 export type GuideItem = { icon: React.ReactNode; title: string; desc: string }
 
-export function WritingGuide({ items }: { items: GuideItem[] }) {
+/**
+ * ⚠ 제목 자간이 폼마다 다르다 — source 만 -0.2px 이고(:1423)
+ *   upload(:1562)·describe(:1635) 는 지정이 없다. 원본 그대로 유지한다.
+ */
+export function WritingGuide({
+  items,
+  titleTracking = 'tight',
+}: {
+  items: GuideItem[]
+  titleTracking?: 'tight' | 'none'
+}) {
   return (
     <Card radius="panel" className="sticky top-20 p-5.5">
-      <h3 className="mb-4 text-14 font-bold tracking-cta text-ink">작성 가이드</h3>
+      <h3
+        className={cn(
+          'mb-4 text-14 font-bold text-ink',
+          titleTracking === 'tight' && 'tracking-cta'
+        )}
+      >
+        작성 가이드
+      </h3>
 
       <div className="mb-4.5 flex flex-col gap-2.75">
         {items.map((it) => (

@@ -61,6 +61,14 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
   크기만 props로 받는 단일 컴포넌트로 만든다.
 - pageEnter 애니메이션(0.35s ease, opacity 0→1 + translateY 12px→0)을
   모든 페이지 루트에 유지한다.
+- **프리미티브로 묶을 때 원본이 페이지마다 다르게 쓰는 값을 통일하지 않는다.**
+  차이가 있으면 prop 으로 열어둔다.
+  (2026-08-09 추가 — /request/upload 검증에서 발견)
+  예: 진행 스텝 pill 이 source(:1295)는 `display:flex` 인데
+  upload(:1470)·describe(:1602)는 블록이라 pill 높이가 6px 다르다.
+  하나로 묶어 flex 로 통일했더니 폼 카드가 6px 위로 올라갔다.
+  → `textPillDisplay` prop 으로 원본 그대로 재현.
+  묶는 과정에서 원본의 불일치를 "정리"하려는 충동을 경계할 것.
 - **브레이크포인트는 반드시 5개 전부 px로 통일한다.**
   (2026-08-09 추가 — API 페이지 검증에서 발견한 버그 재발 방지)
   Tailwind 기본값은 rem 인데 일부만 px 로 덮어쓰면 rem/px 를 수치 비교하지 못해
@@ -239,6 +247,18 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
 | `13-modal-share.png` | 공유 모달 | ❌ 다음 단계 |
 | `14-modal-file-picker.png` | 파일 피커 모달 | ❌ 다음 단계 |
 | `15-modal-edit-data.png` | ⚠️ `05-projects-detail.png`와 바이트 단위로 동일한 중복 파일 | ❌ |
+
+**★ 재추출이 필요한 reference (모달 단계 진입 시 요청할 것)**
+
+모달 reference 4장 중 2장이 사용 불가다.
+
+| 파일 | 문제 | 확인 방법 |
+|---|---|---|
+| `14-modal-file-picker.png` | **파일 피커 모달이 캡처되지 않았다.** `10-request-upload.png` 와 픽셀 비교 시 `x 0–938, y 0–64`(네비 좌측)만 다르고 나머지는 동일하다. 모달 백드롭 일부만 그려지고 패널은 없다 | `node scripts/diff-refs.mjs 10-request-upload.png 14-modal-file-picker.png` |
+| `15-modal-edit-data.png` | `05-projects-detail.png` 와 **md5 동일**. 편집 모달이 아니라 프로젝트 상세 화면이다 | `md5sum reference/*.png` |
+
+→ 파일 피커 모달은 원본 HTML `:1662-1720` 을 기준으로 구현했고 computed 값으로만 확인했다.
+   재추출본을 받으면 다시 검증할 것.
 
 ---
 
