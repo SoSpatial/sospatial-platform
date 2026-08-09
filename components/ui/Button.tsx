@@ -74,17 +74,19 @@ export function Button({
   children,
   ...rest
 }: BaseProps & Record<string, unknown>) {
-  const classes = cn(
-    'inline-block cursor-pointer text-center',
-    VARIANT[variant],
-    SIZE[size],
-    className
-  )
+  const base = cn('cursor-pointer', VARIANT[variant], SIZE[size])
 
   if (typeof rest.href === 'string') {
     const { href, ...anchorRest } = rest as { href: string }
+    /*
+      <a> 는 기본이 inline 이라 세로 패딩이 레이아웃에 반영되지 않는다.
+      링크로 렌더할 때만 inline-block 을 준다.
+      ★ <button> 에는 주지 않는다. display 유틸리티끼리 충돌해
+        호출부의 `hidden md:block` 같은 클래스를 덮어쓰기 때문이다
+        (네비 "로그인"이 375px 에서 숨겨지지 않던 원인).
+    */
     return (
-      <Link href={href} className={classes} {...anchorRest}>
+      <Link href={href} className={cn('inline-block text-center', base, className)} {...anchorRest}>
         {children}
       </Link>
     )
@@ -92,7 +94,7 @@ export function Button({
 
   const { type = 'button', ...buttonRest } = rest as { type?: 'button' | 'submit' | 'reset' }
   return (
-    <button type={type} className={classes} {...buttonRest}>
+    <button type={type} className={cn(base, className)} {...buttonRest}>
       {children}
     </button>
   )

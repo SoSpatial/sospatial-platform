@@ -61,6 +61,16 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
   크기만 props로 받는 단일 컴포넌트로 만든다.
 - pageEnter 애니메이션(0.35s ease, opacity 0→1 + translateY 12px→0)을
   모든 페이지 루트에 유지한다.
+- **컴포넌트 베이스 클래스에 `display` 를 넣으면 호출부의 `hidden` 이 무력화될 수 있다.**
+  (2026-08-09 추가 — 홈 반응형 패스에서 발견)
+  Tailwind 는 클래스 문자열 순서가 아니라 **CSS 출력 순서**로 승부가 난다.
+  같은 속성(display)의 유틸리티는 뒤에 출력된 쪽이 이기므로,
+  `Button` 베이스의 `inline-block` 이 호출부의 `hidden md:block` 을 덮어써
+  네비 "로그인"이 375px 에서 숨겨지지 않았다.
+  → 베이스에는 꼭 필요한 경우에만 display 를 넣고, 필요하면 조건부로 적용한다.
+    (Button 은 `<a>` 로 렌더할 때만 inline-block 을 준다)
+  같은 이유로 `p-*`, `text-*` 등도 베이스에 넣으면 호출부 오버라이드가 불안정하다.
+  변형이 필요하면 className 오버라이드보다 prop(variant/size)으로 여는 편이 안전하다.
 - **프리미티브로 묶을 때 원본이 페이지마다 다르게 쓰는 값을 통일하지 않는다.**
   차이가 있으면 prop 으로 열어둔다.
   (2026-08-09 추가 — /request/upload 검증에서 발견)
