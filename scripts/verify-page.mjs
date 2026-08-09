@@ -8,9 +8,13 @@ import { chromium } from 'playwright'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const [, , route = '/', refFile = '01-home.png', name = 'page', maxYArg] = process.argv
-/** 부분 구현 중일 때 비교 구간을 CSS y 로 제한한다 (예: 히어로만) */
+const [, , route = '/', refFile = '01-home.png', name = 'page', maxYArg, minYArg, x0Arg, x1Arg] =
+  process.argv
+/** 부분 구현 중일 때 비교 구간을 CSS 좌표로 제한한다 */
 const MAX_CSS_Y = maxYArg ? Number(maxYArg) : null
+const MIN_CSS_Y = minYArg ? Number(minYArg) : 0
+const X0 = x0Arg ? Number(x0Arg) : 0
+const X1 = x1Arg ? Number(x1Arg) : null
 
 const ROOT = process.cwd()
 const OUT = path.join(ROOT, 'screenshots')
@@ -30,7 +34,7 @@ await page.screenshot({ path: implPath, fullPage: true })
 // ── 차분 ────────────────────────────────────────────────────────────
 const refPath = path.join(ROOT, 'reference', refFile)
 const cmp = await page.evaluate(
-  async ([refSrc, implSrc, maxCssY]) => {
+  async ([refSrc, implSrc, maxCssY, minCssY, cx0, cx1]) => {
     const load = (src) =>
       new Promise((res, rej) => {
         const i = new Image()
@@ -64,12 +68,17 @@ const cmp = await page.evaluate(
     const delta = (p, q) =>
       Math.max(Math.abs(p[0] - q[0]), Math.abs(p[1] - q[1]), Math.abs(p[2] - q[2]))
 
+    const yStart = Math.max(0, (minCssY || 0) * 2)
+    const xStart = Math.max(0, (cx0 || 0) * 2)
+    const xEnd = cx1 ? Math.min(W, cx1 * 2) : W
+    const area = (H - yStart) * (xEnd - xStart)
+
     let n = 0
     let sum = 0
     let nTol = 0 // ±2 이미지픽셀(=±1 CSS px) 세로 정렬 오차를 허용한 차이
     const rowBuckets = {}
-    for (let y = 0; y < H; y++) {
-      for (let x = 0; x < W; x++) {
+    for (let y = yStart; y < H; y++) {
+      for (let x = xStart; x < xEnd; x++) {
         const p = px(a, x, y)
         const q = px(b, x, y)
         const d = delta(p, q)
@@ -102,16 +111,16 @@ const cmp = await page.evaluate(
       refCssHeight: ref.height / 2,
       implCssHeight: impl.height / 2,
       heightDelta: (impl.height - ref.height) / 2,
-      comparedArea: `${W}x${H}`,
+      comparedArea: `x ${xStart / 2}–${xEnd / 2}, y ${yStart / 2}–${H / 2}`,
       diffPixels: n,
-      diffPercent: +((n / (W * H)) * 100).toFixed(3),
+      diffPercent: +((n / area) * 100).toFixed(3),
       diffPixelsAligned: nTol,
-      diffPercentAligned: +((nTol / (W * H)) * 100).toFixed(3),
-      avgDelta: +(sum / (W * H)).toFixed(2),
+      diffPercentAligned: +((nTol / area) * 100).toFixed(3),
+      avgDelta: +(sum / area).toFixed(2),
       hotRows,
     }
   },
-  [toDataUrl(refPath), toDataUrl(implPath), MAX_CSS_Y]
+  [toDataUrl(refPath), toDataUrl(implPath), MAX_CSS_Y, MIN_CSS_Y, X0, X1]
 )
 
 console.log(JSON.stringify(cmp, null, 2))
