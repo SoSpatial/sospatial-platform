@@ -3,6 +3,7 @@ import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { FeatureCard } from '@/components/home/FeatureCard'
 import { DataSearchMock } from '@/components/home/DataSearchMock'
+import { ReportMock } from '@/components/home/ReportMock'
 import { FEATURE_CARDS } from '@/lib/content/home'
 
 /**
@@ -41,7 +42,15 @@ export function CoreFeatures() {
           {FEATURE_CARDS.map((c) => (
             <FeatureCard
               key={c.key}
-              mock={c.key === 'data' ? <DataSearchMock /> : <MockPlaceholder />}
+              mock={
+                c.key === 'data' ? (
+                  <DataSearchMock />
+                ) : c.key === 'request' ? (
+                  <ReportMock />
+                ) : (
+                  <MockPlaceholder />
+                )
+              }
               title={c.title}
               desc={c.desc}
               chips={c.chips}
