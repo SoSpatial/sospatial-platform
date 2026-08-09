@@ -5,6 +5,7 @@ import { PageRoot } from '@/components/layout/PageRoot'
 import { Section } from '@/components/layout/Section'
 import { Container } from '@/components/layout/Container'
 import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
 import { NumberBadge } from '@/components/ui/NumberBadge'
 import { Toast, useToast } from '@/components/ui/Toast'
 import { BackLink } from '@/components/request/BackLink'
@@ -169,13 +170,10 @@ export function UploadForm() {
                 </div>
 
                 <div className="mt-6 flex items-center gap-3">
-                  {/* 원본 :1555 — emerald 배경 흰 글자, padding 12px 28px */}
-                  <button
-                    type="submit"
-                    className="cursor-pointer rounded-field bg-emerald px-7 py-3 text-14 font-bold text-ink hover:bg-emerald-hover"
-                  >
+                  {/* 원본 :1555 — padding 12px 28px 이라 md(24px) + px-7 로 조합 */}
+                  <Button type="submit" variant="emerald" size="md" className="px-7">
                     데이터 요청하기 →
-                  </button>
+                  </Button>
                   <span className="text-12-5 text-ink-30">{SUBMIT_NOTE}</span>
                 </div>
               </form>

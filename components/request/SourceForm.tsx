@@ -193,7 +193,6 @@ export function SourceForm() {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="분야 목적, 활용 계획, 추가 요청 사항을 입력하세요."
-                    className="min-h-20"
                   />
                 </FormField>
 

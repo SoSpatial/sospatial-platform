@@ -11,8 +11,14 @@ import { cn } from '@/lib/cn'
  *   white     흰 pill  #fff / #111 / 600, hover #E8E8E8      네비 회원가입 :58, 홈 히어로 CTA :86
  *   ghost     고스트   투명 / 1px   line-18 / ink-70 / 500, hover fill-06   네비 로그인 :57
  *   ghostBold 고스트   투명 / 1.5px line-18 / ink-70 / 500, hover fill-05   홈 히어로 보조 :87
- *   accent    액센트   #C4A882 / #1A1A1A / 700, hover #B09470 API 키 발급 :582, Request 제출 :1414
- *   ghostSoft 연한 면  fill-06 / 1px line-12 / ink-80 / 500    API 문서 보기 :583, Request 연결하기 :1521
+ *   accent    액센트   #C4A882 / #1A1A1A / 700, hover #B09470 API 키 발급 :582, source 제출 :1414
+ *   emerald   에메랄드 #059669 / #fff    / 700, hover #047857 upload 제출 :1555
+ *   violet    보라     #7C3AED / #fff    / 700, hover #6D28D9 describe 제출 :1628
+ *   ghostSoft 연한 면  fill-06 / 1px line-12 / ink-80 / 500    API 문서 보기 :583
+ *
+ * ※ 요청 폼 3종의 제출 버튼은 색 3요소(배경/글자/hover)만 다르고 나머지가 같다.
+ *   패딩은 원본이 12px 28px 이라 size="md"(24px) + className="px-7" 로 조합한다.
+ *   px-7 은 lg(홈 히어로)에도 쓰여 크기 축과 직교하지 않으므로 4번째 size 를 만들지 않았다.
  *
  * ※ ghost 와 ghostBold 는 원본에서 실제로 보더 두께(1px / 1.5px)와
  *   hover 배경(0.06 / 0.05)이 다르다. 통합하지 말 것.
@@ -28,6 +34,8 @@ const VARIANT = {
   // 1.5px 는 Tailwind 기본 보더 스케일에 없어 임의값을 쓴다 (원본 :87)
   ghostBold: 'border-[1.5px] border-line-18 text-ink-70 font-medium hover:bg-fill-05',
   accent: 'bg-accent text-accent-ink font-bold hover:bg-accent-hover',
+  emerald: 'bg-emerald text-ink font-bold hover:bg-emerald-hover',
+  violet: 'bg-violet text-ink font-bold hover:bg-violet-hover',
   ghostSoft: 'bg-fill-06 border border-line-12 text-ink-80 font-medium hover:bg-fill-10',
 } as const
 

@@ -73,14 +73,26 @@ export function SelectInput({
   )
 }
 
+/**
+ * ★ 원본 textarea 는 폼마다 스펙이 다르다. 통일하지 말고 size 로 고른다.
+ *   sm  :1410 source   padding 12 / 13px   / ink-70 / line-height 1.6  / min-height 80
+ *   lg  :1623 describe  padding 16 / 13.5px / ink-75 / line-height 1.75 / min-height 200
+ */
+const TEXTAREA_SIZE = {
+  sm: 'p-3 text-13 leading-1-6 text-ink-70 min-h-20',
+  lg: 'p-4 text-13-5 leading-1-75 text-ink-75 min-h-50',
+} as const
+
 export function TextareaInput({
+  size = 'sm',
   className,
   ...rest
-}: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+}: { size?: keyof typeof TEXTAREA_SIZE } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
       className={cn(
-        'w-full resize-y rounded-ctrl border border-line-10 bg-surface-raised p-3 text-13 leading-1-6 text-ink-70 outline-none',
+        'w-full resize-y rounded-ctrl border border-line-10 bg-surface-raised outline-none',
+        TEXTAREA_SIZE[size],
         className
       )}
       {...rest}
