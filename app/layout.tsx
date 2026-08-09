@@ -2,30 +2,46 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { SiteNav } from '@/components/layout/SiteNav'
 import { SiteFooter } from '@/components/layout/SiteFooter'
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from '@/lib/site'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'SoSpatial — AI-Ready 공간 데이터 플랫폼',
-    template: '%s · SoSpatial',
+    default: SITE_TITLE,
+    template: `%s · ${SITE_NAME}`,
   },
-  description:
-    '흩어진 공간 데이터를 바로 쓸 수 있게. 데이터를 찾고, AI로 분석하고, 전문가와 함께 활용하세요.',
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    locale: 'ko_KR',
+    url: '/',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  // 페이지별 title/description 은 template 을 통해 OG 에도 자동 반영된다.
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ko">
-      {/*
-        flex 컬럼 + main flex-1 로 콘텐츠가 짧아도 푸터가 화면 하단에 붙는다.
-        (min-h-screen 만으로는 푸터 아래에 빈 공간이 남는다)
-      */}
       <body className="flex min-h-screen flex-col bg-bg font-sans">
         {/*
           Pretendard Variable — jsDelivr CDN (CLAUDE.md 구현 원칙: CDN 방식 유지)
           원본: SoSpatial Platform.dc.html :11
-          React 19 는 <link rel="stylesheet"> 를 <head> 로 호이스팅한다.
+          React 19 는 <link> 를 <head> 로 호이스팅한다.
           (node_modules/next/dist/docs/01-app/01-getting-started/11-css.md:348)
+
+          preconnect 를 함께 둬서 DNS·TLS 핸드셰이크를 크리티컬 패스에서 앞당긴다.
+          이 스타일시트는 precedence 때문에 렌더 블로킹이라 연결 지연이 곧 첫 페인트 지연이다.
         */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css"
