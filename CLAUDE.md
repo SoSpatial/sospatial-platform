@@ -94,6 +94,17 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
   xl(1180px) → sm(40rem) → md(48rem) 이 되어, 1440px 에서 sm:grid-cols-2 가
   xl:grid-cols-4 를 덮어썼다(API 카드가 4열이 아닌 2열로 렌더).
   `--breakpoint-*: initial` 로 초기화한 뒤 sm/md/lg/xl/2xl 을 전부 px 로 정의한다.
+- **라벨↔컨트롤 연결은 `useId()` + render-prop 으로 한다.** `cloneElement` 는 쓰지 않는다.
+  (2026-08-09 추가) `FormField` 가 `{ id, labelId }` 를 자식 함수에 내려주고, 호출부가
+  받은 id 를 직접 컨트롤에 붙인다. 자식의 구조를 몰라도 되고, 래퍼가 한 겹 끼어도 깨지지 않는다.
+  라벨 1개에 컨트롤 N개인 경우(연도 시작/종료, 변수 입력 목록)는 `as="group"` 으로
+  `role="group" aria-labelledby` 를 씌우고 각 컨트롤에 `aria-label` 을 따로 준다.
+- **컨트롤 클래스에 `outline-none` 을 넣지 않는다.** 넣으면 `globals.css` 의
+  `:focus-visible` 링이 무력화돼 키보드 사용자가 현재 위치를 잃는다.
+  원본의 `outline:none` 은 **디자인 의도가 아니라 프로토타입의 관성적 처리**로 본다.
+  (2026-08-10 확정) 편집 가능 필드가 마우스 클릭에도 링을 띄우는 것은 브라우저가 의도한
+  동작이므로 그대로 둔다. `:focus-visible:not(:active)` 같은 제한은 걸지 말 것 —
+  클릭 중엔 안 보이다가 손을 떼면 뜨는 어색한 동작이 되거나 표시가 아예 사라진다.
 
 ---
 
@@ -161,9 +172,39 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
 | 6 | **페이지 전환/스크롤** | 단일 state → Next 라우터. `pageEnter` 애니메이션은 유지, `window.scrollTo({top:0})`는 Next 기본 스크롤 복원으로 대체 | 영향 없음 |
 | 7 | **`<select>` 화살표** | 네이티브 select — OS/브라우저마다 모양이 다름. reference의 화살표는 캡처 환경 것 | **제외** |
 | 8 | **폰트 로딩 FOUT** | jsDelivr CDN `<link>` 유지 지시(`next/font` 미사용) | 영향 없음 |
-| 9 | **포커스 링** | 원본은 `outline:none`만 있음. `focus-visible`에만 최소 링 추가 (결정 8번) | 정적 캡처라 영향 없음 |
+| 9 | **포커스 링** | 원본은 `outline:none`만 있음. `focus-visible`에만 최소 링 추가 (결정 8번). **실측 결과 `<input>`·`<textarea>`·`<select>` 는 마우스 클릭에도 `:focus-visible` 이 매칭돼 링이 뜬다** — 명세상 키보드 입력을 받는 컨트롤의 정의된 동작이다. 라디오·버튼·링크는 클릭 시 링이 뜨지 않는다 | 정적(비포커스) 캡처라 영향 없음 |
 | 10 | **API 히어로 우측 빈 컬럼** | 원본이 `1fr 340px` 그리드인데 우측 셀이 비어 있음. 좌측 폭을 결정하므로 **그대로 재현**. 임의로 채우거나 그리드를 없애지 말 것 | 재현 대상 (차이 아님) |
 | 11 | **푸터 카피라이트 연도가 빌드 시점에 고정** | `{new Date().getFullYear()}` 를 서버 컴포넌트에서 평가하고 해당 라우트가 정적 생성이므로, 해가 바뀌어도 재빌드 전까지 갱신되지 않는다. 사용자 인지·승인 하에 현행 유지. 자동 갱신이 필요해지면 푸터를 클라이언트 컴포넌트로 분리하거나 동적 렌더링으로 전환할 것 | 해당 없음 |
+
+---
+
+## 배포 준비 (확정 사항)
+
+### 도메인 — `NEXT_PUBLIC_SITE_URL`
+- `lib/site.ts` 가 단일 출처. `metadataBase` / `openGraph.url` / `sitemap.xml` / `robots.txt` 가 전부 여기서 나온다.
+- **폴백은 `http://localhost:3000`.** 값이 없으면 OG·sitemap 의 절대 URL이 localhost 로 나가
+  SNS 미리보기와 색인이 깨진다. 배포 환경에 반드시 주입할 것.
+- `SITE_URL_IS_FALLBACK` 으로 폴백 사용 여부를 판별할 수 있다. `.env.example` 참조.
+
+### 색인 정책
+- **sitemap 포함**: `/`, `/api`, `/request`, `/request/{source,upload,describe}` — 6개뿐.
+- **제외 + `noindex, follow`**: `/data`, `/projects`, `/maps`, `/terms`, `/privacy`.
+  내용이 없는 플레이스홀더다. `robots.txt` 의 `Disallow` 가 아니라 **페이지별 메타**로 막는다
+  (Disallow 는 크롤을 막을 뿐 색인을 막지 못하고, `noindex` 를 읽지도 못하게 만든다).
+- 각 페이지 콘텐츠가 실제로 채워지면 `robots` 를 지우고 `SITEMAP_ROUTES` 에 추가한다.
+
+### 아이콘
+- `app/icon.svg` (32×32, `#181818` 배경 rx=7) + `app/apple-icon.png` (180×180, **알파 없는 RGB**).
+  iOS 는 자체 마스크로 깎으므로 apple-icon 은 모서리를 직각으로 두고 배경을 불투명하게 채운다.
+- `scripts/make-apple-icon.mjs` 로 재생성한다. 로고 기하는 `components/icons/LogoMark.tsx` 와 동일.
+- `app/favicon.ico`(Next 스캐폴딩 기본값)는 삭제했다. 되살리지 말 것 — `icon.svg` 보다 우선한다.
+
+### 고대비 대안 (`prefers-contrast: more`)
+- 원본 팔레트의 저알파 텍스트는 WCAG 미달이다(#181818 기준 ink-30 2.71 / ink-25 2.26 / ink-20 1.89).
+- **범위를 의도적으로 좁혔다**: `--color-ink-25` 만 0.45 로 올린다 → placeholder·글자수 카운터
+  2.26 → 4.49. 통계 라벨·API 경로 등 보조 텍스트(ink-30/28/22/20)는 건드리지 않는다.
+  "읽히지 않으면 조작이 불가능한 것"과 "정보가 덜 보이는 것"은 다른 문제다.
+- 기본 상태에는 영향이 없어 reference 차분 6개가 그대로 유지된다.
 
 ---
 
