@@ -1,5 +1,6 @@
 import { PageRoot } from '@/components/layout/PageRoot'
 import { HomeHero } from '@/components/home/HomeHero'
+import { CoreFeatures } from '@/components/home/CoreFeatures'
 
 /**
  * 홈 — 원본 SoSpatial Platform.dc.html :64-219
@@ -14,6 +15,7 @@ export default function HomePage() {
   return (
     <PageRoot>
       <HomeHero />
+      <CoreFeatures />
     </PageRoot>
   )
 }
