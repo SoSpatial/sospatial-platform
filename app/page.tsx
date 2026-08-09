@@ -1,9 +1,19 @@
-import { ComingSoon } from '@/components/ui/ComingSoon'
+import { PageRoot } from '@/components/layout/PageRoot'
+import { HomeHero } from '@/components/home/HomeHero'
 
 /**
- * 홈 — 다음 단계에서 구현한다 (reference/01-home.png).
- * 지금은 네비게이션 검증을 위한 임시 플레이스홀더다.
+ * 홈 — 원본 SoSpatial Platform.dc.html :64-219
+ * 검증 기준: reference/01-home.png
+ *
+ * 단계별 구현 중:
+ *   1) 히어로 + 통계        ← 현재
+ *   2) CORE FEATURES 밴드 + 카드 셸 (목업은 185px 빈 박스)
+ *   3) 목업 3종 (DataSearchMock → ReportMock → MapAnalysisMock)
  */
 export default function HomePage() {
-  return <ComingSoon title="홈" />
+  return (
+    <PageRoot>
+      <HomeHero />
+    </PageRoot>
+  )
 }

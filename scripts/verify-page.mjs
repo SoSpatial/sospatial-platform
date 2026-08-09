@@ -8,7 +8,9 @@ import { chromium } from 'playwright'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const [, , route = '/', refFile = '01-home.png', name = 'page'] = process.argv
+const [, , route = '/', refFile = '01-home.png', name = 'page', maxYArg] = process.argv
+/** 부분 구현 중일 때 비교 구간을 CSS y 로 제한한다 (예: 히어로만) */
+const MAX_CSS_Y = maxYArg ? Number(maxYArg) : null
 
 const ROOT = process.cwd()
 const OUT = path.join(ROOT, 'screenshots')
@@ -28,7 +30,7 @@ await page.screenshot({ path: implPath, fullPage: true })
 // ── 차분 ────────────────────────────────────────────────────────────
 const refPath = path.join(ROOT, 'reference', refFile)
 const cmp = await page.evaluate(
-  async ([refSrc, implSrc]) => {
+  async ([refSrc, implSrc, maxCssY]) => {
     const load = (src) =>
       new Promise((res, rej) => {
         const i = new Image()
@@ -40,7 +42,8 @@ const cmp = await page.evaluate(
     const impl = await load(implSrc)
 
     const W = Math.min(ref.width, impl.width)
-    const H = Math.min(ref.height, impl.height)
+    let H = Math.min(ref.height, impl.height)
+    if (maxCssY) H = Math.min(H, maxCssY * 2)
     const mk = () => {
       const c = document.createElement('canvas')
       c.width = W
@@ -108,7 +111,7 @@ const cmp = await page.evaluate(
       hotRows,
     }
   },
-  [toDataUrl(refPath), toDataUrl(implPath)]
+  [toDataUrl(refPath), toDataUrl(implPath), MAX_CSS_Y]
 )
 
 console.log(JSON.stringify(cmp, null, 2))

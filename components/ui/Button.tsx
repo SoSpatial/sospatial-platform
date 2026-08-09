@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { cn } from '@/lib/cn'
 
 /**
@@ -8,9 +9,13 @@ import { cn } from '@/lib/cn'
  *
  * variant (원본 근거)
  *   white     흰 pill  #fff / #111 / 600, hover #E8E8E8      네비 회원가입 :58, 홈 히어로 CTA :86
- *   ghost     고스트   투명 / 1px line-18 / ink-70 / 500      네비 로그인 :57, 홈 히어로 보조 :87
+ *   ghost     고스트   투명 / 1px   line-18 / ink-70 / 500, hover fill-06   네비 로그인 :57
+ *   ghostBold 고스트   투명 / 1.5px line-18 / ink-70 / 500, hover fill-05   홈 히어로 보조 :87
  *   accent    액센트   #C4A882 / #1A1A1A / 700, hover #B09470 API 키 발급 :582, Request 제출 :1414
  *   ghostSoft 연한 면  fill-06 / 1px line-12 / ink-80 / 500    API 문서 보기 :583, Request 연결하기 :1521
+ *
+ * ※ ghost 와 ghostBold 는 원본에서 실제로 보더 두께(1px / 1.5px)와
+ *   hover 배경(0.06 / 0.05)이 다르다. 통합하지 말 것.
  *
  * size (원본 근거)
  *   sm  padding 8px 20px  / 13.5px / radius 8px   네비 :57-58
@@ -20,6 +25,8 @@ import { cn } from '@/lib/cn'
 const VARIANT = {
   white: 'bg-inverse text-inverse-ink font-semibold hover:bg-inverse-hover',
   ghost: 'border border-line-18 text-ink-70 font-medium hover:bg-fill-06',
+  // 1.5px 는 Tailwind 기본 보더 스케일에 없어 임의값을 쓴다 (원본 :87)
+  ghostBold: 'border-[1.5px] border-line-18 text-ink-70 font-medium hover:bg-fill-05',
   accent: 'bg-accent text-accent-ink font-bold hover:bg-accent-hover',
   ghostSoft: 'bg-fill-06 border border-line-12 text-ink-80 font-medium hover:bg-fill-10',
 } as const
@@ -30,27 +37,54 @@ const SIZE = {
   lg: 'px-7 py-3.5 text-15 rounded-btn tracking-cta',
 } as const
 
-export type ButtonProps = {
+type BaseProps = {
   variant?: keyof typeof VARIANT
   size?: keyof typeof SIZE
   className?: string
   children: React.ReactNode
-} & React.ButtonHTMLAttributes<HTMLButtonElement>
+}
 
+export type ButtonProps = BaseProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'className'>
+
+export type ButtonLinkProps = BaseProps & { href: string } & Omit<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    'children' | 'className' | 'href'
+  >
+
+/**
+ * href 를 주면 next/link 로, 없으면 <button> 으로 렌더한다.
+ * 원본은 전부 <button onClick={navigate}> 이지만, 페이지 이동은 링크가 맞다.
+ * 시각 스타일은 동일하다.
+ */
+export function Button(props: ButtonProps): React.ReactElement
+export function Button(props: ButtonLinkProps): React.ReactElement
 export function Button({
   variant = 'white',
   size = 'md',
   className,
   children,
-  type = 'button',
   ...rest
-}: ButtonProps) {
+}: BaseProps & Record<string, unknown>) {
+  const classes = cn(
+    'inline-block cursor-pointer text-center',
+    VARIANT[variant],
+    SIZE[size],
+    className
+  )
+
+  if (typeof rest.href === 'string') {
+    const { href, ...anchorRest } = rest as { href: string }
+    return (
+      <Link href={href} className={classes} {...anchorRest}>
+        {children}
+      </Link>
+    )
+  }
+
+  const { type = 'button', ...buttonRest } = rest as { type?: 'button' | 'submit' | 'reset' }
   return (
-    <button
-      type={type}
-      className={cn('cursor-pointer', VARIANT[variant], SIZE[size], className)}
-      {...rest}
-    >
+    <button type={type} className={classes} {...buttonRest}>
       {children}
     </button>
   )

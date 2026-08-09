@@ -273,6 +273,7 @@
   --tracking-h1: -1.2px;     /* Request/데이터 H1 36~38px */
   --tracking-h2: -0.8px;     /* 섹션 H2 28px */
   --tracking-h3: -0.4px;     /* sub H2 19~20px, 로고 워드마크, 데이터 H1 */
+  --tracking-stat: -0.5px;   /* 홈 히어로 통계 수치 22px (원본 :92) */
   --tracking-card: -0.3px;   /* 카드 제목 17px */
   --tracking-cta: -0.2px;    /* CTA 버튼, Request 카드 제목 */
   --tracking-nav: -0.1px;    /* 네비 링크 */
