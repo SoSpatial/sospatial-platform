@@ -1,3 +1,6 @@
+'use client'
+
+import { useId } from 'react'
 import { cn } from '@/lib/cn'
 
 /**
@@ -9,41 +12,75 @@ import { cn } from '@/lib/cn'
  * 컨트롤 padding 10px 12px / #2A2A2A / 1px line-10 / radius 8px / 13px (:1317)
  *        input 은 글자색 #fff, select 는 ink-70 (원본이 다르다)
  * textarea padding 12px / resize vertical / min-height 는 폼마다 다름 (:1410 80px, :1623 200px)
+ *
+ * ── 접근성 ──
+ * 원본은 <label> 이 컨트롤과 연결돼 있지 않아 스크린리더가 이름을 읽지 못한다.
+ * FormField 가 useId() 로 id 를 만들어 render-prop 으로 내려준다.
+ * cloneElement 는 children 구조가 바뀌면 조용히 깨지므로 쓰지 않는다.
+ *
+ *   as="label" (기본)  컨트롤 1개   <label htmlFor={id}> + children({ id })
+ *   as="group"         컨트롤 N개   <span id={labelId}> + role="group" aria-labelledby
+ *                      (연도 범위, 변수 목록, 라디오 그룹, 컨트롤이 없는 드롭존)
  */
+export type FieldRenderArgs = { id: string; labelId: string }
 
 export function FormField({
   label,
   labelGap = 6,
+  as = 'label',
   className,
   children,
 }: {
   label: string
   /** 라벨과 컨트롤 사이 간격. 원본은 6px 이고 Output Format 만 8px */
   labelGap?: 6 | 8
+  as?: 'label' | 'group'
   className?: string
-  children: React.ReactNode
+  children: React.ReactNode | ((args: FieldRenderArgs) => React.ReactNode)
 }) {
+  const uid = useId()
+  const id = `${uid}-control`
+  const labelId = `${uid}-label`
+  const labelClass = cn(
+    'block text-12 font-semibold tracking-label text-ink-45 uppercase',
+    labelGap === 8 ? 'mb-2' : 'mb-1.5'
+  )
+  const body = typeof children === 'function' ? children({ id, labelId }) : children
+
+  if (as === 'group') {
+    return (
+      <div className={className}>
+        <span id={labelId} className={labelClass}>
+          {label}
+        </span>
+        <div role="group" aria-labelledby={labelId}>
+          {body}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={className}>
-      <label
-        className={cn(
-          'block text-12 font-semibold tracking-label text-ink-45 uppercase',
-          labelGap === 8 ? 'mb-2' : 'mb-1.5'
-        )}
-      >
+      <label id={labelId} htmlFor={id} className={labelClass}>
         {label}
       </label>
-      {children}
+      {body}
     </div>
   )
 }
 
-const CONTROL = 'w-full rounded-ctrl border border-line-10 bg-surface-raised px-3 py-2.5 text-13 outline-none'
+/**
+ * 원본은 컨트롤에 outline:none 만 있고 포커스 표시가 없다.
+ * CLAUDE.md 결정 8번에 따라 focus-visible 링(globals.css @layer base)이 뜨도록
+ * outline-none 을 걷어냈다. 마우스 클릭 시에도 링이 뜨는지는 아래 참고.
+ *   - <select>, <button>: 클릭으로는 :focus-visible 이 매칭되지 않아 링이 안 뜬다.
+ *   - <input>, <textarea>: 편집 가능한 필드라 브라우저가 클릭 포커스도
+ *     :focus-visible 로 취급한다(명세대로). 키보드 입력을 받는 필드이므로 정상 동작이다.
+ */
+const CONTROL = 'w-full rounded-ctrl border border-line-10 bg-surface-raised px-3 py-2.5 text-13'
 
-export function TextInput({
-  className,
-  ...rest
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+export function TextInput({ className, ...rest }: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(CONTROL, 'text-ink', className)} {...rest} />
 }
 
@@ -91,7 +128,7 @@ export function TextareaInput({
   return (
     <textarea
       className={cn(
-        'w-full resize-y rounded-ctrl border border-line-10 bg-surface-raised outline-none',
+        'w-full resize-y rounded-ctrl border border-line-10 bg-surface-raised',
         TEXTAREA_SIZE[size],
         className
       )}
@@ -103,6 +140,8 @@ export function TextareaInput({
 /**
  * 라디오 그룹 — 원본 :1388-1405
  *   행 gap 12px, 항목 gap 7px, accent-color #C4A882, 라벨 13px ink-70
+ *   <label> 이 <input> 을 감싸고 있어 이름 연결은 원래부터 정상이다.
+ *   그룹 자체의 이름은 FormField as="group" 이 aria-labelledby 로 붙인다.
  */
 export function RadioGroup({
   name,

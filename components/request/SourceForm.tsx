@@ -119,17 +119,22 @@ export function SourceForm() {
 
                 <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <FormField label="Dataset (URL 또는 출처)">
-                    <TextInput
-                      value={dataset}
-                      onChange={(e) => setDataset(e.target.value)}
-                      placeholder="예) data.go.kr, KOSIS, census.gov 등"
-                    />
+                    {({ id }) => (
+                      <TextInput
+                        id={id}
+                        value={dataset}
+                        onChange={(e) => setDataset(e.target.value)}
+                        placeholder="예) data.go.kr, KOSIS, census.gov 등"
+                      />
+                    )}
                   </FormField>
 
-                  <FormField label="Region (지역)">
+                  {/* 지역 + 세부 지역이라 컨트롤이 1~2개다 → group */}
+                  <FormField label="Region (지역)" as="group">
                     <SelectInput
                       options={REGIONS}
                       value={region}
+                      aria-label="지역"
                       onChange={(e) => {
                         setRegion(e.target.value)
                         setSubRegion('')
@@ -139,6 +144,7 @@ export function SourceForm() {
                       <SelectInput
                         options={subRegionOptions}
                         value={subRegion || subRegionOptions[0]}
+                        aria-label="세부 지역"
                         onChange={(e) => setSubRegion(e.target.value)}
                         className="mt-2"
                       />
@@ -146,20 +152,25 @@ export function SourceForm() {
                   </FormField>
 
                   <FormField label="변환할 공간 단위">
-                    <SelectInput
-                      options={SPATIAL_UNITS}
-                      value={spatialUnit}
-                      onChange={(e) => setSpatialUnit(e.target.value)}
-                    />
+                    {({ id }) => (
+                      <SelectInput
+                        id={id}
+                        options={SPATIAL_UNITS}
+                        value={spatialUnit}
+                        onChange={(e) => setSpatialUnit(e.target.value)}
+                      />
+                    )}
                   </FormField>
                 </div>
 
                 <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <FormField label="기준 연도 변경 범위">
+                  {/* 시작·종료 select 2개 → group */}
+                  <FormField label="기준 연도 변경 범위" as="group">
                     <div className="flex items-center gap-2">
                       <SelectInput
                         options={YEARS_FROM}
                         value={yearFrom}
+                        aria-label="기준 연도 시작"
                         onChange={(e) => setYearFrom(e.target.value)}
                         className="flex-1"
                       />
@@ -167,13 +178,15 @@ export function SourceForm() {
                       <SelectInput
                         options={YEARS_TO}
                         value={yearTo}
+                        aria-label="기준 연도 종료"
                         onChange={(e) => setYearTo(e.target.value)}
                         className="flex-1"
                       />
                     </div>
                   </FormField>
 
-                  <FormField label="변환 요청 변수">
+                  {/* 인풋 N개 → group, 개별 aria-label 은 VariableInputList 가 붙인다 */}
+                  <FormField label="변환 요청 변수" as="group">
                     <VariableInputList
                       values={variables}
                       onChange={setVariables}
@@ -182,7 +195,13 @@ export function SourceForm() {
                   </FormField>
                 </div>
 
-                <FormField label="Output Format (출력 형식)" labelGap={8} className="mb-4">
+                {/* 라디오 4개 → group. 각 라디오는 <label> 이 감싸고 있다 */}
+                <FormField
+                  label="Output Format (출력 형식)"
+                  labelGap={8}
+                  as="group"
+                  className="mb-4"
+                >
                   <RadioGroup
                     name="format"
                     options={OUTPUT_FORMATS}
@@ -192,11 +211,14 @@ export function SourceForm() {
                 </FormField>
 
                 <FormField label="Additional Requirements (추가 요청 사항)" className="mb-6">
-                  <TextareaInput
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder="분야 목적, 활용 계획, 추가 요청 사항을 입력하세요."
-                  />
+                  {({ id }) => (
+                    <TextareaInput
+                      id={id}
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="분야 목적, 활용 계획, 추가 요청 사항을 입력하세요."
+                    />
+                  )}
                 </FormField>
 
                 <div className="flex flex-wrap items-center gap-3">

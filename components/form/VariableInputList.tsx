@@ -28,9 +28,14 @@ export function VariableInputList({
     <div className="flex max-h-[180px] flex-col gap-1.5 overflow-y-auto">
       {values.map((v, i) => (
         <div key={i} className="flex items-center gap-1.5">
+          {/*
+            라벨 1개에 컨트롤 N개라 htmlFor 로는 연결할 수 없다.
+            각 인풋에 개별 aria-label 을 준다 (그룹 이름은 FormField as="group" 이 붙인다).
+          */}
           <TextInput
             value={v}
             placeholder={placeholder}
+            aria-label={`변환 요청 변수 ${i + 1}`}
             onChange={(e) => {
               const next = [...values]
               next[i] = e.target.value

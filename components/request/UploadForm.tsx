@@ -94,7 +94,8 @@ export function UploadForm() {
                   </div>
                 </div>
 
-                <FormField label="Dataset (파일로 전달)" labelGap={8} className="mb-5">
+                {/* 드롭존은 폼 컨트롤이 아니라 라벨을 연결할 대상이 없다 → group */}
+                <FormField label="Dataset (파일로 전달)" labelGap={8} as="group" className="mb-5">
                   <DropZone
                     title="파일을 드래그하거나 클릭하여 업로드하세요"
                     formats="CSV, Excel, Shapefile, GeoJSON, XML, ZIP 지원"
@@ -107,11 +108,13 @@ export function UploadForm() {
                   />
                 </FormField>
 
-                <FormField label="또는 서비스 연동" labelGap={8} className="mb-5">
+                {/* select + 버튼 → group */}
+                <FormField label="또는 서비스 연동" labelGap={8} as="group" className="mb-5">
                   <div className="flex items-center gap-2">
                     <SelectInput
                       options={SERVICES}
                       value={service}
+                      aria-label="연동할 서비스"
                       onChange={(e) => setService(e.target.value)}
                       className="flex-1"
                     />
@@ -143,18 +146,22 @@ export function UploadForm() {
 
                 <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FormField label="변환할 공간 단위">
-                    <SelectInput
-                      options={SPATIAL_UNITS_UPLOAD}
-                      value={spatialUnit}
-                      onChange={(e) => setSpatialUnit(e.target.value)}
-                    />
+                    {({ id }) => (
+                      <SelectInput
+                        id={id}
+                        options={SPATIAL_UNITS_UPLOAD}
+                        value={spatialUnit}
+                        onChange={(e) => setSpatialUnit(e.target.value)}
+                      />
+                    )}
                   </FormField>
 
-                  <FormField label="기준 연도 변경 범위">
+                  <FormField label="기준 연도 변경 범위" as="group">
                     <div className="flex items-center gap-2">
                       <SelectInput
                         options={YEARS_FROM}
                         value={yearFrom}
+                        aria-label="기준 연도 시작"
                         onChange={(e) => setYearFrom(e.target.value)}
                         className="flex-1"
                       />
@@ -162,6 +169,7 @@ export function UploadForm() {
                       <SelectInput
                         options={YEARS_TO}
                         value={yearTo}
+                        aria-label="기준 연도 종료"
                         onChange={(e) => setYearTo(e.target.value)}
                         className="flex-1"
                       />

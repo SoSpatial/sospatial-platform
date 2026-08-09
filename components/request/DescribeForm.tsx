@@ -94,15 +94,25 @@ export function DescribeForm() {
                 </div>
 
                 <FormField label="요청 내용을 자유롭게 작성해주세요" labelGap={8} className="mb-5">
-                  <TextareaInput
-                    size="lg"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder={PLACEHOLDER}
-                  />
-                  <div className="mt-1.25 text-right text-11-5 text-ink-25">
-                    {text.length} / {MAX_LEN}
-                  </div>
+                  {({ id }) => (
+                    <>
+                      <TextareaInput
+                        id={id}
+                        size="lg"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder={PLACEHOLDER}
+                        aria-describedby={`${id}-count`}
+                      />
+                      <div
+                        id={`${id}-count`}
+                        aria-live="polite"
+                        className="mt-1.25 text-right text-11-5 text-ink-25"
+                      >
+                        {text.length} / {MAX_LEN}
+                      </div>
+                    </>
+                  )}
                 </FormField>
 
                 {/* 원본 :1627 — 이 폼만 margin-top 8px 이다 */}
