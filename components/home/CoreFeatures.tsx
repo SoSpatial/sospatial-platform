@@ -4,6 +4,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading'
 import { FeatureCard } from '@/components/home/FeatureCard'
 import { DataSearchMock } from '@/components/home/DataSearchMock'
 import { ReportMock } from '@/components/home/ReportMock'
+import { MapAnalysisMock } from '@/components/home/MapAnalysisMock'
 import { FEATURE_CARDS } from '@/lib/content/home'
 
 /**
@@ -16,16 +17,12 @@ import { FEATURE_CARDS } from '@/lib/content/home'
  *
  * 반응형(원본에 없음): 3 → 2 → 1열 (CLAUDE.md [반응형])
  *
- * ── 2단계 진행 중 ──
- * 목업 자리는 높이 185px 빈 박스다. 임시 배경·보더를 주지 않는다
- * (차분 계산이 오염되지 않도록).
- * 원본 카드1 의 목업 래퍼에는 height 가 없고 콘텐츠 높이로 결정되므로,
- * 3단계에서 실제 목업을 넣으면 카드1 높이가 달라질 수 있다.
+ * 목업은 카드마다 래퍼 구조가 달라 각 목업 컴포넌트가 자기 래퍼를 소유한다.
+ *   카드1 DataSearchMock   padding 28px 28px 0, height 선언 없음(콘텐츠 높이)
+ *                          → 이 카드가 그리드 행 높이를 정한다
+ *   카드2 MapAnalysisMock  height 185px + relative + overflow hidden, 패딩 없음
+ *   카드3 ReportMock       padding 28px 28px 0 + relative + height 185px
  */
-function MockPlaceholder() {
-  return <div className="h-[185px] shrink-0" />
-}
-
 export function CoreFeatures() {
   return (
     <Section bg="alt" className="pt-20 pb-25">
@@ -45,10 +42,10 @@ export function CoreFeatures() {
               mock={
                 c.key === 'data' ? (
                   <DataSearchMock />
-                ) : c.key === 'request' ? (
-                  <ReportMock />
+                ) : c.key === 'maps' ? (
+                  <MapAnalysisMock />
                 ) : (
-                  <MockPlaceholder />
+                  <ReportMock />
                 )
               }
               title={c.title}
