@@ -44,9 +44,19 @@ cp .env.example .env.local
 ```
 
 `NEXT_PUBLIC_SITE_URL` 하나뿐이고 배포 도메인을 넣는다.
-설정하지 않으면 `http://localhost:3000`으로 폴백하는데, **이 상태로 배포하면
-OG 미리보기와 `sitemap.xml`의 절대 URL이 전부 localhost를 가리킨다.**
-배포 환경에는 반드시 주입할 것.
+사이트 절대 URL(`metadataBase` · OG · `sitemap.xml` · `robots.txt`)은 아래 순서로 정해진다.
+
+```
+NEXT_PUBLIC_SITE_URL  >  VERCEL_PROJECT_PRODUCTION_URL  >  http://localhost:3000
+```
+
+로컬에서는 비워두면 되고, **Vercel에 배포할 때도 보통 비워둬도 된다** —
+2순위를 Vercel이 자동으로 채운다(프로젝트 설정의
+*Enable access to System Environment Variables*가 켜져 있어야 한다).
+Vercel이 아닌 곳에 배포하거나 정본 도메인을 직접 지정하려면 1순위에 넣는다.
+셋 다 없어 localhost로 떨어진 채 배포되면 빌드 로그에 경고가 뜬다.
+
+우선순위 회귀 검증: `node scripts/check-site-url.mjs`
 
 ## 폴더 구조
 

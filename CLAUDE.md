@@ -180,11 +180,22 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
 
 ## 배포 준비 (확정 사항)
 
-### 도메인 — `NEXT_PUBLIC_SITE_URL`
+### 도메인 — `SITE_URL` 결정 순서
 - `lib/site.ts` 가 단일 출처. `metadataBase` / `openGraph.url` / `sitemap.xml` / `robots.txt` 가 전부 여기서 나온다.
-- **폴백은 `http://localhost:3000`.** 값이 없으면 OG·sitemap 의 절대 URL이 localhost 로 나가
-  SNS 미리보기와 색인이 깨진다. 배포 환경에 반드시 주입할 것.
-- `SITE_URL_IS_FALLBACK` 으로 폴백 사용 여부를 판별할 수 있다. `.env.example` 참조.
+- 우선순위: **`NEXT_PUBLIC_SITE_URL` > `VERCEL_PROJECT_PRODUCTION_URL` > `http://localhost:3000`**
+- **Vercel 시스템 변수를 2순위에 넣은 이유** (2026-08-10 확정):
+  배포 전에는 `*.vercel.app` 주소를 모르고 배포 후에는 이미 빌드가 끝나 있어서,
+  환경변수만 쓰면 **1차 배포의 절대 URL 이 반드시 틀린다.**
+  Vercel 문서상 `VERCEL_PROJECT_PRODUCTION_URL` 은 빌드·런타임 모두에서 쓸 수 있고,
+  프리뷰 배포에서도 항상 프로덕션 도메인을 가리킨다 — OG 이미지 URL 처럼 프로덕션을
+  가리켜야 하는 링크를 만들라고 문서가 직접 권하는 용도다. 프로토콜은 붙어 있지 않다.
+- **`VERCEL_URL` 은 쓰지 않는다.** 배포마다 값이 바뀌는 배포 전용 주소라
+  canonical·sitemap 에 넣으면 안 되고, Standard Deployment Protection 과도 충돌한다.
+- 이 파일은 **서버 전용**(metadata / sitemap / robots)에서만 임포트한다. 클라이언트
+  컴포넌트에서 쓰면 `NEXT_PUBLIC_` 접두어가 없는 2순위가 비므로, 그때는 1순위를 반드시 설정한다.
+- `SITE_URL_SOURCE`(`'env' | 'vercel' | 'fallback'`)로 출처를 판별할 수 있고,
+  Vercel 빌드 로그에 `[site] SITE_URL = ...` 한 줄이 남는다. localhost 로 떨어지면 경고가 뜬다.
+- 우선순위 회귀 검증: `node scripts/check-site-url.mjs`
 
 ### 색인 정책
 - **sitemap 포함**: `/`, `/api`, `/request`, `/request/{source,upload,describe}` — 6개뿐.
