@@ -23,7 +23,9 @@ const toDataUrl = (p) => 'data:image/png;base64,' + fs.readFileSync(p).toString(
 
 const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
-await page.goto('http://localhost:3000' + route)
+/** BASE_URL 로 배포된 사이트도 같은 기준으로 검증한다 */
+const BASE = process.env.BASE_URL || 'http://localhost:3000'
+await page.goto(BASE + route)
 await page.waitForLoadState('networkidle')
 await page.evaluate(() => document.fonts.ready)
 await page.waitForTimeout(700)

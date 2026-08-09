@@ -16,7 +16,8 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, dev
 const logs = []
 page.on('console', (m) => logs.push(m.text()))
 
-await page.goto('http://localhost:3000/request/upload')
+const BASE = process.env.BASE_URL || 'http://localhost:3000'
+await page.goto(BASE + '/request/upload')
 await page.waitForLoadState('networkidle')
 await page.evaluate(() => document.fonts.ready)
 await page.waitForTimeout(500)
