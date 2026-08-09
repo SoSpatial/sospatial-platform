@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { ComingSoon } from '@/components/ui/ComingSoon'
+import { SourceForm } from '@/components/request/SourceForm'
 
 export const metadata: Metadata = {
   title: '데이터 소스를 알고 있어요',
@@ -7,7 +7,10 @@ export const metadata: Metadata = {
     '원하는 데이터의 출처나 웹사이트 URL을 알려주시면 수집·정제·공간 정합을 함께 합니다.',
 }
 
-/** 다음 단계에서 구현한다 (reference/09-request-source.png). */
+/**
+ * 요청 폼 ① — 원본 SoSpatial Platform.dc.html :1282-1454
+ * 검증 기준: reference/09-request-source.png
+ */
 export default function RequestSourcePage() {
-  return <ComingSoon title="데이터 소스를 알고 있어요" />
+  return <SourceForm />
 }
