@@ -61,6 +61,14 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
   크기만 props로 받는 단일 컴포넌트로 만든다.
 - pageEnter 애니메이션(0.35s ease, opacity 0→1 + translateY 12px→0)을
   모든 페이지 루트에 유지한다.
+- **`grid-cols-[1fr_280px]` 의 `1fr` 은 `minmax(auto, 1fr)` 이라 최소값이 min-content 다.**
+  (2026-08-09 추가 — Request 폼 반응형에서 발견)
+  좁은 화면에서 컬럼이 컨테이너를 넘치면, 원인은 그 안의
+  **줄바꿈되지 않는 가로 flex 행** 이다. 폼마다 그 행이 달라 넘침 폭도 달랐다
+  (source 라디오 4개 352 / upload 드롭존 용량 박스 240 / describe 제출 행 170).
+  → 진단은 `scripts/diagnose-minwidth.mjs` 로 행을 하나씩 숨겨 폭 변화를 본다.
+  → 1열로 바꿔도 그 행 자체의 min-content 가 카드 폭을 넘길 수 있으니
+    `flex-wrap` 을 함께 확인할 것. (라디오 행 286px vs 375px 카드 269px)
 - **컴포넌트 베이스 클래스에 `display` 를 넣으면 호출부의 `hidden` 이 무력화될 수 있다.**
   (2026-08-09 추가 — 홈 반응형 패스에서 발견)
   Tailwind 는 클래스 문자열 순서가 아니라 **CSS 출력 순서**로 승부가 난다.
