@@ -3,6 +3,7 @@ import './globals.css'
 import { SiteNav } from '@/components/layout/SiteNav'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { FooterGate } from '@/components/layout/FooterGate'
+import { ProjectsBridge } from '@/components/layout/ProjectsBridge'
 import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from '@/lib/site'
 
 export const metadata: Metadata = {
@@ -48,6 +49,8 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css"
           precedence="default"
         />
+        {/* 세션 ↔ 프로젝트 스토어 바인딩 — 로그인 전환·마이그레이션의 단일 지점 */}
+        <ProjectsBridge />
         <SiteNav />
         <main className="flex-1">{children}</main>
         {/* /maps 는 100vh 앱 화면 — 푸터 미렌더 (FooterGate 주석 참조) */}
