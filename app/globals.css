@@ -233,6 +233,12 @@
   --color-delete-line-18: rgba(255, 80, 80, 0.18);
   --color-delete-ink: rgba(255, 120, 120, 0.8);
 
+  /* 공유 취소 버튼 (원본 :925) — delete 계열(255,80,80)과 다른 값이다. 통합 금지 */
+  --color-revoke-tint-10: rgba(220, 70, 70, 0.1);
+  --color-revoke-tint-22: rgba(220, 70, 70, 0.22); /* hover */
+  --color-revoke-line-20: rgba(220, 70, 70, 0.2);
+  --color-revoke-ink: rgba(220, 100, 100, 0.85);
+
   /* 공유 취소 액션 — 공유 모달 (원본 :925) */
   --color-revoke-tint-10: rgba(220, 70, 70, 0.1);
   --color-revoke-tint-22: rgba(220, 70, 70, 0.22); /* hover */

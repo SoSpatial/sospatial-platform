@@ -15,6 +15,9 @@ import { cn } from '@/lib/cn'
  *   emerald   에메랄드 #059669 / #fff    / 700, hover #047857 upload 제출 :1555
  *   violet    보라     #7C3AED / #fff    / 700, hover #6D28D9 describe 제출 :1628
  *   ghostSoft 연한 면  fill-06 / 1px line-12 / ink-80 / 500    API 문서 보기 :583
+ *   neutral   모달 취소 fill-07 / 1px line-12 / ink-70 / 400, hover fill-11
+ *             저장·공유 모달 :946, :988 — ghostSoft 와 bg(0.07/0.06)·ink(70/80)·
+ *             weight(400/500)가 다르다. 통합하지 말 것
  *
  * ※ 요청 폼 3종의 제출 버튼은 색 3요소(배경/글자/hover)만 다르고 나머지가 같다.
  *   패딩은 원본이 12px 28px 이라 size="md"(24px) + className="px-7" 로 조합한다.
@@ -24,9 +27,11 @@ import { cn } from '@/lib/cn'
  *   hover 배경(0.06 / 0.05)이 다르다. 통합하지 말 것.
  *
  * size (원본 근거)
- *   sm  padding 8px 20px  / 13.5px / radius 8px   네비 :57-58
- *   md  padding 12px 24px / 14px   / radius 9px   API :582-583
- *   lg  padding 14px 28px / 15px   / radius 10px  홈 히어로 :86-87
+ *   sm    padding 8px 20px  / 13.5px / radius 8px   네비 :57-58
+ *   md    padding 12px 24px / 14px   / radius 9px   API :582-583
+ *   lg    padding 14px 28px / 15px   / radius 10px  홈 히어로 :86-87
+ *   modal padding 9px 20px  / 13.5px / radius 8px   저장·공유 모달 푸터 :946-947, :988-989
+ *         (2026-08-14 추가 — 두 모달 공통 스펙이라 size 로 확정. 기존 size 불변)
  */
 const VARIANT = {
   white: 'bg-inverse text-inverse-ink font-semibold hover:bg-inverse-hover',
@@ -37,12 +42,14 @@ const VARIANT = {
   emerald: 'bg-emerald text-ink font-bold hover:bg-emerald-hover',
   violet: 'bg-violet text-ink font-bold hover:bg-violet-hover',
   ghostSoft: 'bg-fill-06 border border-line-12 text-ink-80 font-medium hover:bg-fill-10',
+  neutral: 'bg-fill-07 border border-line-12 text-ink-70 hover:bg-fill-11',
 } as const
 
 const SIZE = {
   sm: 'px-5 py-2 text-13-5 rounded-ctrl',
   md: 'px-6 py-3 text-14 rounded-field',
   lg: 'px-7 py-3.5 text-15 rounded-btn tracking-cta',
+  modal: 'px-5 py-2.25 text-13-5 rounded-ctrl',
 } as const
 
 type BaseProps = {

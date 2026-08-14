@@ -531,25 +531,29 @@ reference 차분은 로컬과 배포가 **소수점 셋째 자리까지 동일**
 | `14-modal-file-picker.png` | 파일 피커 모달 | ❌ 다음 단계 |
 | `15-modal-edit-data.png` | ⚠️ `05-projects-detail.png`와 바이트 단위로 동일한 중복 파일 | ❌ |
 
-**★ 재추출이 필요한 reference (모달 단계 진입 시 요청할 것)**
+**★ 재추출이 필요한 reference**
 
-모달 reference 4장 중 2장이 사용 불가다.
+**모달 reference 4장 전부 사용 불가다 (2026-08-14 확정 — 12·13 결함은 모달 단계
+진입 시 픽셀 대조로 발견).**
 
 | 파일 | 문제 | 확인 방법 |
 |---|---|---|
-| `14-modal-file-picker.png` | **파일 피커 모달이 캡처되지 않았다.** `10-request-upload.png` 와 픽셀 비교 시 `x 0–938, y 0–64`(네비 좌측)만 다르고 나머지는 동일하다. 모달 백드롭 일부만 그려지고 패널은 없다 | `node scripts/diff-refs.mjs 10-request-upload.png 14-modal-file-picker.png` |
+| `12-modal-save-project.png` | **저장 모달이 캡처되지 않았다.** `03-data-select.png` 와 차이가 `x 0–938, y 0–64`(백드롭 조각)뿐 — 14번과 동일 패턴 | `node scripts/diff-refs.mjs 03-data-select.png 12-modal-save-project.png` |
+| `13-modal-share.png` | **공유 모달이 캡처되지 않았다.** `04-projects-list.png` 와 차이가 `x 0–938, y 0–284`(백드롭 조각 + 1행 체크 상태)뿐 | `node scripts/diff-refs.mjs 04-projects-list.png 13-modal-share.png` |
+| `14-modal-file-picker.png` | **파일 피커 모달이 캡처되지 않았다.** `10-request-upload.png` 와 `x 0–938, y 0–64` 만 다름 | `node scripts/diff-refs.mjs 10-request-upload.png 14-modal-file-picker.png` |
 | `15-modal-edit-data.png` | `05-projects-detail.png` 와 **md5 동일**. 편집 모달이 아니라 프로젝트 상세 화면이다 | `md5sum reference/*.png` |
 
-→ 파일 피커 모달은 원본 HTML `:1662-1720` 을 기준으로 구현했고 computed 값으로만 확인했다.
-   재추출본을 받으면 다시 검증할 것.
-
+→ **교훈: md5 검사는 중복만 잡는다 — 미캡처 결함(기존 화면 + 백드롭 조각)은
+   해당 화면 reference 와의 픽셀 대조(diff-refs)로만 잡힌다.**
+→ **재추출 요청 대상: 12·13·14 3장.** 단, 세 장이 모두 같은 패턴으로 실패했으므로
+   캡처 도구가 모달류를 일관되게 못 찍는 것으로 보인다 — **재추출을 요청할 때 이 정황
+   (동일 도구면 같은 결과일 수 있음, 백드롭만 찍히고 패널 누락)을 함께 전달할 것.**
+→ 모달 3종은 원본 HTML(:909-951, :961-993, :1662-1720) 기준으로 구현하고
+   computed 값 대조(`verify-picker.mjs` / `verify-modals.mjs`)로 검증한다.
+   재추출본을 받으면 **백드롭 포함 전체 화면 차분**으로 재검증할 것.
 → **편집 모달(15번)은 재추출을 요청하지 않는다 (2026-08-14 확정).** 원본 HTML 에
-   마크업이 없는 죽은 state 라 재추출로 해결되지 않는다
-   (위 "프리미티브 재고 — 데이터 편집 모달" 항목 참조). 3단계에서 신규 설계한다.
-   재추출 요청 대상은 **14번(파일 피커) 1장뿐**이다.
-
-→ 나머지 13장은 2026-08-14 md5 전수 검사에서 중복·이상 없음.
-   02/03/04/05/06 (2단계 대상)은 정상이므로 그대로 검증에 쓸 수 있다.
+   마크업이 없는 죽은 state 라 재추출로 해결되지 않는다. 3단계에서 신규 설계한다.
+→ 01~11 (페이지 reference 11장)은 정상 — 픽셀 검증에 실사용으로 확인됨.
 
 ---
 

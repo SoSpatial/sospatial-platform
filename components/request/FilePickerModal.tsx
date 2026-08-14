@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { CloseIcon } from '@/components/icons/MenuIcon'
 import { ChevronRightIcon, PickerFolderIcon, FileIcon } from '@/components/icons/picker'
 import { Checkbox } from '@/components/ui/Checkbox'
+import { Modal } from '@/components/ui/Modal'
 import { cn } from '@/lib/cn'
 
 /**
@@ -12,6 +13,8 @@ import { cn } from '@/lib/cn'
  *   backdrop  fixed inset 0 / rgba(0,0,0,0.75) / z-index 1000 / 가운데 정렬
  *   패널      #242424 / 1px line-10 / radius 16px / width 520px
  *             max-height 560px / flex column / overflow hidden
+ *   → 셸은 ui/Modal 로 추출 (2026-08-14). 백드롭 클릭 닫기는 원본에 없지만
+ *     1단계에서 추가·승인된 동작이라 유지한다.
  *   헤더      padding 20px 24px / 하단 1px line-08
  *             제목 16px 700 / 부제 12px ink-35 (margin-top 3px)
  *             닫기 28×28 radius 6 fill-06 + 12px X(stroke 2.5) ink-60
@@ -63,17 +66,14 @@ export function FilePickerModal({
   const [selected, setSelected] = useState(1)
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${service}에서 파일 선택`}
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-scrim-75"
-      onClick={onClose}
+    <Modal
+      width={520}
+      backdrop={75}
+      z={1000}
+      scroll
+      onBackdropClick={onClose}
+      ariaLabel={`${service}에서 파일 선택`}
     >
-      <div
-        className="flex max-h-[560px] w-[520px] flex-col overflow-hidden rounded-card border border-line-10 bg-surface"
-        onClick={(e) => e.stopPropagation()}
-      >
         <div className="flex items-center justify-between border-b border-line-08 px-6 py-5">
           <div>
             <h3 className="text-16 font-bold text-ink">{service}에서 파일 선택</h3>
@@ -151,7 +151,6 @@ export function FilePickerModal({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </Modal>
   )
 }
