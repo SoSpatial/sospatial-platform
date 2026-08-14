@@ -327,6 +327,94 @@ localStorage 고지, **탈퇴 기능 부재는 "이메일 요청 시 지체 없�
 
 ---
 
+## 3단계 완료 (MVP) (2026-08-15)
+
+핵심 4개(인증 / 프로젝트 DB 이전 / Request 접수 / 약관·방침) 구현·배포 완료.
+**단, 아래 "검증 상태"의 ⚠ 2건(스키마 v2·v3 미적용, placeholder 미치환)이 남아
+있다 — 다음 세션 착수 전 처리 목록 참조.**
+
+### 1. 완료 범위와 핵심 설계 결정
+
+| 항목 | 핵심 결정 |
+|---|---|
+| **인증** | Supabase Auth 이메일/비밀번호(소셜 없음), Confirm email 켜짐. 신형 키(`sb_*`). `/login` `/signup` 은 기존 프리미티브만(모달 폭 420·Card·FormField·text-danger). `/auth/confirm` 은 code·token_hash 겸용(착지 경로 3종 — 2번 완료 기록 참조). 네비 세션 분기 — 비로그인 픽셀 불변(`hidden md:block` 은 래퍼 span). **fail-soft 를 env 읽는 전 경로에**(클라이언트·proxy·라우트 — 배포 장애 교훈). 에러 문구는 원인별 분기(구성 오류/네트워크/발송 제한/가입 제한/중복) + 원본 에러 console 기록 |
+| **프로젝트 영속화** | B안 이중 백엔드 — 비로그인 localStorage(1·2단계 코드 무변경) / 로그인 Supabase. `useProjects()` 반환 계약·useSyncExternalStore 불변(소비 컴포넌트 무수정). 낙관적 업데이트 + diff(id 대조) 직렬화 persist, insert 임시 id 교체, 실패 시 롤백 없이 재조회 수렴. 마이그레이션은 로그인 전환 단일 지점(`ProjectsBridge`), **원본 보존 + 계정별 이전 id 목록** 기록, Web Locks 로 두 탭 직렬화 |
+| **Request 접수** | 제출 시점 로그인 게이트(결정 2) — sessionStorage draft + `?resume=1` 1회성 복원(TTL 30분, 자동 재제출 없음). `POST /api/requests`: **DB insert = 성공 기준, Resend 메일 = 부가**(실패해도 접수 성공, `mail_sent` 추적 + 미발송 누적 병기 — v3 필요). email 은 서버가 세션에서 채움. rate limit 1시간 10건(완화 장치 — TOCTOU 한계 기록) |
+| **약관·방침** | 실제 기능 기준 MVP 초안(개인 운영 전제). 위탁·국외 이전(Supabase 서울/Vercel/Resend), localStorage 고지, 백업 30일 보존 고지, 서비스 종료 30일 공지+데이터 반출, 탈퇴는 이메일 요청 처리. noindex 해제 + sitemap 9라우트. **placeholder 3종 미치환** |
+
+### 2. 인프라 구성
+
+- **Supabase** (Seoul 리전): 스키마 v1(`projects` 소유자 전용 RLS `projects_owner_all` /
+  `requests` insert·select own — update·delete 정책 없음 = 접수 후 변조 불가).
+  **v2(`projects.sort_order`)·v3(`requests.mail_sent`) ALTER 는 미적용 상태**(아래 ⚠).
+  Auth: 이메일/비밀번호 + Confirm email. 신형 API 키.
+- **Custom SMTP (Auth 메일 — 최종값, 사용자 실측)**: Host `smtp.resend.com` /
+  Port `465` / Username **리터럴 문자열 `resend`** / Password = Resend API 키 /
+  Sender `onboarding@resend.dev`.
+  **트러블슈팅 기록 — 겪은 에러 2종**:
+  ① **550** (도메인 미인증) — 본인 주소(`hisiun87@gmail.com` 문자열 정확 일치)로만
+  발송 가능, 플러스 별칭도 거부, 실패 시 가입 롤백.
+  ② **535 Invalid username** — Username 칸에 API 키를 넣으면 거부된다.
+  **`resend` 가 맞다** (API 키는 Password 칸).
+- **Resend**: 도메인 미인증 — 의뢰 알림(HTTP API)·가입 확인(SMTP) 모두 본인 주소로만.
+- **Vercel**: 환경변수 5종(`NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  / `SUPABASE_SECRET_KEY` / `RESEND_API_KEY` / `REQUEST_NOTIFY_EMAIL`) —
+  전부 Production+Preview. **env 는 빌드 시점 주입 — 변수 저장 후 Redeploy 필수.**
+
+### 3. 검증 상태
+
+- **회귀 기준선 10종(1단계 6 + 2단계 4) — 3단계 전 과정에서 소수점 셋째 자리까지
+  불변 유지** (로컬=배포 동일). 375px 네비 불변.
+- 검증 스크립트 인벤토리(전부 커밋됨): `verify-supabase-init`(접속·RLS 스모크) /
+  `verify-rls`(16항목) / `verify-auth`(13항목) / `verify-projects-behavior`
+  (게스트 30항목 — B·C·D 는 v2 대기) / `verify-requests`(31항목) /
+  `verify-deployed`(메타 + 2단계 픽셀·computed 위임).
+- **프로덕션 E2E (2026-08-15 사용자 실측)**: 가입 → Resend SMTP 확인 메일 → 링크 →
+  로그인 / 의뢰 제출 → 토스트 + 알림 메일 수신 — 통과. requests 실데이터
+  id 14~17 DB 존재 확인.
+- **⚠ E2E 중 "프로젝트 저장 → DB 반영"은 실제로는 미반영이었다 (세션 마감 실측:
+  projects 테이블 0행).** v2 미적용 상태에서 insert 가 42703 으로 실패했고, UI 는
+  낙관적 업데이트가 남아 정상처럼 보였다(승인된 실패 처리 방식의 알려진 한계 —
+  재조회도 같은 이유로 실패해 수렴 못 함). **v2 적용 즉시 정상 동작한다** (코드는
+  게스트 30항목·기준선으로 검증됨, 원격 경로는 B 스위트로 완결할 것).
+- 헬스 진단 위치: `verify-deployed <URL>`(정기 점검 1커맨드) / env 주입 판별 =
+  쿠키 없는 `POST /api/requests` → **401 정상, 500 = env 문제** / 클라이언트 인증
+  에러 = 브라우저 콘솔 `[auth]` 경고 / SMTP 실패 = Supabase Dashboard → Logs →
+  Auth / 서버 에러 = Vercel → Logs.
+
+### ★ 다음 세션 착수 전 처리 목록
+
+1. **SQL Editor 에서 v2+v3 적용** (2줄):
+   `alter table public.projects add column sort_order integer not null default 0;`
+   `alter table public.requests add column mail_sent boolean not null default false;`
+2. 적용 후: `verify-projects-behavior`(B·C·D — 두 탭 전파 실측 후 **탭 동기화 구조를
+   CLAUDE.md 에 기록**), `verify-rls`, `verify-requests`(mail_sent 추적) 실행.
+3. 법적 문서 placeholder 3종([운영자명]/[연락처 이메일]/[시행일]) 치환.
+4. 프로덕션에서 프로젝트 저장 재확인 (v2 적용 후 — 위 ⚠ 해소 확인).
+
+### 4. 보류 목록 (전부 "실서비스 전환 시" — 2026-08-15 사용자 확정)
+
+AI 채팅(/maps) / 실데이터 파이프라인(검색·다운로드) / 지도 SDK / 결제 / 관리자
+화면(requests 열람·상태 관리) / 편집 모달(+`openInDataView` — 신규 설계+별도 확인) /
+공유 실기능(초대·접근 RLS) / 소셜 로그인(Google·Kakao — Supabase provider 토글) /
+탈퇴 자동화(화면 내 회원 탈퇴) / 외부 스토리지 연동(파일 피커 실동작).
+
+### 5. 실서비스 전환 시 개선 목록 (통합 — 위 3단계 중간 기록을 대체)
+
+- **커스텀 도메인 + Resend 도메인 인증** — 가입 확인 메일·알림 메일의 타인 발송.
+  **사용자 1명이라도 받으려면 필수** (현재 임의 사용자는 가입 불가 — 550).
+  인증 후 `NEXT_PUBLIC_SITE_URL` 설정(1단계 배포 메모)과 발신 주소 교체 병행.
+- rate limit 을 정확한 제한으로 (TOCTOU 해소 — DB 트리거 또는 원자적 카운터)
+- 화면 내 회원 탈퇴 기능 (약관·방침이 이메일 요청 처리로 명시 중)
+- 마이그레이션 "insert 성공 + 기록 실패" 극단 케이스 중복 (MVP 수용 중)
+- **`/api/requests` 500 건 원인 확인 결과 (기록)**: 코드 결함이 아니라 **Vercel env
+  미주입 기간의 fail-soft 응답**이었다 (`supabaseServer()` 초기화 실패 → 500
+  `{"error":"server"}`). env 주입(Production+Redeploy)으로 해소 — 401 프로브로 판별.
+- 원격 저장 실패의 사용자 가시성 — 현재 콘솔 경고+재조회 수렴뿐이라 이번 ⚠ 처럼
+  조용한 유실로 보일 수 있다. 실서비스에서는 실패 토스트 등 표면화 검토.
+
+---
+
 ## 프리미티브 재고 (2단계 착수 기준 — 완료됨, 이력 문서)
 
 1단계에서 만든 것 중 **2단계에 그대로 쓰이는 것 / 손봐야 하는 것 / 새로 만들어야 하는 것**.
