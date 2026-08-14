@@ -38,8 +38,8 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
 | `/request/source` | 구현 완료 | 09-request-source |
 | `/request/upload` | 구현 완료 (파일 피커 모달 포함) | 10-request-upload |
 | `/request/describe` | 구현 완료 | 11-request-describe |
-| `/data` `/projects` `/maps` | `ComingSoon` 플레이스홀더 | — |
-| `/terms` `/privacy` | `ComingSoon` 플레이스홀더 (푸터 링크 대상) | — |
+| `/data` `/projects` `/maps` | `ComingSoon` 플레이스홀더 → **2단계에서 실 페이지로 대체됨** | — |
+| `/terms` `/privacy` | `ComingSoon` 플레이스홀더 (푸터 링크 대상, 3단계) | — |
 
 부수 완료: 공통 네비·푸터, 반응형 375~1440px, 디자인 토큰, `focus-visible` 링,
 `prefers-contrast: more` 대안, OG 이미지·아이콘·sitemap·robots, 토스트, 폼 a11y 연결.
@@ -66,54 +66,79 @@ reference 차분은 로컬과 배포가 **소수점 셋째 자리까지 동일**
 비교하게 돼 4.17 / 2.61 이라는 다른 수치가 나온다.
 `screenshots/diff-upload.json` 에 남아 있는 값이 그것이므로 기준선으로 쓰지 말 것.
 
-### 남은 작업
+---
 
-**2단계 — 화면 3개 + 모달 2종 (백엔드 없이 프로토타입 동작 재현)**
+## 2단계 완료 (2026-08-14)
 
-구현 순서 확정 (2026-08-14): **`/data` → `/projects` → `/maps`**.
-/maps 는 3단계(실제 지도 SDK·AI 연동)와 가장 얽혀 있어 지금 만드는 목업의
-상당 부분이 교체된다. 가장 나중에 만들수록 버리는 작업이 줄어든다.
+화면 3개 + 모달 2종, 백엔드 없이 프로토타입 동작 재현 완료.
+구현 순서는 확정대로 `/data` → `/projects` → 모달 2종 → `/maps`.
 
-- `/data` — landing 뷰 + select 뷰. **5↔6열 동적 필터 그리드**와 변수 선택 테이블이 핵심.
-  라우트는 **`/data`(landing) + `/data/select?topic=한글키`(select) 로 분리** (2026-08-14 승인 —
-  아래 "프로토타입 제약 vs 디자인 의도" 사례 4 참조).
-- `/projects` — 목록 테이블 + 상세 뷰.
-- `/maps` — 좌측 AI 채팅 + 우측 지도. 1단계에 선례가 전혀 없는 화면이다.
-- 모달: 저장(Save Project) / 공유(Share). **편집(Edit) 모달은 보류** — 아래 결정 참조.
+### 완료 범위와 검증 방식
 
-**2단계 반응형 범위 (2026-08-14 확정)**
+reference 검증 조건이 화면마다 다르다 — **재검증 시 반드시 해당 스크립트를 쓸 것.**
 
-- **`/data` landing 만 375px 까지 대응한다** (1단계와 같은 기준).
-- `/data` select, `/projects`, `/maps` 는 **데스크톱 전용**.
-  md 미만에서는 "데스크톱에서 이용해주세요" 안내 화면을 띄운다.
-  안내 화면은 **`DesktopOnly` 컴포넌트 하나**로 만들어 세 화면이 공유한다.
-- 근거: 6열 필터 그리드와 7열 테이블은 좁은 화면에서 근본적으로 다른 레이아웃이
-  필요하고, 이는 원본에 존재하지 않는 디자인이다.
+| 라우트/항목 | 검증 스크립트 | 방식 / reference |
+|---|---|---|
+| `/data` (landing) | `verify-page.mjs /data 02-data-landing.png` | 픽셀 차분, 375px 반응형 포함 |
+| `/data/select?topic=한글키` | `verify-select.mjs` | 03 의 상태(인구·사회+이동인구+행정동+서울특별시+2024+체크2)를 클릭으로 재현. **스크롤바 마스킹 수치 병기** |
+| `/projects` (목록+상세 뷰) | `verify-projects.mjs` | 04·05 의 시드 3건을 localStorage 주입 후 이중 차분 (시드는 스크립트에만 있음 — 앱은 빈 목록) |
+| `/maps` | `verify-maps.mjs` | 06, **viewport 1440×964** (100vh 앱 화면 — 페이지 무스크롤) |
+| 저장/공유 모달 | `verify-modals.mjs` | **computed 값 59항목 전수 대조** (reference 12·13 사용 불가 — 재추출 섹션 참조) |
 
-**편집(Edit) 모달 — 구현 보류 (2026-08-14 확정)**
+### 회귀 기준선 (2026-08-14, 로컬 실측 — 신규 4화면)
 
-- 원본 마크업 없음 — 프로토타입에서 도달 불가능한 **죽은 state** 다
-  (state·핸들러는 `:1732`, `:2219-2240` 에 있으나 그리는 `sc-if` 블록과
-  `openEditModal` 호출부가 파일 어디에도 없다).
-- `15-modal-edit-data.png` 는 `05-projects-detail.png` 와 md5 동일한 중복 파일이다.
-- 죽은 state 였다면 디자인 의도가 확정되지 않은 것이므로 **재추출 요청도 하지 않는다.**
-- 편집 기능이 실제로 필요해지는 **3단계에서 신규 설계 + 사용자 별도 확인** (푸터와 같은 취급).
+1단계 6페이지 기준선(위 표)은 2단계 전 과정에서 **소수점 셋째 자리까지 불변**을 유지했다.
+신규 화면 기준선:
 
-**3단계 — 백엔드**
+| 화면 | raw % | ±1px % | avg delta | 비고 |
+|---|---|---|---|---|
+| `/data` landing | 1.840 | 0.799 | 1.61 | — |
+| `/data/select` | 4.274 | 2.581 | 4.91 | **스크롤바 마스킹 후 1.160 이 실질 기준** (ref 에만 클래식 스크롤바 5개) |
+| `/projects` 목록 | 2.740 | 1.256 | 2.60 | 헤더 −6/행 +2 상쇄는 환경 차이 (lh·글리프 메트릭) |
+| `/projects` 상세 | 1.749 | 0.621 | 1.22 | — |
+| `/maps` | 1.970 | 0.980 | 1.79 | blur 블롭은 환경 차이 4 기준 |
+
+⚠ 이 수치는 localhost 실측이다. **배포 후 `verify-deployed.mjs` 를 2단계 화면으로
+확장해 재실측하는 것이 3단계 착수 전 후속 작업**이다 (1단계는 로컬=배포 동일 확인됨).
+
+### 반응형 (확정대로 구현됨)
+
+`/data` landing 만 375px 대응. select·projects·maps 는 데스크톱 전용 —
+md 미만은 공유 `DesktopOnly` 안내 (reference 검증 제외).
+
+### 부수 완료
+
+- 신규 프리미티브: `ui/Modal`(셸 3종 차이 prop — FilePickerModal 전환됨), `ui/Tabs`,
+  `ui/Checkbox`(14/15), `ui/EmailChipInput`, `ui/DesktopOnly`, Button `modal` size·`neutral` variant
+- `lib/projects.ts` — `useSyncExternalStore` 기반 localStorage 스토어. /projects 와
+  /data/select(저장 모달)가 공유. 원타임 리셋은 미재현 (판단 사례 7)
+- 완전 동작 재현: CSV 다운로드(select), JSON 다운로드(projects 2종), 프로젝트 저장·공유·별·이동·삭제
+- `FooterGate` — /maps 만 푸터 제외 (달라지는 부분 1번). 전 라우트 정적 프리렌더 유지 확인
+- 색인: `/data` sitemap 추가·noindex 해제. `/data/select`·`/projects`·`/maps` 는
+  noindex 유지 (작업 화면)
+
+### 남은 작업 (3단계)
 
 - 폼 제출 `fetch` 연결. 제출 핸들러는 이미 `async (payload) => {}` 한 지점으로 모여 있고
   토스트는 그 성공 경로에 있으므로, **토스트를 건드리지 않고 `fetch` 만 끼우면 된다.**
 - 인증(로그인·회원가입 — 현재 링크만 존재), 데이터 검색·다운로드, 프로젝트 영속화,
   외부 스토리지 연동(파일 피커는 현재 목업).
-- **편집(Edit) 모달 신규 설계 + 사용자 별도 확인** (2단계에서 보류한 것 — 위 결정 참조).
+- **편집(Edit) 모달 신규 설계 + 사용자 별도 확인** (2단계에서 보류 — "죽은 핸들러 2건" 참조).
+  `openInDataView`(프로젝트→select 진입)도 같은 취급.
+- **모달 reference 12·13·14 재추출 요청** — 캡처 도구가 모달류를 일관되게 못 찍은 정황을
+  함께 전달할 것 (아래 "재추출이 필요한 reference" 참조). 받으면 백드롭 포함 전체 화면 차분.
+- 배포 후 `verify-deployed.mjs` 를 2단계 화면(landing/select/projects/maps/모달)으로 확장·재실측.
 - `/terms` `/privacy` 실제 내용. 채워지면 `robots` 를 지우고 `SITEMAP_ROUTES` 에 추가한다.
 
 ---
 
-## 프리미티브 재고 (2단계 착수 기준)
+## 프리미티브 재고 (2단계 착수 기준 — 완료됨, 이력 문서)
 
 1단계에서 만든 것 중 **2단계에 그대로 쓰이는 것 / 손봐야 하는 것 / 새로 만들어야 하는 것**.
 원본 근거 줄 번호는 각 컴포넌트 파일 상단 주석에 있다.
+**2단계 완료로 아래 계획은 전부 이행됐다** — 실제 결과가 계획과 갈린 곳은 각 항목에
+정정 주석이 붙어 있다 (Chip searchPill 분리, DataTable 비추출, 체크박스 15px 등).
+현재 상태의 원천은 컴포넌트 파일 주석이다.
 
 ### 그대로 쓰는 것
 
