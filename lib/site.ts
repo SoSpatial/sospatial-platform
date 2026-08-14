@@ -72,4 +72,6 @@ export const SITEMAP_ROUTES = [
   '/request/source',
   '/request/upload',
   '/request/describe',
+  '/terms',
+  '/privacy',
 ] as const

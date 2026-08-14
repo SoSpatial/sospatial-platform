@@ -31,9 +31,10 @@ const META_ONLY = process.argv.includes('--meta-only')
 const origin = new URL(BASE).origin
 
 /** sitemap 에 있어야 하는 라우트 (lib/site.ts SITEMAP_ROUTES 와 일치해야 한다) */
-const ROUTES = ['/', '/api', '/data', '/request', '/request/source', '/request/upload', '/request/describe']
-/** noindex 여야 하는 라우트 — 작업 화면 3 + 플레이스홀더 2 (CLAUDE.md 색인 정책) */
-const NOINDEX = ['/data/select', '/projects', '/maps', '/terms', '/privacy']
+const ROUTES = ['/', '/api', '/data', '/request', '/request/source', '/request/upload', '/request/describe', '/terms', '/privacy']
+/** noindex 여야 하는 라우트 — 작업 화면 3 + 인증 화면 2 (CLAUDE.md 색인 정책.
+ *  /terms /privacy 는 3단계 5번에서 실 내용이 채워져 색인 대상으로 이동) */
+const NOINDEX = ['/data/select', '/projects', '/maps', '/login', '/signup']
 
 let fail = 0
 const bad = (msg) => {

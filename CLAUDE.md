@@ -286,11 +286,24 @@ Toast `tone`(error 는 기존 danger 토큰), 폼 3종 async 제출 + 복원.
   미적용 시 표기만 생략(fail-soft).
 - 발송 제약: from `onboarding@resend.dev`, 수신은 Resend 가입 이메일(환경 메모).
 
+### 5번 /terms /privacy — 완료 (2026-08-15)
+
+`lib/content/legal.ts`(구조화 콘텐츠) + `components/legal/LegalPage.tsx`(공용 레이아웃 —
+Container narrow + 기존 타이포 계층만). 실제 기능 기준으로 작성: 수집 항목(계정·
+프로젝트·의뢰·세션 쿠키), 위탁·국외 이전(Supabase 서울 리전/Vercel/Resend),
+localStorage 고지, **탈퇴 기능 부재는 "이메일 요청 시 지체 없이 처리"로 명시**
+(아래 개선 목록에 화면 내 탈퇴 추가). 색인 정책 이행: 두 라우트 noindex 해제 +
+`SITEMAP_ROUTES` 추가(9개), `verify-deployed.mjs` 의 ROUTES/NOINDEX 갱신
+(NOINDEX 에 /login /signup 명시 추가). 기준선 10종·375px 불변, 375px 가로 넘침 없음.
+**⚠ placeholder 3종([운영자명]/[연락처 이메일]/[시행일]) 미치환 — 법적 문서이므로
+최종 검토·치환은 사용자가 한다 (결정 6). 치환 전까지는 초안 상태다.**
+
 ### 실서비스 전환 시 개선 목록 (MVP 한계 — 3단계 확정)
 
 - rate limit 을 정확한 제한으로 (DB 트리거 또는 원자적 카운터 — TOCTOU 해소)
 - Resend 도메인 인증 → 발신 주소 교체, 수신 주소 제약 해제
 - 마이그레이션의 "insert 성공 + 기록 실패" 극단 케이스 중복 (현재 MVP 수용)
+- **화면 내 회원 탈퇴 기능** (현재 약관·방침이 이메일 요청 처리로 명시 — 5번)
 
 ### 정정 — "제출 핸들러 한 지점" 서술
 

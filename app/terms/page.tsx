@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
-import { ComingSoon } from '@/components/ui/ComingSoon'
+import { LegalPage } from '@/components/legal/LegalPage'
+import { TERMS } from '@/lib/content/legal'
 
 export const metadata: Metadata = {
-  // 내용이 없는 플레이스홀더라 색인에서 제외한다 (sitemap 에도 넣지 않는다)
-  robots: { index: false, follow: true },
+  // 실제 내용이 채워져 색인 대상 — noindex 해제 + sitemap 포함 (CLAUDE.md 색인 정책)
   title: '이용약관',
   description: 'SoSpatial 서비스 이용약관.',
 }
 
-/** 푸터 링크 대상. 404 방지를 위한 플레이스홀더. */
+/** 3단계 5번 — MVP 초안 (placeholder 3종은 lib/content/legal.ts 주석 참조) */
 export default function TermsPage() {
-  return <ComingSoon title="이용약관" />
+  return <LegalPage doc={TERMS} />
 }
