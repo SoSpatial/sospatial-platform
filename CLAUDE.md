@@ -147,12 +147,22 @@ reference 차분은 로컬과 배포가 **소수점 셋째 자리까지 동일**
 |---|---|
 | `FilterGrid` + `FilterColumn` | 원본 :245, `filterGridCols` :2362. `repeat(5,1fr)` ↔ `repeat(6,1fr)` 동적. **Tailwind JIT 는 런타임 문자열을 못 잡으므로 두 클래스를 정적으로 써서 조건 분기할 것** |
 | `FilterList` | max-height 220px / `overflow-y:auto` / `overscroll-behavior:contain`. **세부 지역 컬럼만** 그룹 헤더(10.5px/700/ink-30/uppercase/보더 line-04)가 추가로 붙는다 (:308-313) |
-| `DataTable` | 컬럼 정의를 **prop 으로 받는다.** 세 화면이 전부 다르다 — 변수 선택 `44px 1fr 1fr auto`(:350), 프로젝트 목록 `52px 72px 1fr 60px 130px 120px 90px`(:870), 프로젝트 상세 `1fr 2fr 0.8fr 0.8fr 0.8fr 0.8fr`(:843). 행 패딩도 10/12/13/14/16px 로 제각각이니 **통일하지 말 것** |
+| `DataTable` | 컬럼 정의를 **prop 으로 받는다.** 세 화면이 전부 다르다 — 변수 선택 `44px 1fr 1fr auto`(:350), 프로젝트 목록 `52px 72px 1fr 60px 130px 120px 90px`(:870), 프로젝트 상세 `1fr 2fr 0.8fr 0.8fr 0.8fr 0.8fr`(:843). 행 패딩도 10/12/13/14/16px 로 제각각이니 **통일하지 말 것**. **추출은 보류 (2026-08-14 확정)** — /data select 는 page-local `VariableTable` 로 만들고, /projects 에서 사용처가 2개가 되는 시점에 실물 두 개를 놓고 추출한다. 사용처 1개 시점의 추상화는 prop 경계를 추측하게 된다 |
 | `Tabs` | 저장 모달 신규/기존 탭 (:971-986). 선례 없음 |
 | `EmailChipInput` | 공유 모달 이메일 추가 + 칩 목록 (:938-943). 선례 없음 |
 | `DesktopOnly` | md 미만 "데스크톱에서 이용해주세요" 안내 — /data select·/projects·/maps 가 공유. 원본에 없는 화면이므로 reference 검증 제외 (푸터·ComingSoon 과 같은 취급) |
 | 아이콘 다수 | 필터 컬럼 헤더 6종(그리드/목록/단위/핀/지도핀/달력), 다운로드, 휴지통, 별(starred), 뒤로 화살표 |
 | `/maps` 전체 | 좌측 AI 채팅 + 우측 지도(:996~). 재사용 가능한 선례가 없다. 별도 조사 필요 |
+
+### ⚠ 지역 데이터 2벌 — 통합 금지 (2026-08-14 정정)
+
+- **`REGION_DATA`(:1754-1761, /data select 세부 지역)와 `getSubRegions`(:2008-2019,
+  Request 폼 → `lib/content/request-form.ts` 의 `SUB_REGIONS`)는 별개 데이터다.**
+- 1단계 분석에서 "중복 정의라 통합 후보"로 지적했던 것은 데이터를 실측하지 않은
+  **오판**이었다. 내용이 실제로 다르다:
+  시도 구성(6개 광역시만 vs 경기도·울산 포함 8개) / '전체' 항목(없음 — 렌더 시
+  앞에 붙임 :2369 vs 목록에 포함) / 정렬(가나다순 vs 원본 순서).
+- `REGION_DATA` 는 `lib/content/data-select.ts` 에 따로 둔다. 합치지 말 것.
 
 ### ★ 데이터 편집 모달 — 원본에 **디자인이 존재하지 않는다** → 구현 보류 확정
 
