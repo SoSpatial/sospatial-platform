@@ -217,6 +217,21 @@ FormField·Button accent·AccentLink·text-danger), `/auth/confirm`(code·token_
 - **세션 확인 전 네비는 비로그인 UI 렌더** (로그인 사용자에게 짧은 깜빡임) —
   서버 세션 조회로 바꾸면 정적 프리렌더가 깨져 감수. 전 라우트 정적 유지 확인됨
   (동적은 `/auth/confirm` 라우트 핸들러뿐).
+- **★ 확인 링크 착지 경로 3종 (이후 인증 작업에서 재방문할 지점)**:
+  기본 메일 템플릿 링크는 Supabase verify 엔드포인트를 거친 뒤 —
+  ① `redirect_to` 가 Redirect URLs 허용 목록과 일치: `/auth/confirm?code=`(쿼리)로
+  착지, 서버 라우트가 `exchangeCodeForSession` (PKCE verifier 쿠키가 있는 **같은
+  브라우저에서만** 성공. 다른 기기에서 열면 실패 → `/login?notice=confirm-failed`,
+  단 이메일 확인 자체는 완료됨).
+  ② `redirect_to` 불일치(예: 가입 오리진이 허용 목록에 없음): **Site URL 루트로
+  폴백 착지하며 코드/토큰이 URL 프래그먼트(`#...`)로 올 수 있다** — 서버는
+  프래그먼트를 못 보므로 이 경우 교환은 클라이언트(`createBrowserClient` 의
+  `detectSessionInUrl`)가 수행한다. `/auth/confirm` 이 아니라 루트 착지라는 점 주의.
+  ③ 메일 템플릿을 `token_hash` 방식으로 바꾸면 기기 무관 확인 가능 —
+  `/auth/confirm` 은 이미 code·token_hash 겸용으로 구현돼 있다.
+  ⚠ 자동 테스트(`verify-auth.mjs`)는 **메일 링크 클릭을 포함하지 않는다** —
+  ①·② 경로의 실클릭 확인은 수동. 이번 테스트 가입 링크는 오리진이
+  `localhost:3100`(허용 목록 밖)이라 클릭 시 ② 폴백을 탄다.
 
 검증 결과 (2026-08-15, 프로덕션 빌드 · localhost:3100 — 3000 은 별도 dev 서버가
 점유 중이라 사용 금지):
@@ -230,12 +245,20 @@ FormField·Button accent·AccentLink·text-danger), `/auth/confirm`(code·token_
   실수신 확인용 — 확인 전 삭제 금지). Supabase 기본 SMTP 는 시간당 발송 제한이
   낮으므로 `--signup-email` 반복 실행 금지.
 
-**★ 배포 전 사용자 작업 2건 (완료 전 push 보류 — push 즉시 자동 배포됨):**
-1. Vercel 프로젝트에 환경변수 5개 등록 (fail-soft 라 비로그인 동작은 유지되지만
-   인증이 죽은 채 배포된다).
+**⚠ 배포 장애 기록 (2026-08-15, 사용자 push 승인 후 발생·복구됨):**
+인증 커밋 배포 직후 **전 라우트 500** — `proxy.ts` 가 매 요청 실행되는데 Vercel 에
+환경변수가 없어 `supabaseUrl()` 예외가 전 요청을 죽였다. 클라이언트에만 넣었던
+fail-soft 를 proxy·`/auth/confirm` 에도 넣은 핫픽스로 복구 (장애 창 ~10분).
+**교훈: fail-soft 는 env 를 읽는 모든 실행 경로(클라이언트·프록시·라우트 핸들러)에
+빠짐없이 — 프록시는 전 라우트의 단일 장애점이다.**
+
+**★ 프로덕션에서 인증이 동작하려면 사용자 작업 2건 필요 (미완 시 비로그인
+데모로만 동작 — fail-soft):**
+1. Vercel 프로젝트에 환경변수 5개 등록 후 재배포.
 2. Supabase → Authentication → URL Configuration → Redirect URLs 에
    `https://sospatial-platform.vercel.app/**` 추가 (현재 localhost 만 등록 —
-   없으면 프로덕션 가입 확인 메일이 `/auth/confirm` 으로 착지하지 못한다).
+   없으면 프로덕션 가입 확인 메일이 `/auth/confirm` 으로 착지하지 못하고
+   착지 경로 ② 폴백을 탄다).
 
 ### 정정 — "제출 핸들러 한 지점" 서술
 
