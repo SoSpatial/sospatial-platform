@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { PageRoot } from '@/components/layout/PageRoot'
 import { Section } from '@/components/layout/Section'
 import { Container } from '@/components/layout/Container'
@@ -13,7 +14,8 @@ import { ProgressSteps } from '@/components/request/ProgressSteps'
 import { WritingGuide, type GuideItem } from '@/components/request/WritingGuide'
 import { FormField, TextareaInput } from '@/components/form/fields'
 import { GuideEditIcon, GuidePinIcon, GuideClockIcon } from '@/components/icons/guide'
-import { SUBMIT_NOTE, SUBMIT_TOAST } from '@/lib/content/request-form'
+import { SUBMIT_NOTE, SUBMIT_TOAST, SUBMIT_FAIL_TOAST } from '@/lib/content/request-form'
+import { submitRequest, takeDraft } from '@/lib/requests'
 
 /**
  * 요청 폼 ③ 어떤 데이터가 필요한지만 설명할게요 — 원본 :1589-1659
@@ -59,15 +61,30 @@ const PLACEHOLDER = [
 const MAX_LEN = 1000
 
 export function DescribeForm() {
-  const { message, showToast } = useToast()
+  const { message, tone, showToast } = useToast()
+  const router = useRouter()
   const [text, setText] = useState('')
+  const [pending, setPending] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  // 로그인 복귀(?resume=1) 시 폼 복원
+  useEffect(() => {
+    const d = takeDraft('describe')
+    if (d && typeof d.text === 'string') setText(d.text)
+  }, [])
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // 다음 단계에서 이 자리에 fetch 를 넣는다.
-    const payload = { method: 'describe', text, length: text.length }
-    console.log('[request/describe] submit', payload)
-    showToast(SUBMIT_TOAST)
+    if (pending) return
+    const payload = { method: 'describe' as const, text, length: text.length }
+    setPending(true)
+    const r = await submitRequest(payload)
+    setPending(false)
+    if (r.kind === 'auth') {
+      router.push(r.loginUrl)
+      return
+    }
+    if (r.kind === 'ok') showToast(SUBMIT_TOAST)
+    else showToast(SUBMIT_FAIL_TOAST, 'error')
   }
 
   return (
@@ -131,7 +148,7 @@ export function DescribeForm() {
         </Container>
       </Section>
 
-      <Toast message={message} />
+      <Toast message={message} tone={tone} />
     </PageRoot>
   )
 }

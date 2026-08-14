@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { PageRoot } from '@/components/layout/PageRoot'
 import { Section } from '@/components/layout/Section'
 import { Container } from '@/components/layout/Container'
@@ -21,7 +22,9 @@ import {
   YEARS_TO,
   SUBMIT_NOTE,
   SUBMIT_TOAST,
+  SUBMIT_FAIL_TOAST,
 } from '@/lib/content/request-form'
+import { submitRequest, takeDraft } from '@/lib/requests'
 
 /**
  * 요청 폼 ② 데이터를 가지고 있어요 — 원본 :1457-1586
@@ -54,7 +57,8 @@ const SERVICES = [
 ] as const
 
 export function UploadForm() {
-  const { message, showToast } = useToast()
+  const { message, tone, showToast } = useToast()
+  const router = useRouter()
 
   const [service, setService] = useState('')
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -62,13 +66,32 @@ export function UploadForm() {
   const [spatialUnit, setSpatialUnit] = useState<string>(SPATIAL_UNITS_UPLOAD[0])
   const [yearFrom, setYearFrom] = useState<string>(YEARS_FROM[0])
   const [yearTo, setYearTo] = useState<string>(YEARS_TO[0])
+  const [pending, setPending] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  // 로그인 복귀(?resume=1) 시 폼 복원 — 파일은 목업(파일명 메타)이라 그대로 보존된다
+  useEffect(() => {
+    const d = takeDraft('upload')
+    if (!d) return
+    if (typeof d.service === 'string') setService(d.service)
+    if (typeof d.pickedFile === 'string') setPickedFile(d.pickedFile)
+    if (typeof d.spatialUnit === 'string') setSpatialUnit(d.spatialUnit)
+    if (typeof d.yearFrom === 'string') setYearFrom(d.yearFrom)
+    if (typeof d.yearTo === 'string') setYearTo(d.yearTo)
+  }, [])
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // 다음 단계에서 이 자리에 fetch 를 넣는다.
-    const payload = { method: 'upload', service, pickedFile, spatialUnit, yearFrom, yearTo }
-    console.log('[request/upload] submit', payload)
-    showToast(SUBMIT_TOAST)
+    if (pending) return
+    const payload = { method: 'upload' as const, service, pickedFile, spatialUnit, yearFrom, yearTo }
+    setPending(true)
+    const r = await submitRequest(payload)
+    setPending(false)
+    if (r.kind === 'auth') {
+      router.push(r.loginUrl)
+      return
+    }
+    if (r.kind === 'ok') showToast(SUBMIT_TOAST)
+    else showToast(SUBMIT_FAIL_TOAST, 'error')
   }
 
   return (
@@ -203,7 +226,7 @@ export function UploadForm() {
         />
       )}
 
-      <Toast message={message} />
+      <Toast message={message} tone={tone} />
     </PageRoot>
   )
 }

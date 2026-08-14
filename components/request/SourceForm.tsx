@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { PageRoot } from '@/components/layout/PageRoot'
 import { Section } from '@/components/layout/Section'
 import { Container } from '@/components/layout/Container'
@@ -28,7 +29,9 @@ import {
   OUTPUT_FORMATS,
   SUBMIT_NOTE,
   SUBMIT_TOAST,
+  SUBMIT_FAIL_TOAST,
 } from '@/lib/content/request-form'
+import { submitRequest, takeDraft } from '@/lib/requests'
 
 /**
  * 요청 폼 ① 데이터 소스를 알고 있어요 — 원본 :1282-1454
@@ -60,7 +63,8 @@ const GUIDE_ITEMS: GuideItem[] = [
 ]
 
 export function SourceForm() {
-  const { message, showToast } = useToast()
+  const { message, tone, showToast } = useToast()
+  const router = useRouter()
 
   const [dataset, setDataset] = useState('')
   const [region, setRegion] = useState<string>(REGIONS[0])
@@ -71,14 +75,34 @@ export function SourceForm() {
   const [variables, setVariables] = useState<string[]>(['', ''])
   const [format, setFormat] = useState<string>(OUTPUT_FORMATS[0])
   const [notes, setNotes] = useState('')
+  const [pending, setPending] = useState(false)
+
+  // 로그인 복귀(?resume=1) 시 제출 시도 시점의 폼 내용 복원 (lib/requests.ts 주석 참조)
+  useEffect(() => {
+    const d = takeDraft('source')
+    if (!d) return
+    if (typeof d.dataset === 'string') setDataset(d.dataset)
+    if (typeof d.region === 'string') setRegion(d.region)
+    setSubRegion(typeof d.subRegion === 'string' ? d.subRegion : '')
+    if (typeof d.spatialUnit === 'string') setSpatialUnit(d.spatialUnit)
+    if (typeof d.yearFrom === 'string') setYearFrom(d.yearFrom)
+    if (typeof d.yearTo === 'string') setYearTo(d.yearTo)
+    if (Array.isArray(d.variables)) {
+      const vs = d.variables.filter((v): v is string => typeof v === 'string')
+      // payload 는 빈 칸이 걸러져 있다 — 원본 초기 상태(2칸)만큼 채워 복원
+      setVariables(vs.length >= 2 ? vs : [...vs, ...Array(2 - vs.length).fill('')])
+    }
+    if (typeof d.format === 'string') setFormat(d.format)
+    if (typeof d.notes === 'string') setNotes(d.notes)
+  }, [])
 
   const subRegionOptions = SUB_REGIONS[region] ?? []
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // 다음 단계에서 이 자리에 fetch 를 넣는다. 토스트는 성공 경로에 그대로 둔다.
+    if (pending) return
     const payload = {
-      method: 'source',
+      method: 'source' as const,
       dataset,
       region,
       subRegion: subRegionOptions.length ? subRegion || subRegionOptions[0] : null,
@@ -89,8 +113,16 @@ export function SourceForm() {
       format,
       notes,
     }
-    console.log('[request/source] submit', payload)
-    showToast(SUBMIT_TOAST)
+    setPending(true)
+    const r = await submitRequest(payload)
+    setPending(false)
+    if (r.kind === 'auth') {
+      router.push(r.loginUrl)
+      return
+    }
+    // 토스트는 성공 경로 유지 (결정 3). 실패 시 폼은 유지돼 재시도 가능
+    if (r.kind === 'ok') showToast(SUBMIT_TOAST)
+    else showToast(SUBMIT_FAIL_TOAST, 'error')
   }
 
   return (
@@ -236,7 +268,7 @@ export function SourceForm() {
         </Container>
       </Section>
 
-      <Toast message={message} />
+      <Toast message={message} tone={tone} />
     </PageRoot>
   )
 }

@@ -63,3 +63,6 @@ export const SUBMIT_NOTE = '평균 2~3 영업일 내로 연락드립니다.'
 
 /** 제출 성공 토스트 (CLAUDE.md 결정 3번) */
 export const SUBMIT_TOAST = '요청이 접수되었습니다'
+
+/** 제출 실패 토스트 (3단계 4번 — 실접수의 실패 경로. 폼은 유지돼 재시도 가능) */
+export const SUBMIT_FAIL_TOAST = '접수에 실패했습니다. 잠시 후 다시 시도해 주세요.'

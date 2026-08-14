@@ -23,10 +23,15 @@ export function LoginForm() {
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
 
+  // confirm-failed 는 오류(danger), request-login 은 안내(ink-70)로 톤을 구분한다
+  const noticeKind = params.get('notice')
   const notice =
-    params.get('notice') === 'confirm-failed'
+    noticeKind === 'confirm-failed'
       ? '확인 링크 처리에 실패했습니다. 가입한 이메일로 로그인을 시도해 주세요.'
-      : ''
+      : noticeKind === 'request-login'
+        ? '요청 접수에는 로그인이 필요합니다. 로그인하면 작성하던 내용이 복원됩니다.'
+        : ''
+  const noticeIsInfo = noticeKind === 'request-login' && !error
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -81,7 +86,10 @@ export function LoginForm() {
         </div>
 
         {(error || notice) && (
-          <p role="alert" className="mt-3 text-12-5 text-danger">
+          <p
+            role="alert"
+            className={`mt-3 text-12-5 ${noticeIsInfo ? 'text-ink-70' : 'text-danger'}`}
+          >
             {error || notice}
           </p>
         )}
