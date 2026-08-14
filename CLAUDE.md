@@ -183,6 +183,23 @@ AI 채팅(/maps) / 실데이터 파이프라인(검색·다운로드) / 지도 S
 | 5 | 공유 모달 | **데이터 저장만** (이메일 목록 영속화). 실제 접근 공유(초대 흐름·RLS)는 **보류 목록에 추가** (위 보류 참조) |
 | 6 | terms/privacy | **개인 운영 전제로 초안 작성, 사업자 정보는 placeholder.** 최종 검토는 사용자가 한다 |
 
+### 환경 메모 (2026-08-14, 사용자 셋업 완료 기준)
+
+- **Supabase 프로젝트**: Seoul 리전. API 키는 **신형 형식**(`sb_publishable_...` /
+  `sb_secret_...`) — 구형 JWT(`eyJ...`) 아님. 클라이언트 초기화는 신형 키 호환이어야
+  한다 (supabase-js v2 는 키 문자열을 그대로 전달하므로 호환 — 단 최신 버전 설치).
+- **`.env.local` 5개 키**: `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  / `SUPABASE_SECRET_KEY` / `RESEND_API_KEY` / `REQUEST_NOTIFY_EMAIL`.
+  env 파일은 Claude 가 쓰거나 수정하지 않는다 — 확인은 존재·형식만, 값 미출력.
+- **Confirm email 토글**: 대시보드에서 위치 미확인 — **기본값(켜짐)으로 가정하되,
+  인증 구현 후 테스트 가입에서 확인 메일이 실제로 오는지 검증 항목에 포함한다.**
+  안 오면 그때 설정 위치를 사용자와 함께 찾는다.
+- **Resend**: 도메인 인증 없음 — 발신 `onboarding@resend.dev`, **수신은 Resend 가입
+  이메일로만 가능**(= `REQUEST_NOTIFY_EMAIL`). 커스텀 도메인을 붙이면 그때 발신
+  주소를 바꾼다.
+- **스키마 SQL**: `supabase/schema.sql` (v1). 사용자가 SQL Editor 로 직접 적용 —
+  적용 확인 후 코드 작업 시작.
+
 ### 정정 — "제출 핸들러 한 지점" 서술
 
 위 "남은 작업"의 "제출 핸들러는 이미 `async (payload) => {}` 한 지점으로 모여 있고"는
