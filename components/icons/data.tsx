@@ -69,3 +69,50 @@ export function GlobeIcon({ size }: IconProps) {
     </Stroke15>
   )
 }
+
+/* ── select 뷰 필터 컬럼 헤더 (:250-321, 13px stroke 1.5) ──
+   주제 헤더의 그리드는 api.tsx GridIcon(13px)을 재사용한다. */
+
+/** 세부 주제 선택 (:263) */
+export function ListIcon({ size }: IconProps) {
+  return (
+    <Stroke15 size={size}>
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+    </Stroke15>
+  )
+}
+
+/** 단위 선택 (:276) */
+export function UnitTableIcon({ size }: IconProps) {
+  return (
+    <Stroke15 size={size}>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M3 9h18M9 21V9" />
+    </Stroke15>
+  )
+}
+
+/**
+ * 지역·세부 지역 선택 (:290, :304 — 동일 지오메트리)
+ * ⚠ guide.tsx 의 GuidePinIcon 과 모양이 같지만 stroke 1.5 vs 2 로 다르다. 합치지 말 것.
+ */
+export function PinIcon({ size }: IconProps) {
+  return (
+    <Stroke15 size={size}>
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </Stroke15>
+  )
+}
+
+/** 년도 선택 (:321) */
+export function CalendarIcon({ size }: IconProps) {
+  return (
+    <Stroke15 size={size}>
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </Stroke15>
+  )
+}

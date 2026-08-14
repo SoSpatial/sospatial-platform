@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CloseIcon } from '@/components/icons/MenuIcon'
 import { ChevronRightIcon, PickerFolderIcon, FileIcon } from '@/components/icons/picker'
+import { Checkbox } from '@/components/ui/Checkbox'
 import { cn } from '@/lib/cn'
 
 /**
@@ -111,12 +112,7 @@ export function FilePickerModal({
                     : 'hover:bg-fill-05'
                 )}
               >
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  readOnly
-                  className="h-3.5 w-3.5 cursor-pointer accent-accent"
-                />
+                <Checkbox checked={isSelected} readOnly />
                 <span className={cn(e.kind === 'folder' ? 'text-accent' : TONE[e.tone ?? 'green'])}>
                   {e.kind === 'folder' ? <PickerFolderIcon size={16} /> : <FileIcon size={16} />}
                 </span>
