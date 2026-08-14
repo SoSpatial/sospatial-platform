@@ -20,7 +20,13 @@ export async function GET(request: Request) {
   const tokenHash = searchParams.get('token_hash')
   const type = searchParams.get('type') as EmailOtpType | null
 
-  const supabase = await supabaseServer()
+  // fail-soft: 환경변수 미설정 시 500 대신 로그인 안내로 (proxy.ts 와 동일 원칙)
+  let supabase
+  try {
+    supabase = await supabaseServer()
+  } catch {
+    return NextResponse.redirect(`${origin}/login?notice=confirm-failed`)
+  }
 
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)

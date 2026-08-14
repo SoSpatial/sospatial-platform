@@ -12,7 +12,18 @@ import { supabaseUrl, supabaseAnonKey } from '@/lib/supabase/env'
 export default async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })
 
-  const supabase = createServerClient(supabaseUrl(), supabaseAnonKey(), {
+  // ★ fail-soft: 환경변수 미설정(예: Vercel env 등록 전) 시 세션 갱신만 건너뛴다.
+  //   여기서 던지면 전 라우트가 500 이 된다 — 2026-08-15 프로덕션 장애로 실측된 경로.
+  let url: string
+  let key: string
+  try {
+    url = supabaseUrl()
+    key = supabaseAnonKey()
+  } catch {
+    return response
+  }
+
+  const supabase = createServerClient(url, key, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (cookiesToSet) => {
