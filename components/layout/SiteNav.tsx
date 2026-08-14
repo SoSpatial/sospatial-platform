@@ -8,6 +8,8 @@ import { FolderIcon } from '@/components/icons/FolderIcon'
 import { MenuIcon, CloseIcon } from '@/components/icons/MenuIcon'
 import { Button } from '@/components/ui/Button'
 import { NAV_LINKS } from '@/lib/nav'
+import { useSession } from '@/lib/auth'
+import { supabaseBrowser } from '@/lib/supabase/client'
 
 /**
  * 전역 네비게이션
@@ -19,8 +21,13 @@ import { NAV_LINKS } from '@/lib/nav'
  *   링크     padding 0 18px / 14px / 400 / rgba(255,255,255,0.55) / hover #fff
  *   우측     36×36 폴더 버튼 + 로그인(고스트) + 회원가입(흰 pill)  ← 실제 코드 기준 3개
  *
- * 로그인·회원가입은 이번 단계에서 동작하지 않는다(CLAUDE.md 범위).
- * 원본 마크업대로 <button type="button"> 을 유지하며 라우트를 만들지 않는다.
+ * ── 인증 상태 분기 (3단계 신규) ──
+ * 비로그인: 로그인(/login 링크)·회원가입(/signup 링크) — 시각은 1·2단계와 픽셀 동일해야
+ *   한다 (회귀 기준선 10종의 전제). Button 을 href 로 렌더하면 <a> 에 inline-block 이
+ *   붙어 호출부 `hidden md:block` 과 display 충돌하므로(1단계 버그), display 분기는
+ *   래퍼 <span> 이 담당한다.
+ * 로그인: 두 버튼 자리를 로그아웃(ghost) 하나로 대체. 세션 확인 전(ready 이전)에는
+ *   비로그인 UI 를 렌더한다 (lib/auth.ts 주석 참조 — 정적 프리렌더 유지 트레이드오프).
  *
  * ── 반응형 (원본에 없는 신규, CLAUDE.md "원본과 달라지는 부분" #2) ──
  *   md 이상: 원본 그대로의 가로 네비
@@ -31,11 +38,17 @@ import { NAV_LINKS } from '@/lib/nav'
 export function SiteNav() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const { session } = useSession()
 
   // 라우트가 바뀌면 메뉴를 닫는다
   useEffect(() => {
     setOpen(false)
   }, [pathname])
+
+  async function handleLogout() {
+    await supabaseBrowser().auth.signOut()
+    // onAuthStateChange 가 session 을 비워 UI 가 즉시 비로그인 상태로 돌아간다
+  }
 
   return (
     <nav className="sticky top-0 z-100 bg-bg backdrop-blur-lg">
@@ -74,12 +87,28 @@ export function SiteNav() {
             <FolderIcon size={16} />
           </Link>
 
-          <Button variant="ghost" size="sm" aria-label="로그인" className="hidden md:block">
-            로그인
-          </Button>
-          <Button variant="white" size="sm" aria-label="회원가입">
-            회원가입
-          </Button>
+          {session ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="hidden md:block"
+            >
+              로그아웃
+            </Button>
+          ) : (
+            <>
+              {/* display 분기는 래퍼가 담당 — Button 링크 렌더의 inline-block 과 충돌 방지 */}
+              <span className="hidden md:block">
+                <Button variant="ghost" size="sm" href="/login">
+                  로그인
+                </Button>
+              </span>
+              <Button variant="white" size="sm" href="/signup">
+                회원가입
+              </Button>
+            </>
+          )}
 
           {/* 햄버거 (md 미만) */}
           <button
@@ -114,13 +143,22 @@ export function SiteNav() {
             >
               내 프로젝트
             </Link>
-            <button
-              type="button"
-              aria-label="로그인"
-              className="block w-full py-3.5 text-left text-14 text-ink-70 hover:text-ink"
-            >
-              로그인
-            </button>
+            {session ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="block w-full py-3.5 text-left text-14 text-ink-70 hover:text-ink"
+              >
+                로그아웃
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="block py-3.5 text-14 text-ink-70 hover:text-ink"
+              >
+                로그인
+              </Link>
+            )}
           </div>
         </div>
       )}

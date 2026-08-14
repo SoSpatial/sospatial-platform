@@ -200,6 +200,43 @@ AI 채팅(/maps) / 실데이터 파이프라인(검색·다운로드) / 지도 S
 - **스키마 SQL**: `supabase/schema.sql` (v1). 사용자가 SQL Editor 로 직접 적용 —
   적용 확인 후 코드 작업 시작.
 
+### 2번 인증 — 완료 (2026-08-15)
+
+구현: `lib/supabase/`(env 정규화 — URL 에 경로가 붙어도 origin 으로 흡수, browser/server
+클라이언트), `proxy.ts`(Next 16 proxy 컨벤션 — 세션 갱신만, 라우트 보호 없음),
+`/login` `/signup`(noindex·sitemap 미포함, 기존 프리미티브만 — modal 폭 420·Card·
+FormField·Button accent·AccentLink·text-danger), `/auth/confirm`(code·token_hash 겸용
+착지), 네비 세션 분기(`lib/auth.ts` useSession). 환경변수 미설정 시 비로그인 UI 로
+동작하는 fail-soft 포함.
+
+- **네비 display 충돌 회피**: 로그인 링크의 `hidden md:block` 은 래퍼 `<span>` 이
+  담당한다 — Button 링크 렌더(`<a>` inline-block)와의 1단계 버그 재발 방지.
+- **로그인 `?next=` 지원**: 내부 경로만 허용. Request 제출 게이트(결정 2)가 사용 예정.
+- **신형 키 실측 특이점**: REST 루트(`/rest/v1/`)는 publishable 키로 401 이 정상 —
+  키 유효성 검증은 반드시 테이블 쿼리로 (`verify-supabase-init.mjs` 주석).
+- **세션 확인 전 네비는 비로그인 UI 렌더** (로그인 사용자에게 짧은 깜빡임) —
+  서버 세션 조회로 바꾸면 정적 프리렌더가 깨져 감수. 전 라우트 정적 유지 확인됨
+  (동적은 `/auth/confirm` 라우트 핸들러뿐).
+
+검증 결과 (2026-08-15, 프로덕션 빌드 · localhost:3100 — 3000 은 별도 dev 서버가
+점유 중이라 사용 금지):
+- `verify-supabase-init.mjs` 4항목 / `verify-rls.mjs` 16항목(교차 사용자·anon·위장
+  insert·요청 변조 불가·cascade) / `verify-auth.mjs` 13항목(라벨 연결·next 복귀·
+  세션 유지·로그아웃) — 전부 통과.
+- **기준선 10종 전부 소수점 셋째 자리까지 불변** (네비 버튼→링크 전환 회귀 없음).
+  375px 네비: 로그인 숨김·회원가입 노출·높이 64 유지.
+- 실가입 테스트: 미확인 상태 생성 확인 → **Confirm email 기본값 켜짐 증명**.
+  ⚠ `hisiun87+sospatial-test@gmail.com` 미확인 계정이 남아 있다(사용자의 메일
+  실수신 확인용 — 확인 전 삭제 금지). Supabase 기본 SMTP 는 시간당 발송 제한이
+  낮으므로 `--signup-email` 반복 실행 금지.
+
+**★ 배포 전 사용자 작업 2건 (완료 전 push 보류 — push 즉시 자동 배포됨):**
+1. Vercel 프로젝트에 환경변수 5개 등록 (fail-soft 라 비로그인 동작은 유지되지만
+   인증이 죽은 채 배포된다).
+2. Supabase → Authentication → URL Configuration → Redirect URLs 에
+   `https://sospatial-platform.vercel.app/**` 추가 (현재 localhost 만 등록 —
+   없으면 프로덕션 가입 확인 메일이 `/auth/confirm` 으로 착지하지 못한다).
+
 ### 정정 — "제출 핸들러 한 지점" 서술
 
 위 "남은 작업"의 "제출 핸들러는 이미 `async (payload) => {}` 한 지점으로 모여 있고"는
