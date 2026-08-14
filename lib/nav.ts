@@ -1,8 +1,18 @@
+import type { TopicKey } from '@/lib/content/topics'
+
 /**
  * 네비게이션 링크 정의
  * 원본: SoSpatial Platform.dc.html :37-51 (데이터 / API / 지도·시각화 / 의뢰하기)
  */
 export type NavLink = { href: string; label: string }
+
+/**
+ * /data/select 진입 링크 — 원본 goDataSelect(:2320)의 data-topic 페이로드에 해당.
+ * topic 쿼리 값은 한글 키 그대로 쓴다 (CLAUDE.md "프로토타입 제약 vs 디자인 의도" 사례 4).
+ */
+export function dataSelectHref(topic: TopicKey): string {
+  return `/data/select?topic=${encodeURIComponent(topic)}`
+}
 
 export const NAV_LINKS: NavLink[] = [
   { href: '/data', label: '데이터' },

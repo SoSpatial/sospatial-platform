@@ -67,6 +67,7 @@ export const SITE_DESCRIPTION =
 export const SITEMAP_ROUTES = [
   '/',
   '/api',
+  '/data',
   '/request',
   '/request/source',
   '/request/upload',
