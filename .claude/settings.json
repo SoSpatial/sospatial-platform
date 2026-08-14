@@ -21,7 +21,19 @@
       "Bash(git status *)",
       "PowerShell(git status *)",
       "Bash(git log *)",
-      "PowerShell(git log *)"
+      "PowerShell(git log *)",
+      "Bash(npm run dev)",
+      "PowerShell(npm run dev)",
+      "Bash(npx next *)",
+      "PowerShell(npx next *)",
+      "Bash(npx supabase *)",
+      "PowerShell(npx supabase *)"
+    ],
+    "ask": [
+      "Bash(npx supabase db reset*)",
+      "PowerShell(npx supabase db reset*)",
+      "Bash(npx supabase db drop*)",
+      "PowerShell(npx supabase db drop*)"
     ]
   }
 }
