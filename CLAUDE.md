@@ -147,12 +147,40 @@ reference 차분은 로컬과 배포가 **소수점 셋째 자리까지 동일**
 |---|---|
 | `FilterGrid` + `FilterColumn` | 원본 :245, `filterGridCols` :2362. `repeat(5,1fr)` ↔ `repeat(6,1fr)` 동적. **Tailwind JIT 는 런타임 문자열을 못 잡으므로 두 클래스를 정적으로 써서 조건 분기할 것** |
 | `FilterList` | max-height 220px / `overflow-y:auto` / `overscroll-behavior:contain`. **세부 지역 컬럼만** 그룹 헤더(10.5px/700/ink-30/uppercase/보더 line-04)가 추가로 붙는다 (:308-313) |
-| `DataTable` | 컬럼 정의를 **prop 으로 받는다.** 세 화면이 전부 다르다 — 변수 선택 `44px 1fr 1fr auto`(:350), 프로젝트 목록 `52px 72px 1fr 60px 130px 120px 90px`(:870), 프로젝트 상세 `1fr 2fr 0.8fr 0.8fr 0.8fr 0.8fr`(:843). 행 패딩도 10/12/13/14/16px 로 제각각이니 **통일하지 말 것**. **추출은 보류 (2026-08-14 확정)** — /data select 는 page-local `VariableTable` 로 만들고, /projects 에서 사용처가 2개가 되는 시점에 실물 두 개를 놓고 추출한다. 사용처 1개 시점의 추상화는 prop 경계를 추측하게 된다 |
+| `DataTable` | **추출 안 함 — 세 테이블 각자 구현 (2026-08-14 확정, 실물 대조 결과 grid 외 전 축 상이).** `VariableTable`(select)·`ProjectListTable`·`ProjectDetailTable` page-local. 근거는 아래 "데이터 테이블 3종 실물 대조" 참조 |
 | `Tabs` | 저장 모달 신규/기존 탭 (:971-986). 선례 없음 |
 | `EmailChipInput` | 공유 모달 이메일 추가 + 칩 목록 (:938-943). 선례 없음 |
 | `DesktopOnly` | md 미만 "데스크톱에서 이용해주세요" 안내 — /data select·/projects·/maps 가 공유. 원본에 없는 화면이므로 reference 검증 제외 (푸터·ComingSoon 과 같은 취급) |
 | 아이콘 다수 | 필터 컬럼 헤더 6종(그리드/목록/단위/핀/지도핀/달력), 다운로드, 휴지통, 별(starred), 뒤로 화살표 |
 | `/maps` 전체 | 좌측 AI 채팅 + 우측 지도(:996~). 재사용 가능한 선례가 없다. 별도 조사 필요 |
+
+### 데이터 테이블 3종 실물 대조 — 추출 안 함의 근거 (2026-08-14 확정)
+
+나중에 다시 추출하려 할 때의 반박 근거로 남긴다. 공통분모는 "Card 셸 + CSS grid 행"
+뿐이고, 묶으면 아래 전 축이 prop 이 돼(8개+) 추상화 이득이 없다.
+
+| | VariableTable (select :334) | 프로젝트 목록 (:867) | 프로젝트 상세 (:842) |
+|---|---|---|---|
+| grid | `44px 1fr 1fr auto` | `52px 72px 1fr 60px 130px 120px 90px` | `1fr 2fr 0.8fr×4` |
+| 셸 radius | 14 | **16** | 14 |
+| 헤더 bg | 없음 | #2A2A2A | #2A2A2A |
+| 헤더 타이포 | 11.5 uppercase ls0.5 ink-35 | 12 plain ink-40 (일부 center) | 11.5 plain ink-40 |
+| 헤더 패딩 | 10/20 | 13/20 | 12/20 |
+| 행 패딩 | 12/20 | 16/20 | 14/20 |
+| 행 인터랙션 | 없음 | hover fill-03 + 행 클릭(상세) | 없음 |
+| 셀 구성 | 체크박스·텍스트·버튼 | 체크박스(15)·별·버튼·상태색 | 텍스트 6개 |
+
+### ★ 죽은 핸들러 2건 — 정의만 있고 호출부 없음 (편집 모달 · openInDataView)
+
+공통 패턴: state·핸들러는 존재하나 **호출하는 마크업이 파일 어디에도 없어**
+프로토타입에서 도달 불가능하다. 디자인 의도가 확정되지 않은 것이므로 2단계에서
+진입 UI 를 발명하지 않고, 3단계에서 신규 설계 + 사용자 별도 확인한다.
+
+1. **편집(Edit) 모달** — 아래 항목 참조.
+2. **`openInDataView`(:2214-2218)** — 프로젝트 상세 → /data/select 진입 핸들러.
+   정의만 있고 `onClick` 호출부 없음, reference 05 에도 해당 버튼 없음 (2026-08-14 확인).
+   따라서 **/data/select 의 프로젝트 배지(:236-241)도 원본에서 도달 불가**였다.
+   배지는 조건부로 구현된 상태 그대로 둔다 (DataSelect 의 TODO 주석 참조).
 
 ### ⚠ 지역 데이터 2벌 — 통합 금지 (2026-08-14 정정)
 
@@ -334,6 +362,7 @@ reference 차분은 로컬과 배포가 **소수점 셋째 자리까지 동일**
 | 4 | `/data` landing↔select 라우팅 (2026-08-14 승인) | 단일 `dataView` state → **`/data` + `/data/select?topic=` 실제 라우트 분리.** topic 쿼리 값은 한글 키 그대로 (영문 슬러그는 발명). 세부 필터 상태(주제 외 5종)는 원본대로 클라이언트 state — URL 에 넣지 않는다. select 복귀 시 필터 리셋(`goDataLanding` :2332)은 언마운트로 자연 획득 |
 | 5 | `/data` 검색 input 의 Enter (2026-08-14 확정) | 원본은 Enter 무반응(input 바인딩 없음 :382) — 정적 프로토타입 제약으로 보고 **Enter 를 지원한다. 단 검색 버튼 클릭과 완전히 동일한 동작만** 한다 (`data-topic=""` → '전체' 로 select 진입). 검색어 처리 기능을 발명하지 않으며, **검색어가 버려지는 것 자체는 원본대로 유지** |
 | 6 | (반례 — 재현 쪽) 인기 데이터 행 hover 의 `transition:padding 0.15s` (:488) | 원본 `style-hover` 에 **명시**돼 있으므로 그대로 재현 (hover 시에만 transition — 진입은 애니메이션, 이탈은 즉시). 결정 7 "transition 미추가"는 원본에 없는 transition 을 더하지 말라는 뜻이지, 명시된 것을 빼라는 뜻이 아니다 |
+| 7 | localStorage 원타임 리셋 `sospatial_reset_v1` (:1746-1752) (2026-08-14 확정) | 프로토타입 배포 중 과거 시드를 지우려는 **운영 흔적** — 우리 앱은 처음부터 빈 상태라 무의미. **재현하지 않는다.** `sospatial_projects` 동기화·로드 자체는 완전 동작하는 원본 기능이므로 재현 (CSV 다운로드와 동급) |
 
 ---
 
