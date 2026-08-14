@@ -201,6 +201,11 @@ AI 채팅(/maps) / 실데이터 파이프라인(검색·다운로드) / 지도 S
   대신 **Resend Custom SMTP 를 Supabase 에 연결**했다 (발신 `onboarding@resend.dev`).
   ⚠ 도메인 인증 전이라 **가입 확인 메일도 Resend 가입 본인 주소로만 발송 가능** —
   임의 사용자의 실가입은 도메인 인증 후에야 동작한다 (아래 실서비스 목록).
+  **⚠ 플러스 별칭도 거부된다 (2026-08-15 실측)**: Resend 403 원문 "You can only
+  send testing emails to your own email address (hisiun87@gmail.com)" — 문자열
+  정확 일치만 허용. 별칭 가입은 GoTrue 500 "Error sending confirmation email" 로
+  실패하며 **사용자 생성 자체가 롤백된다** (실측). 테스트 가입에 별칭을 쓰던 요령은
+  Custom SMTP 전환 후 무효 — 실가입 테스트는 정확히 본인 주소로만.
 - **스키마 SQL**: `supabase/schema.sql` (v1). 사용자가 SQL Editor 로 직접 적용 —
   적용 확인 후 코드 작업 시작.
 
