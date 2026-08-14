@@ -8,6 +8,7 @@ import { Toast, useToast } from '@/components/ui/Toast'
 import { ActionButton } from '@/components/projects/ActionButton'
 import { ProjectListTable } from '@/components/projects/ProjectListTable'
 import { ProjectDetailView } from '@/components/projects/ProjectDetailView'
+import { ShareModal } from '@/components/projects/ShareModal'
 import { TrashIcon, DownloadIcon, ArrowUpIcon, ArrowDownIcon } from '@/components/icons/projects'
 import { useProjects, type Project } from '@/lib/projects'
 
@@ -41,6 +42,7 @@ export function ProjectsView() {
   const { projects, updateProjects } = useProjects()
   const [checked, setChecked] = useState<number[]>([])
   const [viewing, setViewing] = useState<Project | null>(null)
+  const [shareProjectId, setShareProjectId] = useState<number | null>(null)
   const { message, showToast } = useToast()
 
   /* ── 목록 액션 (:2245-2285) ── */
@@ -81,8 +83,29 @@ export function ProjectsView() {
     })
   const starToggle = (id: number) =>
     updateProjects((cur) => cur.map((p) => (p.id === id ? { ...p, starred: !p.starred } : p)))
-  const shareClick = () => {
-    // TODO(공유 모달 단계): showShareModal 열기 (:2294) — 모달 2종 작업에서 연결
+  /* ── 공유 모달 (:2294, :2117-2155) — 프로젝트는 스토어에서 live 로 찾아
+        revoke 시 목록이 즉시 갱신된다 (:2120) ── */
+  const shareClick = (id: number) => setShareProjectId(id)
+  const shareProject = projects.find((p) => p.id === shareProjectId) ?? null
+  const confirmShare = (emails: string[]) => {
+    // sharedWith 를 새 목록으로 교체 — 기존 공유자가 덮어써진다 (:2152, 원본 비일관 보존).
+    // 공유 완료 토스트 없음 — '내가 공유' 색 전환이 피드백 (원본 그대로)
+    updateProjects((cur) =>
+      cur.map((p) =>
+        p.id === shareProjectId ? { ...p, sharing: '내가 공유', sharedWith: emails } : p
+      )
+    )
+    setShareProjectId(null)
+  }
+  const revokeShare = (email: string) => {
+    // sharedWith 에서 제거, 비면 '공유 안함' 복귀 (:2123-2129)
+    updateProjects((cur) =>
+      cur.map((p) => {
+        if (p.id !== shareProjectId) return p
+        const next = (p.sharedWith ?? []).filter((e) => e !== email)
+        return { ...p, sharedWith: next, sharing: next.length ? '내가 공유' : '공유 안함' }
+      })
+    )
   }
 
   /* ── 상세 액션 (:2198-2213) ── */
@@ -151,6 +174,15 @@ export function ProjectsView() {
           )}
         </Container>
       </Section>
+
+      {shareProject && (
+        <ShareModal
+          project={shareProject}
+          onClose={() => setShareProjectId(null)}
+          onConfirm={confirmShare}
+          onRevoke={revokeShare}
+        />
+      )}
       <Toast message={message} />
     </PageRoot>
   )

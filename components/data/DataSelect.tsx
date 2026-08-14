@@ -12,8 +12,11 @@ import { ListIcon, UnitTableIcon, PinIcon, CalendarIcon } from '@/components/ico
 import { FilterGrid } from '@/components/data/FilterGrid'
 import { FilterColumn, FilterItem, FilterGroupHeader } from '@/components/data/FilterColumn'
 import { VariableTable } from '@/components/data/VariableTable'
+import { SaveProjectModal } from '@/components/data/SaveProjectModal'
+import { Toast, useToast } from '@/components/ui/Toast'
 import { TOPIC_DATA, type TopicEntry, type TopicVariable } from '@/lib/content/topics'
 import { UNITS, REGIONS, YEARS, REGION_DATA } from '@/lib/content/data-select'
+import { useProjects, type ProjectVariable } from '@/lib/projects'
 
 /**
  * 데이터 선택 뷰 — 원본 :226-368 (dataIsSelect), 로직 :2034-2075 / :2336-2410
@@ -67,6 +70,9 @@ export function DataSelect() {
   const [filterYear, setFilterYear] = useState<string[]>([])
   const [dataChecked, setDataChecked] = useState<string[]>([])
   const [saveWarn, setSaveWarn] = useState('')
+  const [showSaveModal, setShowSaveModal] = useState(false)
+  const { projects, updateProjects } = useProjects()
+  const { message, showToast } = useToast()
 
   /** TODO(/projects 연동): openInDataView(:2214) 진입 시 프로젝트명·체크 상태 전달 */
   const viewingProjectName = ''
@@ -166,7 +172,54 @@ export function DataSelect() {
       setTimeout(() => setSaveWarn(''), 3000) // 원본 그대로 (:2109)
       return
     }
-    // TODO(저장 모달 단계): showSaveModal 열기 (:2112)
+    setShowSaveModal(true) // :2112
+  }
+
+  /* ── 저장 확정 (:2156-2193) ── */
+  const buildVariables = (): ProjectVariable[] =>
+    varList
+      .filter((v) => dataChecked.includes(v.name))
+      .map((v) => ({
+        name: v.name,
+        desc: v.desc,
+        // ⚠ 저장은 join(', ') — CSV 다운로드의 join('/') 과 다르다 (:2186 vs :2400). 통일 금지
+        unit: filterUnit.join(', ') || '전체',
+        region: filterRegion.join(', ') || '전국',
+        subRegion: filterSubRegion.join(', ') || '전체',
+        year: filterYear.join(', ') || '전체',
+      }))
+
+  const saveNew = (name: string) => {
+    const d = new Date()
+    const date = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(
+      d.getDate()
+    ).padStart(2, '0')}` // :2158-2159
+    updateProjects((cur) => [
+      ...cur,
+      { id: Date.now(), name, starred: false, date, sharing: '공유 안함', variables: buildVariables() },
+    ])
+    setShowSaveModal(false)
+    showToast('프로젝트가 저장됐습니다.')
+  }
+
+  const saveExisting = (targetId: number) => {
+    const newVars = buildVariables()
+    updateProjects((cur) =>
+      cur.map((p) =>
+        p.id === targetId
+          ? {
+              ...p,
+              // 이름 중복은 제외하고 append (:2173)
+              variables: [
+                ...p.variables,
+                ...newVars.filter((nv) => !p.variables.some((ev) => ev.name === nv.name)),
+              ],
+            }
+          : p
+      )
+    )
+    setShowSaveModal(false)
+    showToast('기존 프로젝트에 저장됐습니다.')
   }
 
   /* ── CSV 다운로드 (:2394-2410) — 백엔드 없이 완전 동작하는 원본 기능 ── */
@@ -302,6 +355,16 @@ export function DataSelect() {
           />
         </Container>
       </Section>
+
+      {showSaveModal && (
+        <SaveProjectModal
+          existingProjects={projects.map((p) => ({ id: p.id, name: p.name }))}
+          onClose={() => setShowSaveModal(false)}
+          onSaveNew={saveNew}
+          onSaveExisting={saveExisting}
+        />
+      )}
+      <Toast message={message} />
     </PageRoot>
   )
 }
