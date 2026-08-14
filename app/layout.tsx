@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { SiteNav } from '@/components/layout/SiteNav'
 import { SiteFooter } from '@/components/layout/SiteFooter'
+import { FooterGate } from '@/components/layout/FooterGate'
 import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from '@/lib/site'
 
 export const metadata: Metadata = {
@@ -49,7 +50,10 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         />
         <SiteNav />
         <main className="flex-1">{children}</main>
-        <SiteFooter />
+        {/* /maps 는 100vh 앱 화면 — 푸터 미렌더 (FooterGate 주석 참조) */}
+        <FooterGate>
+          <SiteFooter />
+        </FooterGate>
       </body>
     </html>
   )
