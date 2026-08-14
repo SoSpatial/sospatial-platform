@@ -19,6 +19,152 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
 
 ---
 
+## 1단계 완료 (2026-08-14)
+
+### 배포
+
+- **URL: https://sospatial-platform.vercel.app**
+- GitHub `SoSpatial/sospatial-platform`, `main` 브랜치. Vercel 자동 배포.
+- `NEXT_PUBLIC_SITE_URL` 은 **설정하지 않았다.** `VERCEL_PROJECT_PRODUCTION_URL` 로 해결된다.
+  커스텀 도메인을 붙이면 그때 `NEXT_PUBLIC_SITE_URL` 을 설정하고 재배포할 것.
+
+### 완료 범위
+
+| 라우트 | 상태 | reference |
+|---|---|---|
+| `/` | 구현 완료 | 01-home |
+| `/api` | 구현 완료 | 07-api |
+| `/request` | 구현 완료 | 08-request-landing |
+| `/request/source` | 구현 완료 | 09-request-source |
+| `/request/upload` | 구현 완료 (파일 피커 모달 포함) | 10-request-upload |
+| `/request/describe` | 구현 완료 | 11-request-describe |
+| `/data` `/projects` `/maps` | `ComingSoon` 플레이스홀더 | — |
+| `/terms` `/privacy` | `ComingSoon` 플레이스홀더 (푸터 링크 대상) | — |
+
+부수 완료: 공통 네비·푸터, 반응형 375~1440px, 디자인 토큰, `focus-visible` 링,
+`prefers-contrast: more` 대안, OG 이미지·아이콘·sitemap·robots, 토스트, 폼 a11y 연결.
+
+### 회귀 기준선 (2026-08-14, 배포본 실측)
+
+`node scripts/verify-deployed.mjs https://sospatial-platform.vercel.app` — 전 항목 통과.
+reference 차분은 로컬과 배포가 **소수점 셋째 자리까지 동일**했다.
+
+| 페이지 | raw % | ±1px 허용 % | avg delta | heightDelta |
+|---|---|---|---|---|
+| `/` | 1.386 | 0.771 | 1.18 | 145 |
+| `/api` | 2.251 | 1.214 | 1.63 | 126 |
+| `/request` | 2.815 | 0.951 | 2.33 | 120 |
+| `/request/source` | 3.363 | 1.762 | 2.22 | 112 |
+| `/request/upload` | 3.290 | 1.533 | 2.22 | — |
+| `/request/describe` | 3.437 | 1.691 | 2.45 | 219 |
+
+**이 표가 회귀 기준선이다.** 2단계에서 공통 컴포넌트(네비·푸터·프리미티브·토큰)를
+건드린 뒤 이 수치가 움직이면 1단계 페이지에 회귀가 생긴 것이다.
+
+⚠ **`/request/upload` 는 반드시 `scripts/verify-upload.mjs` 로 잰다.**
+`verify-page.mjs` 로 재면 파일 **미선택** 기본 상태를 reference(선택 완료 상태)와
+비교하게 돼 4.17 / 2.61 이라는 다른 수치가 나온다.
+`screenshots/diff-upload.json` 에 남아 있는 값이 그것이므로 기준선으로 쓰지 말 것.
+
+### 남은 작업
+
+**2단계 — 화면 3개 + 모달 2종 (백엔드 없이 프로토타입 동작 재현)**
+
+구현 순서 확정 (2026-08-14): **`/data` → `/projects` → `/maps`**.
+/maps 는 3단계(실제 지도 SDK·AI 연동)와 가장 얽혀 있어 지금 만드는 목업의
+상당 부분이 교체된다. 가장 나중에 만들수록 버리는 작업이 줄어든다.
+
+- `/data` — landing 뷰 + select 뷰. **5↔6열 동적 필터 그리드**와 변수 선택 테이블이 핵심.
+- `/projects` — 목록 테이블 + 상세 뷰.
+- `/maps` — 좌측 AI 채팅 + 우측 지도. 1단계에 선례가 전혀 없는 화면이다.
+- 모달: 저장(Save Project) / 공유(Share). **편집(Edit) 모달은 보류** — 아래 결정 참조.
+
+**2단계 반응형 범위 (2026-08-14 확정)**
+
+- **`/data` landing 만 375px 까지 대응한다** (1단계와 같은 기준).
+- `/data` select, `/projects`, `/maps` 는 **데스크톱 전용**.
+  md 미만에서는 "데스크톱에서 이용해주세요" 안내 화면을 띄운다.
+  안내 화면은 **`DesktopOnly` 컴포넌트 하나**로 만들어 세 화면이 공유한다.
+- 근거: 6열 필터 그리드와 7열 테이블은 좁은 화면에서 근본적으로 다른 레이아웃이
+  필요하고, 이는 원본에 존재하지 않는 디자인이다.
+
+**편집(Edit) 모달 — 구현 보류 (2026-08-14 확정)**
+
+- 원본 마크업 없음 — 프로토타입에서 도달 불가능한 **죽은 state** 다
+  (state·핸들러는 `:1732`, `:2219-2240` 에 있으나 그리는 `sc-if` 블록과
+  `openEditModal` 호출부가 파일 어디에도 없다).
+- `15-modal-edit-data.png` 는 `05-projects-detail.png` 와 md5 동일한 중복 파일이다.
+- 죽은 state 였다면 디자인 의도가 확정되지 않은 것이므로 **재추출 요청도 하지 않는다.**
+- 편집 기능이 실제로 필요해지는 **3단계에서 신규 설계 + 사용자 별도 확인** (푸터와 같은 취급).
+
+**3단계 — 백엔드**
+
+- 폼 제출 `fetch` 연결. 제출 핸들러는 이미 `async (payload) => {}` 한 지점으로 모여 있고
+  토스트는 그 성공 경로에 있으므로, **토스트를 건드리지 않고 `fetch` 만 끼우면 된다.**
+- 인증(로그인·회원가입 — 현재 링크만 존재), 데이터 검색·다운로드, 프로젝트 영속화,
+  외부 스토리지 연동(파일 피커는 현재 목업).
+- **편집(Edit) 모달 신규 설계 + 사용자 별도 확인** (2단계에서 보류한 것 — 위 결정 참조).
+- `/terms` `/privacy` 실제 내용. 채워지면 `robots` 를 지우고 `SITEMAP_ROUTES` 에 추가한다.
+
+---
+
+## 프리미티브 재고 (2단계 착수 기준)
+
+1단계에서 만든 것 중 **2단계에 그대로 쓰이는 것 / 손봐야 하는 것 / 새로 만들어야 하는 것**.
+원본 근거 줄 번호는 각 컴포넌트 파일 상단 주석에 있다.
+
+### 그대로 쓰는 것
+
+| 컴포넌트 | 2단계 사용처 |
+|---|---|
+| `layout/PageRoot` | 신규 페이지 3개 루트 (pageEnter) |
+| `layout/Section` | 전 섹션 배경·거터 |
+| `layout/Container` | **`wide`(1200) = /data select 뷰, `search`(660) = /data 랜딩 히어로** — 둘 다 1단계 미사용이나 원본 근거로 미리 정의해 둠 |
+| `layout/SiteNav` `SiteFooter` | 변경 없음 (플레이스홀더가 실 페이지로 바뀔 뿐) |
+| `ui/Card` | 필터 그리드 셸(`radius="panel"` 14px = 원본 :245 와 일치), 카테고리 카드, 테이블 셸 |
+| `ui/Chip` | /data 인기 검색어 pill (원본 :387 — `pill` variant 근거가 이미 이것) |
+| `ui/IconBadge` | 카테고리 카드 38, 전체 카드 42, 모달 헤더 32 — **SIZE 4종이 이미 전부 /data 근거로 정의돼 있다** |
+| `ui/SectionHeading` | `sm`(19px) = "주제별 둘러보기" 원본 :399 |
+| `ui/AccentLink` | `sm`(13.5px) = "전체보기" 원본 :412 |
+| `ui/Toast` | 저장·공유·삭제 완료 토스트 (원본이 같은 토스트를 재사용) |
+| `form/FormField` `TextInput` `SelectInput` | 모달 폼 입력 |
+| `icons/LogoMark` `ArrowRight` | 공통 |
+
+### 손봐야 하는 것
+
+| 항목 | 무엇이 부족한가 |
+|---|---|
+| `ui/Button` | **`danger` variant 없음.** 프로젝트 삭제 버튼이 `rgba(255,80,80,0.08)` 배경 / `0.18` 보더 / `rgba(255,120,120,0.8)` 글자다 (원본 :836). 모달 취소 버튼 `padding:9px 20px / 13.5px` (:946, :988)도 `sm`(8/20, 13.5) `md`(12/24, 14) 어디에도 안 맞는다 — size 를 늘릴지 className 으로 덮을지 정할 것 |
+| `request/FilePickerModal` | 모달 셸(backdrop + 패널 + 헤더/본문/푸터)의 **유일한 선례**. 저장·공유 모달과 backdrop 농도(0.75 vs 0.7)와 z-index(1000 vs 2000)가 다르므로, 셸을 `ui/Modal` 로 추출하고 **차이는 prop 으로 열어둔다** (통일 금지 원칙) |
+| 체크박스 | 현재 `FilePickerModal` 안에 인라인. 테이블 행 선택에서 반복되므로 추출 후보 |
+| `request/BackLink` | /data select "← 데이터 검색", /projects 상세 "← 내 프로젝트"(:822) 가 같은 패턴. 원본 값이 다를 수 있으니 실측 후 재사용 판단 |
+
+### 새로 만들어야 하는 것
+
+| 항목 | 근거 / 주의 |
+|---|---|
+| `FilterGrid` + `FilterColumn` | 원본 :245, `filterGridCols` :2362. `repeat(5,1fr)` ↔ `repeat(6,1fr)` 동적. **Tailwind JIT 는 런타임 문자열을 못 잡으므로 두 클래스를 정적으로 써서 조건 분기할 것** |
+| `FilterList` | max-height 220px / `overflow-y:auto` / `overscroll-behavior:contain`. **세부 지역 컬럼만** 그룹 헤더(10.5px/700/ink-30/uppercase/보더 line-04)가 추가로 붙는다 (:308-313) |
+| `DataTable` | 컬럼 정의를 **prop 으로 받는다.** 세 화면이 전부 다르다 — 변수 선택 `44px 1fr 1fr auto`(:350), 프로젝트 목록 `52px 72px 1fr 60px 130px 120px 90px`(:870), 프로젝트 상세 `1fr 2fr 0.8fr 0.8fr 0.8fr 0.8fr`(:843). 행 패딩도 10/12/13/14/16px 로 제각각이니 **통일하지 말 것** |
+| `Tabs` | 저장 모달 신규/기존 탭 (:971-986). 선례 없음 |
+| `EmailChipInput` | 공유 모달 이메일 추가 + 칩 목록 (:938-943). 선례 없음 |
+| `DesktopOnly` | md 미만 "데스크톱에서 이용해주세요" 안내 — /data select·/projects·/maps 가 공유. 원본에 없는 화면이므로 reference 검증 제외 (푸터·ComingSoon 과 같은 취급) |
+| 아이콘 다수 | 필터 컬럼 헤더 6종(그리드/목록/단위/핀/지도핀/달력), 다운로드, 휴지통, 별(starred), 뒤로 화살표 |
+| `/maps` 전체 | 좌측 AI 채팅 + 우측 지도(:996~). 재사용 가능한 선례가 없다. 별도 조사 필요 |
+
+### ★ 데이터 편집 모달 — 원본에 **디자인이 존재하지 않는다** → 구현 보류 확정
+
+- `showEditModal` / `editChecked` state 와 `openEditModal` / `closeEditModal` /
+  삭제 핸들러가 `:1732`, `:2219-2240` 에 있다.
+- **그런데 마크업이 없다.** 파일 전체에서 편집 모달을 그리는 `sc-if` 블록이 없고,
+  `openEditModal` 을 **호출하는 곳도 없다** (정의 :2221 한 줄이 전부).
+- `15-modal-edit-data.png` 는 `05-projects-detail.png` 와 md5 동일한 중복 파일이다.
+- **결정 (2026-08-14): 2단계에서 구현하지 않고, 재추출 요청도 하지 않는다.**
+  죽은 state 였다면 디자인 의도가 확정되지 않은 것이다. 편집 기능이 실제로
+  필요해지는 3단계에서 신규 설계 + 사용자 별도 확인 (위 "남은 작업" 참조).
+
+---
+
 ## 확정된 요구사항
 
 ### [범위]
@@ -329,6 +475,14 @@ Next.js(App Router) + Tailwind CSS v4 프로젝트로 변환한다.
 
 → 파일 피커 모달은 원본 HTML `:1662-1720` 을 기준으로 구현했고 computed 값으로만 확인했다.
    재추출본을 받으면 다시 검증할 것.
+
+→ **편집 모달(15번)은 재추출을 요청하지 않는다 (2026-08-14 확정).** 원본 HTML 에
+   마크업이 없는 죽은 state 라 재추출로 해결되지 않는다
+   (위 "프리미티브 재고 — 데이터 편집 모달" 항목 참조). 3단계에서 신규 설계한다.
+   재추출 요청 대상은 **14번(파일 피커) 1장뿐**이다.
+
+→ 나머지 13장은 2026-08-14 md5 전수 검사에서 중복·이상 없음.
+   02/03/04/05/06 (2단계 대상)은 정상이므로 그대로 검증에 쓸 수 있다.
 
 ---
 
