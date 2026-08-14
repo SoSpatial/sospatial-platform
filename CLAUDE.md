@@ -197,6 +197,10 @@ AI 채팅(/maps) / 실데이터 파이프라인(검색·다운로드) / 지도 S
 - **Resend**: 도메인 인증 없음 — 발신 `onboarding@resend.dev`, **수신은 Resend 가입
   이메일로만 가능**(= `REQUEST_NOTIFY_EMAIL`). 커스텀 도메인을 붙이면 그때 발신
   주소를 바꾼다.
+- **Auth 메일 SMTP (2026-08-15 사용자 설정)**: Supabase 기본 SMTP(시간당 발송 제한)
+  대신 **Resend Custom SMTP 를 Supabase 에 연결**했다 (발신 `onboarding@resend.dev`).
+  ⚠ 도메인 인증 전이라 **가입 확인 메일도 Resend 가입 본인 주소로만 발송 가능** —
+  임의 사용자의 실가입은 도메인 인증 후에야 동작한다 (아래 실서비스 목록).
 - **스키마 SQL**: `supabase/schema.sql` (v1). 사용자가 SQL Editor 로 직접 적용 —
   적용 확인 후 코드 작업 시작.
 
@@ -302,6 +306,9 @@ localStorage 고지, **탈퇴 기능 부재는 "이메일 요청 시 지체 없�
 
 - rate limit 을 정확한 제한으로 (DB 트리거 또는 원자적 카운터 — TOCTOU 해소)
 - Resend 도메인 인증 → 발신 주소 교체, 수신 주소 제약 해제
+- **커스텀 도메인 + Resend 도메인 인증 시 가입 확인 메일 전체 발송 가능** —
+  현재 Auth 메일이 Resend Custom SMTP 경유인데 도메인 미인증이라 본인 주소로만
+  발송된다. 즉 **임의 사용자 가입이 막혀 있는 상태 — 실사용자 받기 전 필수**
 - 마이그레이션의 "insert 성공 + 기록 실패" 극단 케이스 중복 (현재 MVP 수용)
 - **화면 내 회원 탈퇴 기능** (현재 약관·방침이 이메일 요청 처리로 명시 — 5번)
 

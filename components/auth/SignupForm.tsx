@@ -32,8 +32,10 @@ export function SignupForm() {
         password,
         options: { emailRedirectTo: `${location.origin}/auth/confirm` },
       }))
-    } catch {
-      error = { message: 'unexpected' } // 환경변수 미설정·네트워크 실패 → 일반 문구
+    } catch (e) {
+      // 원본 에러가 어디에도 안 남던 허점 해소 — 콘솔에 남기고 원문으로 문구를 분기
+      console.error('[auth] signUp 실패:', e)
+      error = { message: e instanceof Error ? e.message : String(e) }
     }
     setPending(false)
     if (error) {
