@@ -260,6 +260,38 @@ fail-soft 를 proxy·`/auth/confirm` 에도 넣은 핫픽스로 복구 (장애 �
    없으면 프로덕션 가입 확인 메일이 `/auth/confirm` 으로 착지하지 못하고
    착지 경로 ② 폴백을 탄다).
 
+### 3번 프로젝트 영속화 — 구현 완료, DB 모드 검증 대기 (2026-08-15)
+
+이중 백엔드(B안)·마이그레이션(원본 보존 + 계정별 이전 id 기록)·`ProjectsBridge` 구현
+완료. 게스트 스위트 30항목·기준선 10종·375px 통과. **B(로그인 DB)·C(마이그레이션)·
+D(두 탭) 스위트는 스키마 v2(`sort_order`) 적용 후 `verify-projects-behavior.mjs` 로
+실행한다** — 탭 간 전파 구조의 기록도 D 실측 후에 한다 (실측 없이 기록 금지).
+
+### 4번 Request 실접수 — 완료 (2026-08-15)
+
+구현: `lib/requests.ts`(submitRequest — 제출 시점 로그인 게이트 + sessionStorage
+draft, `?resume=1` 1회성 복원, TTL 30분, 자동 재제출 없음), `app/api/requests`
+(세션 → 검증 32KB·method → rate limit → **DB insert = 성공 기준** → Resend 발송 =
+부가), `lib/request-mail.ts`(한글 라벨 표, 전값 이스케이프, **Reply-To = 요청자**),
+Toast `tone`(error 는 기존 danger 토큰), 폼 3종 async 제출 + 복원.
+
+- **검증 31항목 통과**: 비로그인×3(게이트→안내→복귀→복원→재제출→DB 대조) /
+  로그인×3(직행→DB) / 경계(401·400×2·429). 기준선 10종·375px 불변.
+- **`verify-upload.mjs` ④ 갱신**: 제출 확인이 토스트→로그인 게이트 이동으로 바뀜
+  (실접수 전환). 픽셀 캡처는 제출 전이라 기준선 로직 불변.
+- **⚠ rate limit 는 완화 장치이며 정확한 제한이 아니다** (조정 1 확정): 조회~삽입
+  사이 동시 요청이 끼어드는 TOCTOU 한계. 수정하지 않고 한계로 기록.
+- **미발송 병기 (조정 2 — 채택)**: 성공 메일 본문에 `mail_sent=false` 누적 건수를
+  병기. count 쿼리 1번 + 본문 한 줄이라 단순 — 포함. **스키마 v3(`mail_sent`) 필요**,
+  미적용 시 표기만 생략(fail-soft).
+- 발송 제약: from `onboarding@resend.dev`, 수신은 Resend 가입 이메일(환경 메모).
+
+### 실서비스 전환 시 개선 목록 (MVP 한계 — 3단계 확정)
+
+- rate limit 을 정확한 제한으로 (DB 트리거 또는 원자적 카운터 — TOCTOU 해소)
+- Resend 도메인 인증 → 발신 주소 교체, 수신 주소 제약 해제
+- 마이그레이션의 "insert 성공 + 기록 실패" 극단 케이스 중복 (현재 MVP 수용)
+
 ### 정정 — "제출 핸들러 한 지점" 서술
 
 위 "남은 작업"의 "제출 핸들러는 이미 `async (payload) => {}` 한 지점으로 모여 있고"는

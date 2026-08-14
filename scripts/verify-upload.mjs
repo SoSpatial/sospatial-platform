@@ -53,12 +53,11 @@ await page.locator('select').first().selectOption('')
 await page.waitForTimeout(300)
 await page.screenshot({ path: path.join(OUT, 'impl-requpload.png'), fullPage: true })
 
-// ④ 제출
-logs.length = 0
+// ④ 제출 — 3단계부터 실접수 (2026-08-15 갱신): 비로그인 제출은 토스트가 아니라
+//    로그인 유도로 이동한다. 성공 토스트·DB 대조·복원은 verify-requests.mjs 담당.
 await page.getByRole('button', { name: '데이터 요청하기 →' }).click()
-await page.waitForTimeout(300)
-console.log('토스트                  :', (await page.getByRole('status').innerText()).trim())
-console.log('console.log payload     :', logs.find((l) => l.includes('request/upload')) ?? '(없음)')
+await page.waitForURL(/\/login\?notice=request-login/)
+console.log('비로그인 제출 게이트     : /login?notice=request-login 이동 확인')
 
 // ⑤ 차분
 await page.setContent('<body></body>')
