@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(npm run build)",
+      "PowerShell(npm run build)",
+      "Bash(npx tsc *)",
+      "PowerShell(npx tsc *)",
+      "Bash(npx eslint *)",
+      "PowerShell(npx eslint *)",
+      "Bash(node scripts/*)",
+      "PowerShell(node scripts/*)",
+      "Bash(git add *)",
+      "PowerShell(git add *)",
+      "Bash(git commit *)",
+      "PowerShell(git commit *)",
+      "Bash(git push)",
+      "PowerShell(git push)",
+      "Bash(git status *)",
+      "PowerShell(git status *)",
+      "Bash(git log *)",
+      "PowerShell(git log *)"
+    ]
+  }
+}
