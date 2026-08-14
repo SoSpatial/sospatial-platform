@@ -1,28 +1,39 @@
 /**
  * 배포 후 점검 — 실제 배포 URL 로 전부 확인한다.
  *
- * 사용: node scripts/verify-deployed.mjs https://sospatial-platform.vercel.app
+ * 사용: node scripts/verify-deployed.mjs https://sospatial-platform.vercel.app [--meta-only]
  *
  * 확인 항목
- *   1. 12개 라우트 응답 (7개 실 콘텐츠 + 플레이스홀더 5개), 404 없음
+ *   1. 12개 라우트 응답 (실 콘텐츠 10 + 플레이스홀더 2), 404 없음
  *   2. og:url / og:image / metadataBase 의 절대 URL
- *   3. sitemap.xml / robots.txt 의 절대 URL
+ *   3. sitemap.xml / robots.txt 의 절대 URL (sitemap 7개 라우트 — /data 포함)
  *   4. OG 이미지 직접 접근 — 200 + PNG 1200x630
  *   5. favicon / apple-touch-icon 200
  *   6. Pretendard 실제 로드 여부 (document.fonts + 폭 실측)
- *   7. 플레이스홀더 noindex 유지
+ *   7. noindex 유지 — /data/select /projects /maps /terms /privacy (작업 화면·플레이스홀더)
+ *   8. 2단계 화면 픽셀·computed 검증 — 화면별 지정 스크립트를 BASE_URL 로 위임 실행
+ *      (CLAUDE.md 2단계 "완료 범위와 검증 방식" — 스크립트가 화면마다 다르므로
+ *       여기서 직접 찍지 않고 반드시 해당 스크립트를 호출한다. --meta-only 로 생략 가능)
+ *
+ * 1단계 6페이지의 픽셀 차분은 로컬=배포 동일이 이미 확인됐다 (CLAUDE.md 1단계 기준선).
+ * 필요 시 BASE_URL 을 주고 verify-page.mjs / verify-upload.mjs 를 개별 실행한다.
  */
 import { chromium } from 'playwright'
+import { spawnSync } from 'node:child_process'
+import path from 'node:path'
 
 const BASE = (process.argv[2] || '').replace(/\/$/, '')
 if (!BASE) {
-  console.error('사용: node scripts/verify-deployed.mjs <배포 URL>')
+  console.error('사용: node scripts/verify-deployed.mjs <배포 URL> [--meta-only]')
   process.exit(1)
 }
+const META_ONLY = process.argv.includes('--meta-only')
 const origin = new URL(BASE).origin
 
-const ROUTES = ['/', '/api', '/request', '/request/source', '/request/upload', '/request/describe']
-const PLACEHOLDERS = ['/data', '/projects', '/maps', '/terms', '/privacy']
+/** sitemap 에 있어야 하는 라우트 (lib/site.ts SITEMAP_ROUTES 와 일치해야 한다) */
+const ROUTES = ['/', '/api', '/data', '/request', '/request/source', '/request/upload', '/request/describe']
+/** noindex 여야 하는 라우트 — 작업 화면 3 + 플레이스홀더 2 (CLAUDE.md 색인 정책) */
+const NOINDEX = ['/data/select', '/projects', '/maps', '/terms', '/privacy']
 
 let fail = 0
 const bad = (msg) => {
@@ -36,7 +47,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 
 // ── 1. 라우트 응답 ────────────────────────────────────────────────
 console.log('■ 라우트 응답')
-for (const r of [...ROUTES, ...PLACEHOLDERS]) {
+for (const r of [...ROUTES, ...NOINDEX]) {
   const res = await page.goto(BASE + r, { waitUntil: 'domcontentloaded' })
   const s = res.status()
   console.log(`   ${s === 200 ? ok('') : bad('')}${r.padEnd(19)} ${s}`)
@@ -150,14 +161,48 @@ console.log(`   ${fontOk ? ok('') : bad('')}로드된 Pretendard face ${font.fac
 console.log(`     body font-family: ${font.bodyFontFamily}`)
 console.log(`     한글 40px 폭 — 실제 ${font.wActual} / serif ${font.wFallback} / sans-serif ${font.wSans}`)
 
-// ── 7. 플레이스홀더 noindex ───────────────────────────────────────
-console.log('\n■ 플레이스홀더 noindex')
-for (const r of PLACEHOLDERS) {
+// ── 7. noindex 유지 (작업 화면 + 플레이스홀더) ────────────────────
+console.log('\n■ noindex 유지')
+for (const r of NOINDEX) {
   await page.goto(BASE + r, { waitUntil: 'domcontentloaded' })
   const m = await page.evaluate(() => document.querySelector('meta[name="robots"]')?.content ?? '(없음)')
-  console.log(`   ${m.includes('noindex') ? ok('') : bad('')}${r.padEnd(11)} ${m}`)
+  console.log(`   ${m.includes('noindex') ? ok('') : bad('')}${r.padEnd(13)} ${m}`)
+}
+// 색인 대상은 noindex 가 없어야 한다 — /data 가 2단계에서 해제됐는지 확인
+for (const r of ['/', '/data']) {
+  await page.goto(BASE + r, { waitUntil: 'domcontentloaded' })
+  const m = await page.evaluate(() => document.querySelector('meta[name="robots"]')?.content ?? '(없음)')
+  console.log(`   ${m.includes('noindex') ? bad('') : ok('')}${r.padEnd(13)} ${m} (noindex 없어야 정상)`)
 }
 
 await browser.close()
+
+// ── 8. 2단계 화면 검증 스크립트 위임 실행 ─────────────────────────
+//   각 스크립트가 BASE_URL 환경변수로 배포 URL 을 받아 로컬과 동일한 절차로 잰다.
+//   차분 수치의 합격 기준은 CLAUDE.md "회귀 기준선 (신규 4화면)" 표와의 대조 —
+//   여기서 자동 판정하지 않고 출력을 그대로 남긴다 (select 는 스크롤바 마스킹 수치,
+//   maps 는 blur 환경 차이 등 화면별 해석 규칙이 표에 붙어 있기 때문).
+if (!META_ONLY) {
+  const STAGE2 = [
+    ['data landing', 'verify-page.mjs', ['/data', '02-data-landing.png', 'data-deployed']],
+    ['data select', 'verify-select.mjs', []],
+    ['projects 목록·상세', 'verify-projects.mjs', []],
+    ['maps', 'verify-maps.mjs', []],
+    ['저장·공유 모달 (computed 59항목)', 'verify-modals.mjs', []],
+  ]
+  for (const [label, script, args] of STAGE2) {
+    console.log(`\n■ 2단계 — ${label} (${script})`)
+    const r = spawnSync(process.execPath, [path.join('scripts', script), ...args], {
+      env: { ...process.env, BASE_URL: BASE },
+      stdio: 'inherit',
+    })
+    if (r.status !== 0) {
+      fail++
+      console.log(`✗ ${script} 종료 코드 ${r.status}`)
+    }
+  }
+  console.log('\n※ 위 차분 수치는 CLAUDE.md "회귀 기준선 (신규 4화면)" 표와 대조할 것.')
+}
+
 console.log(`\n${fail === 0 ? '전부 통과' : `실패 ${fail}건`}`)
 process.exit(fail === 0 ? 0 : 1)

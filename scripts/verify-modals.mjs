@@ -220,3 +220,5 @@ for (const r of results) console.log(r.line)
 const fails = results.filter((r) => !r.ok).length
 console.log(`\n${results.length - fails}/${results.length} PASS${fails ? ` — FAIL ${fails}` : ' (ALL PASS)'}`)
 await browser.close()
+// verify-deployed.mjs 가 위임 실행할 때 실패를 종료 코드로 전달한다
+process.exit(fails ? 1 : 0)
